@@ -10,13 +10,21 @@ export class HomePage implements OnInit {
     slideOpts = {
         direction: 'vertical'
     };
+
+    
+    slideOpts1 = {
+        direction: 'horizontal'
+    };
+
     videoList: any = [];
+    videoList123: any = [];
 
     constructor(private data: DataService) {
     }
 
     ngOnInit() {
         this.videoList = this.data.getVideoList();
+        this.videoList123 = this.data.getVideoList();
     }
 
 }
