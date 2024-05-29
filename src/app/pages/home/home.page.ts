@@ -1,5 +1,6 @@
-import {Component, OnInit} from '@angular/core';
+import {Component, ElementRef, OnInit, ViewChild} from '@angular/core';
 import {DataService} from "../../services/data.service";
+import { Swiper } from 'swiper/types';
 
 @Component({
     selector: 'app-home',
@@ -7,9 +8,14 @@ import {DataService} from "../../services/data.service";
     styleUrls: ['./home.page.scss'],
 })
 export class HomePage implements OnInit {
-    slideOpts = {
-        direction: 'vertical'
-    };
+    @ViewChild('swiper')
+    swiperRef: ElementRef | undefined;
+    swiper?: Swiper
+ 
+    swiperReady(){
+      this.swiper = this.swiperRef?.nativeElement.swiper
+    }    
+    
     videoList: any = [];
 
     constructor(private data: DataService) {

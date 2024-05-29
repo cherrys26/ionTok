@@ -19,16 +19,20 @@ ion-content {
   }
 }
 
-ion-slides {
-  height: 100%;
-  z-index: -10;
-
-  ion-slide {
     video {
       object-fit: cover;
       width: 100%;
       height: 100%;
     }
-  }
+ 
+swiper-container {
+  width:100%;
+  height: 100%
 }
 
+swiper-slide {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
