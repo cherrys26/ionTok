@@ -11,11 +11,18 @@
 </ion-header>
 
 <ion-content [fullscreen]="true">
-    <ion-slides [options]="options" pager="true" class="first-slides">
-        <ion-slide *ngFor="let slide of slides">
-            <ion-img src="{{slide.photo}}"></ion-img>
-        </ion-slide>
-    </ion-slides>
+    <swiper-container
+    #swiper
+    (afterinint)="swiperReady()"
+    pager="true" ,
+    loop="true",
+    autoplay="true"
+    class="first-slides"
+  >
+  <swiper-slide *ngFor="let slide of slides">
+    <img src="{{slide.photo}}" />
+  </swiper-slide>
+</swiper-container>
     <div *ngFor="let trend of trends" class="ion-padding">
         <ion-row>
             <ion-col class="ion-text-left ion-align-self-center ion-tappable">
