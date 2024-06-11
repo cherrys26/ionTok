@@ -14,7 +14,7 @@
         <swiper-slide>
           <video autoplay loop playsinline [src]="video.url" [muted]="'muted'"></video>
           <app-feed [video]="video"></app-feed>
-          <app-footer [video]="video"></app-footer>   
+          <app-footer [video]="video"></app-footer>
         </swiper-slide>
         <swiper-slide *ngFor="let response of video.responses">
           <video autoplay loop playsinline [src]="response.url" [muted]="'muted'"></video>
