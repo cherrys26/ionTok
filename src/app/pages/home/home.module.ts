@@ -1,4 +1,4 @@
-import { NgModule } from '@angular/core';
+import { NgModule, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 
@@ -8,7 +8,7 @@ import { HomePageRoutingModule } from './home-routing.module';
 
 import { HomePage } from './home.page';
 import {FeedComponent} from "../../components/feed/feed.component";
-import {LottieModule} from "ngx-lottie";
+import { LottieComponent } from 'ngx-lottie';
 import {FooterComponent} from "../../components/footer/footer.component";
 
 @NgModule({
@@ -17,8 +17,9 @@ import {FooterComponent} from "../../components/footer/footer.component";
         FormsModule,
         IonicModule,
         HomePageRoutingModule,
-        LottieModule
+        LottieComponent
     ],
-  declarations: [HomePage, FeedComponent, FooterComponent]
+  declarations: [HomePage, FeedComponent, FooterComponent],
+  schemas: [CUSTOM_ELEMENTS_SCHEMA]
 })
 export class HomePageModule {}

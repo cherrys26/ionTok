@@ -1,5 +1,6 @@
-import {Component, OnInit} from '@angular/core';
+import {Component, ElementRef, OnInit, ViewChild} from '@angular/core';
 import {DataService} from "../../services/data.service";
+import { Swiper } from 'swiper/types';
 
 @Component({
     selector: 'app-discover',
@@ -7,6 +8,14 @@ import {DataService} from "../../services/data.service";
     styleUrls: ['./discover.page.scss'],
 })
 export class DiscoverPage implements OnInit {
+    @ViewChild('swiper')
+    swiperRef: ElementRef | undefined;
+    swiper?: Swiper
+ 
+    swiperReady(){
+      this.swiper = this.swiperRef?.nativeElement.swiper
+    }    
+    
     hideIcon: boolean = false;
     options = {
         loop: true,
