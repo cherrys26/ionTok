@@ -13,7 +13,7 @@
             <ion-label>Discover</ion-label>
         </ion-tab-button>
 
-        <ion-tab-button tab="add-video">
+        <ion-tab-button (click)="presentActionSheet()">
             <ion-img
                     src="{{isIconChange ? '../assets/svg/addvideoblack.svg' : '../assets/svg/addvideo.svg'}}"></ion-img>
         </ion-tab-button>
