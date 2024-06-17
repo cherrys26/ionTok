@@ -4,11 +4,14 @@
   </ion-toolbar>
 </ion-header>
 
-<ion-content>
+<!-- <ion-content>
   <ion-button (click)="captureVideo()">Capture Video</ion-button>
   <ion-button (click)="selectVideoFromGallery()">Select from Gallery</ion-button>
 
   <div *ngIf="isVideoAvailable">
     <video [src]="videoUrl" controls width="100%"></video>
   </div>
+</ion-content> -->
+<ion-content>
+  <video *ngIf="videoUrl" [src]="videoUrl" controls playsinline></video>
 </ion-content>
