@@ -13,6 +13,7 @@ import player from 'lottie-web';
 import { provideLottieOptions } from 'ngx-lottie';
 
 import { Camera } from '@awesome-cordova-plugins/camera/ngx';
+import { MediaCapture } from '@awesome-cordova-plugins/media-capture/ngx';
 
 export function playerFactory() {
   return player;
@@ -21,7 +22,7 @@ export function playerFactory() {
 @NgModule({
     declarations: [AppComponent],
     imports: [BrowserModule, IonicModule.forRoot(), AppRoutingModule,],
-    providers: [Camera, { provide: RouteReuseStrategy, useClass: IonicRouteStrategy }, 
+    providers: [Camera, MediaCapture, { provide: RouteReuseStrategy, useClass: IonicRouteStrategy }, 
       provideLottieOptions({
         player: () => import('lottie-web'),
       })

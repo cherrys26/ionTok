@@ -21,6 +21,7 @@
     "@angular/router": "^17.3.10",
     "@awesome-cordova-plugins/camera": "^6.7.0",
     "@awesome-cordova-plugins/core": "^6.7.0",
+    "@awesome-cordova-plugins/media-capture": "^6.7.0",
     "@capacitor/app": "1.0.3",
     "@capacitor/core": "3.2.3",
     "@capacitor/haptics": "1.0.3",
@@ -90,7 +91,8 @@
       "cordova-plugin-androidx-adapter": {},
       "cordova-plugin-camera": {
         "ANDROIDX_CORE_VERSION": "1.6.+"
-      }
+      },
+      "cordova-plugin-media-capture": {}
     },
     "platforms": [
       "android"

@@ -5,8 +5,8 @@
 </ion-header>
 
 <ion-content>
-  <ion-button (click)="takeVideo(0)">Take Video</ion-button>
-  <ion-button (click)="takeVideo(1)">Select from Gallery</ion-button>
+  <ion-button (click)="takeVideo(1)">Take Video</ion-button>
+  <ion-button (click)="takeVideo(0)">Select from Gallery</ion-button>
 
   <div *ngIf="isVideoAvailable">
     <video [src]="videoUrl" controls width="100%"></video>
