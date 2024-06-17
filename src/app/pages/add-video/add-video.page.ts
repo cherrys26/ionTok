@@ -12,11 +12,11 @@ import { Platform } from '@ionic/angular'; // Import Platform
 export class AddVideoPage implements OnInit {
   videoUrl: SafeResourceUrl = '';
   isVideoAvailable = false;
-  errorMessage: string | null = null; // Store error message
+  errorMessage: string | null = null;
 
   constructor(private mediaCapture: MediaCapture, private sanitizer: DomSanitizer, private platform: Platform) {}
 
-  async takeVideo() {
+  async captureVideo() {
     // Check if the platform supports video capture
     if (!this.platform.is('cordova')) {
       console.warn('Video capture is not supported in this environment.');
@@ -29,19 +29,55 @@ export class AddVideoPage implements OnInit {
     };
 
     this.mediaCapture.captureVideo(options)
-      .then((mediaFiles: MediaFile[]) => { // Success: mediaFiles is MediaFile[]
+      .then((mediaFiles: MediaFile[]) => {
         if (mediaFiles.length > 0) {
           const videoFile: MediaFile = mediaFiles[0];
           const videoUrl = videoFile.fullPath;
           this.videoUrl = this.sanitizer.bypassSecurityTrustResourceUrl(videoUrl);
           this.isVideoAvailable = true;
-          this.errorMessage = null; // Clear any previous error message
+          this.errorMessage = null;
         }
       })
-      .catch((error: CaptureError) => { // Error: error is CaptureError
+      .catch((error: CaptureError) => {
         console.error('Error capturing video:', error.code);
         this.errorMessage = `Error capturing video: ${error.code}`;
-        this.isVideoAvailable = false; // Hide the video element in case of error
+        this.isVideoAvailable = false;
+      });
+  }
+
+  async selectVideoFromGallery() {
+    if (!this.platform.is('cordova')) {
+      console.warn('Video selection is not supported in this environment.');
+      return;
+    }
+  
+    const options: CaptureVideoOptions = {
+      limit: 1,
+      duration: 0
+    };
+  
+    this.mediaCapture.captureVideo(options)
+      .then((result: MediaFile[] | CaptureError) => {
+        if (result instanceof CaptureError) {
+          console.error('Error selecting video:', result.code);
+          this.errorMessage = `Error selecting video: ${result.code}`;
+          this.isVideoAvailable = false;
+          return; 
+        }
+  
+        const mediaFiles = result as MediaFile[];
+  
+        if (mediaFiles.length > 0) {
+          const videoFile: MediaFile = mediaFiles[0];
+          const videoUrl = videoFile.fullPath;
+          this.videoUrl = this.sanitizer.bypassSecurityTrustResourceUrl(videoUrl);
+          this.isVideoAvailable = true;
+          this.errorMessage = null;
+        }
+      })
+      .catch((error: any) => { 
+        console.error('Unexpected error:', error); 
+        // Handle unexpected errors
       });
   }
 
