@@ -1,9 +1,10 @@
 <ion-header>
   <ion-toolbar>
-    <ion-title>add-video</ion-title>
+    <ion-title>add video</ion-title>
   </ion-toolbar>
 </ion-header>
 
-<ion-content>
-
-</ion-content>
+  <ion-content [fullscreen]="true">
+    <ion-button expand="full" (click)="takeVideo()">Take Video</ion-button>
+    <video *ngIf="videoUrl" [src]="videoUrl" controls width="100%" height="auto"></video>
+  </ion-content>
