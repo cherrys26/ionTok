@@ -40,6 +40,14 @@
     "tslib": "^2.2.0",
     "zone.js": "~0.14.6"
   },
+  "overrides": {
+    "@ionic-native/core": {
+      "rxjs": "^7.8.1"
+    },
+    "@ionic-native/media-capture": {
+      "rxjs": "^7.8.1"
+    }
+  },
   "devDependencies": {
     "@angular-devkit/build-angular": "^17.3.8",
     "@angular-eslint/builder": "^17.5.2",
