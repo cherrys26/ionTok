@@ -5,6 +5,6 @@
 </ion-header>
 
   <ion-content [fullscreen]="true">
-    <ion-button expand="full" (click)="takeVideo()">Take Video</ion-button>
+    <ion-button expand="full" (click)="recordVideo()">Take Video</ion-button>
     <video *ngIf="videoUrl" [src]="videoUrl" controls width="100%" height="auto"></video>
   </ion-content>
