@@ -11,6 +11,7 @@ import {AppComponent} from './app.component';
 
 import player from 'lottie-web';
 import { provideLottieOptions } from 'ngx-lottie';
+import { MediaCapture } from '@ionic-native/media-capture/ngx';
 
 export function playerFactory() {
   return player;
@@ -19,7 +20,7 @@ export function playerFactory() {
 @NgModule({
     declarations: [AppComponent],
     imports: [BrowserModule, IonicModule.forRoot(), AppRoutingModule,],
-    providers: [{ provide: RouteReuseStrategy, useClass: IonicRouteStrategy }, 
+    providers: [MediaCapture, { provide: RouteReuseStrategy, useClass: IonicRouteStrategy }, 
       provideLottieOptions({
         player: () => import('lottie-web'),
       })
