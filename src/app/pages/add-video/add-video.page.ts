@@ -11,7 +11,8 @@ import { MediaCapture, MediaFile, CaptureError, CaptureVideoOptions } from '@ion
 })
 export class AddVideoPage implements OnInit {
 
-  videoUrl: SafeResourceUrl = '';
+  videoUrl: string | null = null;
+  videoPath: string | null = null;
 
   constructor(private mediaCapture: MediaCapture) { }
 
@@ -29,9 +30,26 @@ export class AddVideoPage implements OnInit {
         let fileName = capturedFile.name;
         let fullPath = capturedFile.fullPath;
         let type = capturedFile.type;
+        this.videoPath = capturedFile.fullPath;
+        console.log('Captured video file: ', this.videoPath);
         console.log('Captured video file: ', fullPath);
       },
       (err: CaptureError) => console.error(err)
     );
+  }
+
+  async selectVideo() {
+    const video = await Camera.getPhoto({
+      resultType: CameraResultType.Uri,
+      source: CameraSource.Photos,
+    });
+
+    if (video) {
+      this.videoUrl = Capacitor.convertFileSrc(video.path);
+
+      console.log('Selected video file: ', this.videoUrl);
+    } else {
+      console.log('No video selected.');
+    }
   }
 }
