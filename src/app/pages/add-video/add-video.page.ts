@@ -1,5 +1,6 @@
 import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
 import { MediaCapture, MediaFile, CaptureError, CaptureVideoOptions } from '@ionic-native/media-capture/ngx';
+import { DomSanitizer, SafeUrl } from '@angular/platform-browser';
 import { AlertController } from '@ionic/angular';
 
 @Component({
@@ -9,10 +10,9 @@ import { AlertController } from '@ionic/angular';
 })
 export class AddVideoPage implements OnInit {
   @ViewChild('fileInput', { static: false }) fileInput: ElementRef;
-  videoUrl: string | null = null;
-  videoPath: string | null = null;
+  videoUrl: SafeUrl | null = null;
 
-  constructor(private mediaCapture: MediaCapture, private alertController: AlertController) { }
+  constructor(private mediaCapture: MediaCapture, private alertController: AlertController, private sanitizer: DomSanitizer, ) { }
 
   ngOnInit() { }
 
@@ -24,13 +24,13 @@ export class AddVideoPage implements OnInit {
 
     this.mediaCapture.captureVideo(options).then(
       (mediaFiles: MediaFile[]) => {
-        let capturedFile = mediaFiles[0];
-        let fileName = capturedFile.name;
-        let fullPath = capturedFile.fullPath;
-        let type = capturedFile.type;
-        this.videoPath = capturedFile.fullPath;
-        console.log('Captured video file: ', this.videoPath);
-        console.log('Captured video file: ', fullPath);
+        const capturedFile = mediaFiles[0];
+        const fullPath = capturedFile.fullPath;
+
+        // Convert file path to a URL
+        this.videoUrl = this.sanitizer.bypassSecurityTrustUrl('file://' + fullPath);
+
+        console.log('Captured video file: ', this.videoUrl);
       },
       (err: CaptureError) => console.error(err)
     );

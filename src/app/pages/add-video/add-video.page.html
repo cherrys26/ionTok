@@ -6,12 +6,11 @@
 
   <ion-content [fullscreen]="true">
     <ion-button expand="full" (click)="recordVideo()">Take Video</ion-button>
-    <div *ngIf="videoPath">
-      <video [src]="videoPath" controls width="320" height="240"></video>
-    </div>
     <div class="file-input-container">
       <input type="file" accept="video/*" (change)="onFileSelected($event)" #fileInput hidden />
       <ion-button expand="full" (click)="fileInput.click()">Select Video from Gallery</ion-button>
     </div>
-    <video *ngIf="videoUrl" [src]="videoUrl" controls></video>
+    <div class="video-container" *ngIf="videoUrl">
+      <video [src]="videoUrl" controls></video>
+    </div>
   </ion-content>
