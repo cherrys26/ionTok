@@ -9,8 +9,9 @@
     <div *ngIf="videoPath">
       <video [src]="videoPath" controls width="320" height="240"></video>
     </div>
-    <ion-button (click)="selectVideo()">Select Video from Gallery</ion-button>
-    <div *ngIf="videoUrl">
-      <video [src]="videoUrl" controls width="320" height="240"></video>
+    <div class="file-input-container">
+      <input type="file" accept="video/*" (change)="onFileSelected($event)" #fileInput hidden />
+      <ion-button expand="full" (click)="fileInput.click()">Select Video from Gallery</ion-button>
     </div>
+    <video *ngIf="videoUrl" [src]="videoUrl" controls></video>
   </ion-content>
