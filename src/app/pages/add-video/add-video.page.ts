@@ -20,7 +20,6 @@ export class AddVideoPage implements OnInit {
   ) {}
 
   ngOnInit() {
-    // Initialization logic can go here if needed in the future
   }
 
   recordVideo() {
@@ -34,7 +33,7 @@ export class AddVideoPage implements OnInit {
         const capturedFile = mediaFiles[0];
         const fullPath = capturedFile.fullPath;
 
-        this.videoUrl = this.sanitizer.bypassSecurityTrustUrl(fullPath);
+        this.videoUrl = this.sanitizer.bypassSecurityTrustUrl('file://' + fullPath);
 
         console.log('Captured video file: ', this.videoUrl);
       },
