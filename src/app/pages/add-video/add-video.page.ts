@@ -1,20 +1,27 @@
 import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
 import { MediaCapture, MediaFile, CaptureError, CaptureVideoOptions } from '@ionic-native/media-capture/ngx';
 import { DomSanitizer, SafeUrl } from '@angular/platform-browser';
-import { AlertController } from '@ionic/angular';
+import { Platform, AlertController } from '@ionic/angular';
 
 @Component({
   selector: 'app-add-video',
   templateUrl: './add-video.page.html',
   styleUrls: ['./add-video.page.scss'],
+  providers: [MediaCapture]
 })
 export class AddVideoPage implements OnInit {
   @ViewChild('fileInput', { static: false }) fileInput: ElementRef;
   videoUrl: SafeUrl | null = null;
 
-  constructor(private mediaCapture: MediaCapture, private alertController: AlertController, private sanitizer: DomSanitizer, ) { }
+  constructor(
+    private mediaCapture: MediaCapture,
+    private sanitizer: DomSanitizer,
+    private alertController: AlertController
+  ) {}
 
-  ngOnInit() { }
+  ngOnInit() {
+    // Initialization logic can go here if needed in the future
+  }
 
   recordVideo() {
     const options: CaptureVideoOptions = {
@@ -27,8 +34,7 @@ export class AddVideoPage implements OnInit {
         const capturedFile = mediaFiles[0];
         const fullPath = capturedFile.fullPath;
 
-        // Convert file path to a URL
-        this.videoUrl = this.sanitizer.bypassSecurityTrustUrl('file://' + fullPath);
+        this.videoUrl = this.sanitizer.bypassSecurityTrustUrl(fullPath);
 
         console.log('Captured video file: ', this.videoUrl);
       },
@@ -36,7 +42,7 @@ export class AddVideoPage implements OnInit {
     );
   }
 
-  onFileSelected(event: any) {
+  async onFileSelected(event: any) {
     const file: File = event.target.files[0];
 
     if (file) {
@@ -48,9 +54,8 @@ export class AddVideoPage implements OnInit {
           this.showAlert();
           this.resetFileInput();
         } else {
-          this.videoUrl = videoElement.src;
+          this.videoUrl = this.sanitizer.bypassSecurityTrustUrl(videoElement.src);
           console.log('Selected video URL:', this.videoUrl);
-          // Now you can use this.videoUrl for further operations like upload or display
         }
       };
     }

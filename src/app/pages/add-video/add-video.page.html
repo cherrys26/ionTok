@@ -4,13 +4,13 @@
   </ion-toolbar>
 </ion-header>
 
-  <ion-content [fullscreen]="true">
-    <ion-button expand="full" (click)="recordVideo()">Take Video</ion-button>
-    <div class="file-input-container">
-      <input type="file" accept="video/*" (change)="onFileSelected($event)" #fileInput hidden />
-      <ion-button expand="full" (click)="fileInput.click()">Select Video from Gallery</ion-button>
-    </div>
-    <div class="video-container" *ngIf="videoUrl">
-      <video [src]="videoUrl" controls></video>
-    </div>
-  </ion-content>
+<ion-content>
+  <div class="file-input-container">
+    <input type="file" accept="video/*" (change)="onFileSelected($event)" #fileInput hidden />
+    <ion-button expand="full" (click)="fileInput.click()">Select Video from Gallery</ion-button>
+  </div>
+  <ion-button expand="full" (click)="recordVideo()">Take Video</ion-button>
+  <div class="video-container" *ngIf="videoUrl">
+    <video [src]="videoUrl" controls></video>
+  </div>
+</ion-content>
