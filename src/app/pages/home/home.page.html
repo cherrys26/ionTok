@@ -12,12 +12,12 @@
       <swiper-container class="swiper-h"
         #swiper (afterinint)="swiperReady()">
         <swiper-slide>
-          <video autoplay loop playsinline [src]="video.url" [muted]="'muted'" preload="none"></video>
+          <video autoplay loop playsinline [src]="video.url" [muted]="'muted'" class="lazy"></video>
           <app-feed [video]="video"></app-feed>
           <app-footer [video]="video"></app-footer>
         </swiper-slide>
         <swiper-slide *ngFor="let response of video.responses">
-          <video autoplay loop playsinline [src]="response.url" [muted]="'muted'" preload="none"></video>
+          <video autoplay loop playsinline [src]="response.url" [muted]="'muted'" class="lazy"></video>
           <app-feed [video]="response"></app-feed>
           <app-footer [video]="response"></app-footer>   
         </swiper-slide>
