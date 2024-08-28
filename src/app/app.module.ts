@@ -1,6 +1,7 @@
 import {NgModule} from '@angular/core';
 import {BrowserModule} from '@angular/platform-browser';
 import {RouteReuseStrategy} from '@angular/router';
+import { HttpClientModule } from '@angular/common/http';
 
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 
@@ -19,7 +20,7 @@ export function playerFactory() {
 
 @NgModule({
     declarations: [AppComponent],
-    imports: [BrowserModule, IonicModule.forRoot(), AppRoutingModule,],
+    imports: [BrowserModule, IonicModule.forRoot(), AppRoutingModule, HttpClientModule],
     providers: [MediaCapture, { provide: RouteReuseStrategy, useClass: IonicRouteStrategy }, 
       provideLottieOptions({
         player: () => import('lottie-web'),
