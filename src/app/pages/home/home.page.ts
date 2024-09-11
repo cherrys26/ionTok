@@ -74,8 +74,7 @@ export class HomePage implements OnInit, AfterViewInit {
     });
   }
 
-  private 
-  initializeSwipers() {
+  private initializeSwipers() {
     if (this.outerSwiperRef) {
       this.outerSwiper = this.outerSwiperRef.nativeElement.swiper;
       this.outerSwiper.on('slideChange', () => {
