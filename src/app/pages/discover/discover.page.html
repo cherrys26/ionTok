@@ -1,4 +1,4 @@
-<ion-header>
+<!-- <ion-header>
     <ion-toolbar>
         <div class="header">
             <ion-icon name="arrow-back-outline" class="arrow-back" *ngIf="hideIcon"></ion-icon>
@@ -43,5 +43,22 @@
                 <img src="{{profile.photo}}"/>
             </ion-slide>
         </ion-slides>
-    </div>
-</ion-content>
+    </div></ion-content> -->
+    <ion-content>
+        <swiper-container #outerSwiper class="swiper-v" direction="vertical">
+          <swiper-slide *ngFor="let picture of loadedPictures">
+            <swiper-container #innerSwiper class="swiper-h" direction="horizontal">
+              <swiper-slide>
+                <img [src]="picture.url" alt="Picture" />
+                <div class="picture-info">
+                  <p>{{ picture.username }} - {{ picture.likes }} likes</p>
+                </div>
+              </swiper-slide>
+              <swiper-slide *ngFor="let relatedPicture of picture.loadedRelatedPictures">
+                <img [src]="relatedPicture.url" alt="Related Picture" />
+              </swiper-slide>
+            </swiper-container>
+          </swiper-slide>
+        </swiper-container>
+      </ion-content>
+      

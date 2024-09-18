@@ -35,4 +35,14 @@ export class VideoService {
     const filteredResponses = this.dataService.getVideoResponses(videoId)
     return filteredResponses;
   }
+
+
+  getPictures(): Observable<Video[]> {
+    return this.http.get<Video[]>(this.apiUrl);
+  }
+
+  getRelatedPictures(pictureId: string): Observable<Video[]> {
+    // Replace with the actual endpoint for fetching related pictures
+    return this.http.get<Video[]>(`${this.apiUrl}/${pictureId}/related`);
+  }
 }

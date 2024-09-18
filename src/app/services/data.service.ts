@@ -280,7 +280,7 @@ export class DataService {
         const chunk = this.videoList.slice(start, end).map(video => {
             return {
               ...video,
-              responses: video.responses.slice(0, 3)
+              responses: video.responses.slice(0, 2)
             };
           });
         return of(chunk);
