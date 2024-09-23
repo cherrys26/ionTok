@@ -26,6 +26,10 @@ export class VideoService {
     return this.dataService.getVideoList(this.startIndex, this.chunkSize);
   }
   
+  getStaticVideos(): Observable<Video[]> {
+    return this.dataService.getStaticVideos();
+  }
+
   loadMoreVideos(): Observable<Video[]> {
     this.startIndex += this.chunkSize;
     return this.dataService.getVideoList(this.startIndex, this.chunkSize);

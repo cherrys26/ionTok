@@ -1,5 +1,5 @@
-import { Component, ElementRef, OnInit, ViewChild, ViewChildren, QueryList, AfterViewInit, ChangeDetectorRef  } from '@angular/core';
-import { Swiper } from 'swiper/types';
+import { Component, OnInit, ViewChild, ElementRef, AfterViewInit, ChangeDetectorRef, QueryList, ViewChildren } from '@angular/core';
+import { Swiper } from 'swiper';
 import { VideoService } from '../../services/video/video.service';
 import { Video } from '../../models/video.model';
 import { Response } from '../../models/response.model';

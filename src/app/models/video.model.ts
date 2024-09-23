@@ -8,5 +8,6 @@ export interface Video {
     url: string;
     userPic: string;
     responses: Response[];
+    loadedResponses: Response[];
   }
   

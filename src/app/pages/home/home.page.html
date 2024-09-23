@@ -34,9 +34,9 @@
 </ion-header>
 
 <ion-content>
-  <swiper-container class="swiper-v" #outerSwiper direction="vertical">
+  <swiper-container #outerSwiper class="swiper-v" direction="vertical">
       <swiper-slide *ngFor="let video of videoList">
-        <swiper-container class="swiper-h" #innerSwiper direction="horizontal">
+        <swiper-container #innerSwiper class="swiper-h" direction="horizontal">
             <swiper-slide>
               <video autoplay loop playsinline [src]="video.url" [muted]="true"></video>
               <app-feed [video]="video"></app-feed>
