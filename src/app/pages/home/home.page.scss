@@ -13,21 +13,25 @@ ion-title {
 }
 
 ion-content {
+  --overflow: hidden; /* Ensures the content area doesn't scroll separately */
+}
+
+ion-content {
   ion-title {
     position: absolute;
     top: 0;
   }
 }
 
-    video {
-      object-fit: cover;
-      width: 100%;
-      height: 100%;
-    }
- 
+video {
+  object-fit: cover;
+  width: 100%;
+  height: 100%;
+}
+
 swiper-container {
-  width:100%;
-  height: 100%
+  width: 100%;
+  height: 100%;
 }
 
 swiper-slide {
@@ -35,4 +39,19 @@ swiper-slide {
   flex-direction: column;
   align-items: center;
   justify-content: center;
+  /* Ensuring each slide takes full space */
+  width: 100%; 
+  height: 100%;
+}
+
+/* Specifically for inner swiper-container */
+swiper-container.swiper-h {
+  width: 100%; /* Ensure it takes full width */
+  height: 100%; /* Ensure it takes full height */
+}
+
+/* Make sure the slides inside the inner swiper take full height and width */
+swiper-slide > swiper-container {
+  width: 100%;
+  height: 100%;
 }

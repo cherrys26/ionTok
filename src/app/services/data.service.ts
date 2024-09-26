@@ -2,15 +2,16 @@ import {Injectable} from '@angular/core';
 import { Observable, of } from 'rxjs';
 import { Video } from '../models/video.model';
 import { Response } from '../models/response.model';
+import { HttpClient } from '@angular/common/http';
 
 @Injectable({
     providedIn: 'root'
 })
 
 export class DataService {
+    private apiUrl = 'https://localhost:7282/api'; // Base API URL
 
-    constructor() {
-    }
+    constructor(private http: HttpClient) {}
     
     private videoList: Video[] = [
         {
@@ -292,6 +293,17 @@ export class DataService {
           });
         return of(chunk);
       }
+
+      getVideoListFromApi(pageNumber: number, pageSize: number): Observable<Video[]> {
+        const start = pageNumber;
+        const end = pageNumber + pageSize;
+        this.http.get<{pictures: Video[], total: number}>(
+            `${this.apiUrl}/pictures?page=${pageNumber}&pageSize=${pageSize}`
+        );
+        return;
+      }
+
+
 
       getStaticVideos(): Observable<Video[]> {
         return of(this.videoList);

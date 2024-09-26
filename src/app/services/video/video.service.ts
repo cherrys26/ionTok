@@ -11,7 +11,7 @@ import { Response } from '../../models/response.model';
 })
 
 export class VideoService {
-  private apiUrl = ''; // Replace with your API endpoint
+  private apiUrl = 'https://localhost:7282/api'; // Replace with your API endpoint
 
   private startIndex = 0;
   private chunkSize = 3;
@@ -20,6 +20,18 @@ export class VideoService {
 
   getVideos(): Observable<any> {
     return this.http.get<any>(this.apiUrl);
+  }
+
+  getVideoListFromApi(pageNumber: number, pageSize: number): Observable<Video[]> {
+    return this.http.get<Video[]>(
+        `${this.apiUrl}/video?pageNumber=${pageNumber}&pageSize=${pageSize}`
+    );
+  }
+
+  getVideoResponseList(videoId: number, pageNumber: number, pageSize: number): Observable<Video[]> {
+    return this.http.get<Video[]>(
+        `${this.apiUrl}/video/${videoId}/pageNumber=${pageNumber}&pageSize=${pageSize}`
+    );
   }
 
   getStaticVideoList(): Observable<Video[]> {
