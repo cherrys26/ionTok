@@ -5,53 +5,94 @@
 </ion-header>
 
 <ion-content>
-  <form (submit)="onSubmit()">
+  <form [formGroup]="registerForm" (ngSubmit)="onSubmit()">
     <ion-list>
-      <!-- Other Input Fields -->
+      <!-- Username Field -->
       <ion-item>
         <ion-label position="floating">Username</ion-label>
-        <ion-input [(ngModel)]="registerRequest.username" name="username" required></ion-input>
+        <ion-input formControlName="username" required></ion-input>
       </ion-item>
-      
+      <ion-note color="danger" *ngIf="registerForm.get('username')?.hasError('required') && registerForm.get('username')?.touched">
+        Username is required.
+      </ion-note>
+
+      <!-- Email Field -->
       <ion-item>
         <ion-label position="floating">Email</ion-label>
-        <ion-input [(ngModel)]="registerRequest.email" name="email" type="email" required></ion-input>
+        <ion-input formControlName="email" type="email" required></ion-input>
       </ion-item>
+      <ion-note color="danger" *ngIf="registerForm.get('email')?.hasError('required') && registerForm.get('email')?.touched">
+        Email is required.
+      </ion-note>
+      <ion-note color="danger" *ngIf="registerForm.get('email')?.hasError('email') && registerForm.get('email')?.touched">
+        Enter a valid email.
+      </ion-note>
 
+      <!-- First Name Field -->
       <ion-item>
         <ion-label position="floating">First Name</ion-label>
-        <ion-input [(ngModel)]="registerRequest.firstName" name="firstName" required></ion-input>
+        <ion-input formControlName="firstName" required></ion-input>
       </ion-item>
+      <ion-note color="danger" *ngIf="registerForm.get('firstName')?.hasError('required') && registerForm.get('firstName')?.touched">
+        First Name is required.
+      </ion-note>
 
+      <!-- Last Name Field -->
       <ion-item>
         <ion-label position="floating">Last Name</ion-label>
-        <ion-input [(ngModel)]="registerRequest.lastName" name="lastName" required></ion-input>
+        <ion-input formControlName="lastName" required></ion-input>
       </ion-item>
+      <ion-note color="danger" *ngIf="registerForm.get('lastName')?.hasError('required') && registerForm.get('lastName')?.touched">
+        Last Name is required.
+      </ion-note>
 
+      <!-- Birthday Field -->
       <ion-item>
         <ion-label position="stacked">Date of Birth</ion-label>
-        <ion-datetime-button datetime="datetime"></ion-datetime-button>
+        <ion-datetime-button datetime="datetime" [value]="registerForm.get('birthday').value" (click)="openDatePicker()"></ion-datetime-button>
       </ion-item>
-    
-      <ion-modal keepContentsMounted="true">
-        <ng-template>
-          <ion-datetime id="datetime" presentation="date" (ionChange)="onDateChange($event)"></ion-datetime>
-        </ng-template>
-      </ion-modal>
+      <ion-note color="danger" *ngIf="registerForm.get('birthday')?.hasError('required') && registerForm.get('birthday')?.touched">
+        Birthday is required.
+      </ion-note>
+      <ion-note color="danger" *ngIf="registerForm.get('birthday')?.hasError('minAge') && registerForm.get('birthday')?.touched">
+        You must be at least 12 years old.
+      </ion-note>
 
-      <!-- Password -->
+      <!-- Password Field -->
       <ion-item>
         <ion-label position="floating">Password</ion-label>
-        <ion-input [(ngModel)]="registerRequest.password" name="password" type="password" required></ion-input>
+        <ion-input formControlName="password" type="password" required></ion-input>
       </ion-item>
+      <ion-note color="danger" *ngIf="registerForm.get('password')?.hasError('required') && registerForm.get('password')?.touched">
+        Password is required.
+      </ion-note>
+      <ion-note color="danger" *ngIf="registerForm.get('password')?.hasError('minlength') && registerForm.get('password')?.touched">
+        Password must be at least 6 characters.
+      </ion-note>
+      <ion-note color="danger" *ngIf="registerForm.get('password')?.hasError('complexity') && registerForm.get('password')?.touched">
+        Password must contain at least one uppercase and one lowercase letter.
+      </ion-note>
 
-      <!-- Password -->
-      <ion-item>
-        <ion-label position="floating">Confirm Password</ion-label>
-        <ion-input [(ngModel)]="registerRequest.confirmPassword" name="confirmPassword" type="password" required></ion-input>
-      </ion-item>
+      <!-- Confirm Password Field -->
+<ion-item>
+  <ion-label position="floating">Confirm Password</ion-label>
+  <ion-input formControlName="confirmPassword" type="password" required></ion-input>
+</ion-item>
+<ion-note color="danger" *ngIf="registerForm.get('confirmPassword')?.hasError('required') && registerForm.get('confirmPassword')?.touched">
+  Confirm Password is required.
+</ion-note>
+
     </ion-list>
 
     <ion-button expand="full" type="submit">Register</ion-button>
   </form>
+
+  <ion-modal keepContentsMounted="true" [isOpen]="isDateModalOpen">
+    <ng-template>
+      <ion-datetime id="datetime" presentation="date" (ionChange)="onDateChange($event)"></ion-datetime>
+      <ion-footer>
+        <ion-button expand="full" (click)="closeDatePicker()">Done</ion-button>
+      </ion-footer>
+    </ng-template>
+  </ion-modal>
 </ion-content>

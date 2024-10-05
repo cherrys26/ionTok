@@ -13,8 +13,15 @@ export class AuthService {
   constructor(private http: HttpClient, private jwtHelper: JwtHelperService) {}
 
   register(registerRequest: any): Observable<any> {
-    console.log(registerRequest)
     return this.http.post(`${this.baseApiUrl}/Identity/Register`, registerRequest).pipe(
+      map((response: any) => {
+        console.log(response)
+      })
+    );
+  }
+
+  confirmEmail(model: {userId: string, code: string}): Observable<any>{
+    return this.http.post(`${this.baseApiUrl}/Identity/ConfirmEmail?userId=${model.userId}&code=${model.code}`, null).pipe(
       map((response: any) => {
         console.log(response)
       })

@@ -12,6 +12,10 @@ const routes: Routes = [
     loadChildren: () => import('./pages/register/register.module').then( m => m.RegisterPageModule)
   },
   {
+    path: 'confirm-email',
+    loadChildren: () => import('./pages/confirm-email/confirm-email.module').then( m => m.ConfirmEmailPageModule)
+  },
+  {
     path: '',
     loadChildren: () => import('./tabs/tabs.module').then(m => m.TabsPageModule),
     canMatch: [authGuard]  // Apply the guard function
@@ -46,6 +50,7 @@ const routes: Routes = [
     loadChildren: () => import('./pages/settings-and-privacy/settings-and-privacy.module').then(m => m.SettingsAndPrivacyPageModule),
     canMatch: [authGuard]  // Apply the guard function
   }
+
 ];
 @NgModule({
   imports: [

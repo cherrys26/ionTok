@@ -8,6 +8,9 @@ export const authGuard = async (): Promise<boolean> => {
   const router = inject(Router);
   const alertController = inject(AlertController);
 
+  if(location.pathname == "/login" || location.pathname == "/register" || location.pathname == "/confirm-email")
+    return true;
+
   if (authService.isAuthenticated()) {
     return true;
   } else {
