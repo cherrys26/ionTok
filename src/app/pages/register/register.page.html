@@ -1,0 +1,57 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-title>Register</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <form (submit)="onSubmit()">
+    <ion-list>
+      <!-- Other Input Fields -->
+      <ion-item>
+        <ion-label position="floating">Username</ion-label>
+        <ion-input [(ngModel)]="registerRequest.username" name="username" required></ion-input>
+      </ion-item>
+      
+      <ion-item>
+        <ion-label position="floating">Email</ion-label>
+        <ion-input [(ngModel)]="registerRequest.email" name="email" type="email" required></ion-input>
+      </ion-item>
+
+      <ion-item>
+        <ion-label position="floating">First Name</ion-label>
+        <ion-input [(ngModel)]="registerRequest.firstName" name="firstName" required></ion-input>
+      </ion-item>
+
+      <ion-item>
+        <ion-label position="floating">Last Name</ion-label>
+        <ion-input [(ngModel)]="registerRequest.lastName" name="lastName" required></ion-input>
+      </ion-item>
+
+      <ion-item>
+        <ion-label position="stacked">Date of Birth</ion-label>
+        <ion-datetime-button datetime="datetime"></ion-datetime-button>
+      </ion-item>
+    
+      <ion-modal keepContentsMounted="true">
+        <ng-template>
+          <ion-datetime id="datetime" presentation="date" (ionChange)="onDateChange($event)"></ion-datetime>
+        </ng-template>
+      </ion-modal>
+
+      <!-- Password -->
+      <ion-item>
+        <ion-label position="floating">Password</ion-label>
+        <ion-input [(ngModel)]="registerRequest.password" name="password" type="password" required></ion-input>
+      </ion-item>
+
+      <!-- Password -->
+      <ion-item>
+        <ion-label position="floating">Confirm Password</ion-label>
+        <ion-input [(ngModel)]="registerRequest.confirmPassword" name="confirmPassword" type="password" required></ion-input>
+      </ion-item>
+    </ion-list>
+
+    <ion-button expand="full" type="submit">Register</ion-button>
+  </form>
+</ion-content>
