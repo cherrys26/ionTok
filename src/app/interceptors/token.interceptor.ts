@@ -14,27 +14,15 @@ export class TokenInterceptor implements HttpInterceptor {
     if (accessToken) {
       req = this.addTokenHeader(req, accessToken);
     }
-return;
-    // return next.handle(req).pipe(
-    //   catchError(err => {
-    //     if (err.status === 401) {
-    //       // If token is expired, try to refresh it
-    //       return this.authService.refreshToken().pipe(
-    //         switchMap((newToken: any) => {
-    //           this.authService.storeToken(newToken.accessToken); // Store new token
-    //           req = this.addTokenHeader(req, newToken.accessToken); // Retry with the new token
-    //           return next.handle(req);
-    //         }),
-    //         catchError(error => {
-    //           this.authService.logout(); // Logout if refresh token fails
-    //           return throwError(error);
-    //         })
-    //       );
-    //     }
 
-    //     return throwError(err);
-    //   })
-    // );
+    return next.handle(req).pipe(
+      catchError(err => {
+        if (err.status === 401) {
+        }
+
+        return throwError(err);
+      })
+    );
   }
 
   private addTokenHeader(request: HttpRequest<any>, token: string) {

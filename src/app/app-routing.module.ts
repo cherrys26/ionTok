@@ -49,8 +49,7 @@ const routes: Routes = [
     path: 'settings-and-privacy',
     loadChildren: () => import('./pages/settings-and-privacy/settings-and-privacy.module').then(m => m.SettingsAndPrivacyPageModule),
     canMatch: [authGuard]  // Apply the guard function
-  }
-
+  },
 ];
 @NgModule({
   imports: [

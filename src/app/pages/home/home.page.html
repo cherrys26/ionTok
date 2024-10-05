@@ -1,7 +1,7 @@
 <ion-header class="ion-no-border ion-text-center">
   <ion-toolbar>
     <ion-title>
-      <ion-text>Following | </ion-text>
+      <ion-text></ion-text>
       <strong>For You</strong>
     </ion-title>
   </ion-toolbar>
@@ -27,18 +27,30 @@
 </ion-content> -->
 
 <ion-content>
+  <!-- Outer Swiper (Vertical Scrolling) -->
   <swiper-container class="swiper-v" #outerSwiper direction="vertical">
-    <swiper-slide *ngFor="let picture of loadedPictures">
-      <swiper-container class="swiper-h" #innerSwiper  direction="horizontal">
+    <!-- Loop through challenge list and display each challenge -->
+    <swiper-slide *ngFor="let challenge of challenges">
+      
+      <!-- Inner Swiper (Horizontal Scrolling for responses) -->
+      <swiper-container class="swiper-h" #innerSwiper direction="horizontal">
+        
+        <!-- Main Challenge Video -->
         <swiper-slide>
-          <video autoplay loop playsinline [src]="picture.url" [muted]="true"></video>
-          <app-feed [video]="picture"></app-feed>
-          <app-footer [video]="picture"></app-footer>
+          <video autoplay loop playsinline [src]="challenge.videoUrl" [muted]="true"></video>
+          <app-feed [video]="challenge"></app-feed>
+          <app-footer [video]="challenge"></app-footer>
         </swiper-slide>
-        <swiper-slide *ngFor="let response of picture.responses">
-          <video autoplay loop playsinline [src]="response.url" [muted]="true"></video>
+        
+        <!-- Responses (If available) -->
+        <swiper-slide *ngFor="let response of challenge.responses">
+          <video autoplay loop playsinline [src]="response.videoUrl" [muted]="true"></video>
+          <app-feed [video]="response"></app-feed>
+          <app-footer [video]="response"></app-footer>
         </swiper-slide>
+        
       </swiper-container>
+      
     </swiper-slide>
   </swiper-container>
 </ion-content>

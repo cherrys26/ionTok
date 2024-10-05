@@ -15,7 +15,7 @@ import { provideLottieOptions } from 'ngx-lottie';
 import { MediaCapture } from '@ionic-native/media-capture/ngx';
 
 import { HTTP_INTERCEPTORS } from '@angular/common/http';
-// import { TokenInterceptor } from './interceptors/token.interceptor'; // Path to your interceptor
+import { TokenInterceptor } from './interceptors/token.interceptor'; // Path to your interceptor
 import { JwtModule } from '@auth0/angular-jwt';
 
 export function playerFactory() {
@@ -38,7 +38,7 @@ export function tokenGetter() {
       provideLottieOptions({
         player: () => import('lottie-web'),
       }),
-      // { provide: HTTP_INTERCEPTORS, useClass: TokenInterceptor, multi: true }
+      { provide: HTTP_INTERCEPTORS, useClass: TokenInterceptor, multi: true }
     ],
     bootstrap: [AppComponent],
     schemas: [CUSTOM_ELEMENTS_SCHEMA]
