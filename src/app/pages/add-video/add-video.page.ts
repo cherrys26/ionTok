@@ -1,7 +1,7 @@
 import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
 import { MediaCapture, MediaFile, CaptureError, CaptureVideoOptions } from '@ionic-native/media-capture/ngx';
 import { DomSanitizer, SafeUrl } from '@angular/platform-browser';
-import { AlertController } from '@ionic/angular';
+import { AlertController, NavController } from '@ionic/angular';
 import { TabsService } from '../../services/tabs/tab.service'; 
 import { ChallengeService } from '../../services/challenge/challenge.service';
 
@@ -24,7 +24,8 @@ export class AddVideoPage implements OnInit {
     private sanitizer: DomSanitizer,
     private alertController: AlertController,
     private tabsService: TabsService,
-    private challengeService: ChallengeService // Inject the video upload service
+    private challengeService: ChallengeService, // Inject the video upload service
+    private navCtrl: NavController // <-- Inject NavController
   ) {}
 
   ngOnInit() {
@@ -145,5 +146,7 @@ export class AddVideoPage implements OnInit {
     if (this.fileInput && this.fileInput.nativeElement) {
       this.fileInput.nativeElement.value = '';
     }
+    this.navCtrl.back();
+
   }
 }

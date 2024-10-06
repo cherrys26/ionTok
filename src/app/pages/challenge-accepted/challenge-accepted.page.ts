@@ -1,7 +1,7 @@
 import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
 import { MediaCapture, MediaFile, CaptureError, CaptureVideoOptions } from '@ionic-native/media-capture/ngx';
 import { DomSanitizer, SafeUrl } from '@angular/platform-browser';
-import { AlertController } from '@ionic/angular';
+import { AlertController, NavController } from '@ionic/angular';
 import { TabsService } from '../../services/tabs/tab.service'; 
 import { ChallengeService } from '../../services/challenge/challenge.service';
 import { ActivatedRoute, Router } from '@angular/router';
@@ -28,7 +28,8 @@ export class ChallengeAcceptedPage implements OnInit {
     private tabsService: TabsService,
     private challengeService: ChallengeService,
     private route: ActivatedRoute,
-    private router: Router
+    private router: Router,
+    private navCtrl: NavController // <-- Inject NavController
   ) {}
 
   ngOnInit() {
@@ -105,7 +106,7 @@ export class ChallengeAcceptedPage implements OnInit {
 
         const alert = await this.alertController.create({
           header: 'Success',
-          message: 'Successfully created response.',
+          message: 'Challenge Accepted!',
           buttons: [{
             text:'OK',
             handler: () => {
@@ -120,7 +121,7 @@ export class ChallengeAcceptedPage implements OnInit {
 
           const alert = await this.alertController.create({
             header: 'Error',
-            message: 'Error submitting response.',
+            message: `Error submitting response. ${error.error}`,
             buttons: ['OK']
           });
       
@@ -137,5 +138,7 @@ export class ChallengeAcceptedPage implements OnInit {
     if (this.fileInput && this.fileInput.nativeElement) {
       this.fileInput.nativeElement.value = '';
     }
+
+    this.navCtrl.back();
   }
 }

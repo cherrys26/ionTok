@@ -109,7 +109,8 @@ export class RegisterPage {
             }
           } else {
             errorMessages.push('Registration failed. Please try again.');
-          }          const toast = await this.toastCtrl.create({
+          }          
+          const toast = await this.toastCtrl.create({
             message: `Registration failed. ${errorMessages.join(' ')}`,
             duration: 3000,
             color: 'danger'
@@ -119,5 +120,9 @@ export class RegisterPage {
     }}else {
       this.registerForm.markAllAsTouched(); // Show validation errors
     }
+  }
+
+  goToLogin() {
+    this.router.navigate(['/login']);
   }
 }

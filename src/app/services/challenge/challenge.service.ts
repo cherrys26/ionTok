@@ -36,4 +36,16 @@ export class ChallengeService {
 
     return this.http.post(`${this.apiUrl}/ChallengeResponse`, formData);
   }
+
+  getUserChallenges(userId: string): Observable<any> {
+    return this.http.get<Challenge[]>(
+      `${this.apiUrl}/challenge/userId?userId=${userId}`
+    );
+  }
+
+  getUserChallengeResponses(userId: string): Observable<any> {
+    return this.http.get<Response[]>(
+      `${this.apiUrl}/challengeResponse/userId?userId=${userId}`
+    );
+  }
 }

@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild, ElementRef, AfterViewInit, ChangeDetectorRef, QueryList, ViewChildren } from '@angular/core';
+import { Component, OnInit, ViewChild, ElementRef, AfterViewInit, ChangeDetectorRef, QueryList, ViewChildren, Renderer2 } from '@angular/core';
 import { Swiper } from 'swiper';
 import { Challenge } from 'src/app/models/challenge.model';
 import { ChallengeService } from '../../services/challenge/challenge.service';
@@ -10,11 +10,11 @@ import { ChallengeService } from '../../services/challenge/challenge.service';
 })
 export class HomePage implements OnInit, AfterViewInit {
   challenges: Challenge[] = [];
-  
-  constructor(private challengeService: ChallengeService, private cdr: ChangeDetectorRef) { }
+
+  constructor(private challengeService: ChallengeService, private cdr: ChangeDetectorRef, private renderer: Renderer2) {}
 
   @ViewChild('outerSwiper', { static: false }) outerSwiperRef!: ElementRef;
-  outerSwiper!: Swiper;
+  outerSwiper!: Swiper | null;
 
   @ViewChildren('innerSwiper') innerSwiperRefs!: QueryList<ElementRef>;
   innerSwipers: Swiper[] = [];
@@ -24,58 +24,71 @@ export class HomePage implements OnInit, AfterViewInit {
   }
 
   ngAfterViewInit() {
-    // Don't initialize Swipers until the data is loaded
-    this.cdr.detectChanges();
+    // Use requestAnimationFrame to ensure DOM rendering is complete before initializing Swipers
+    requestAnimationFrame(() => {
+      this.initializeSwipers();
+    });
   }
-  
+
   loadVideos() {
     this.challengeService.getAllChallenges().subscribe(
-      async (response) => {
+      (response) => {
         this.challenges = response;
-        // Trigger change detection and then initialize Swipers
-        this.cdr.detectChanges();
-        this.initializeSwipers();
+        this.cdr.detectChanges(); // Ensure changes are reflected in the DOM
+        requestAnimationFrame(() => {
+          this.initializeSwipers(); // Re-initialize Swipers after videos are loaded
+        });
       },
-      async (error) => {
-        let errorMessages: string[] = [];
-
-        if (error.error) {
-          // Iterate through each error and gather messages
-          for (const key of Object.keys(error.error)) {
-            if (Array.isArray(error.error[key])) {
-              errorMessages = errorMessages.concat(error.error[key]);
-            } else {
-              errorMessages.push(error.error[key]);
-            }
-          }
-        }
-        console.log(error, errorMessages);
+      (error) => {
+        console.error('Error loading challenges:', error);
       }
     );
   }
-  
+
   initializeSwipers() {
+    // Destroy existing Swipers to avoid conflicts
+    if (this.outerSwiper) {
+      this.outerSwiper.destroy(true, true);
+    }
+
     // Initialize outer (vertical) Swiper
     if (this.outerSwiperRef && this.outerSwiperRef.nativeElement.swiper) {
-      this.outerSwiper = this.outerSwiperRef.nativeElement.swiper;
-      this.outerSwiper.on('slideChange', () => {
-        console.log('Outer slide changed');
-    });
+      this.outerSwiper = new Swiper(this.outerSwiperRef.nativeElement, {
+        direction: 'vertical',
+        slidesPerView: 1,
+        spaceBetween: 10,
+        on: {
+          slideChange: () => {
+            console.log('Outer slide changed');
+          },
+        },
+      });
     }
 
     // Initialize inner (horizontal) Swipers
+    this.innerSwipers.forEach((swiper) => swiper.destroy(true, true)); // Destroy existing inner Swipers
+    this.innerSwipers = []; // Clear the array
+
     this.innerSwiperRefs.forEach((swiperRef: ElementRef, index: number) => {
       const innerSwiperElement = swiperRef.nativeElement;
-      if (innerSwiperElement && innerSwiperElement.swiper) {
-        const innerSwiper = innerSwiperElement.swiper;
-        this.innerSwipers.push(innerSwiper);
+      if (innerSwiperElement) {
+        const innerSwiper = new Swiper(innerSwiperElement, {
+          direction: 'horizontal',
+          slidesPerView: 1,
+          spaceBetween: 10,
+          on: {
+            slideChange: () => {
+              console.log('Inner slide changed');
+            },
+          },
+        });
 
-        // Ensure swiper updates are called when new slides are added
-        innerSwiper.update();
+        this.innerSwipers.push(innerSwiper);
       }
     });
   }
 }
+
 //   pictures: Video[] = [];
 //   loadedPictures: Video[] = [];
 //   currentIndex = 0;
