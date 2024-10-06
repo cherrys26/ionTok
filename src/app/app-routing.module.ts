@@ -49,9 +49,11 @@ const routes: Routes = [
     path: 'settings-and-privacy',
     loadChildren: () => import('./pages/settings-and-privacy/settings-and-privacy.module').then(m => m.SettingsAndPrivacyPageModule),
     canMatch: [authGuard]  // Apply the guard function
-  },  {
+  },
+  {
     path: 'challenge-accepted',
-    loadChildren: () => import('./pages/challenge-accepted/challenge-accepted.module').then( m => m.ChallengeAcceptedPageModule)
+    loadChildren: () => import('./pages/challenge-accepted/challenge-accepted.module').then( m => m.ChallengeAcceptedPageModule),
+    canMatch: [authGuard]  // Apply the guard function
   },
 
 ];

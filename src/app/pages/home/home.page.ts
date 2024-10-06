@@ -32,7 +32,6 @@ export class HomePage implements OnInit, AfterViewInit {
     this.challengeService.getAllChallenges().subscribe(
       async (response) => {
         this.challenges = response;
-
         // Trigger change detection and then initialize Swipers
         this.cdr.detectChanges();
         this.initializeSwipers();
@@ -59,6 +58,9 @@ export class HomePage implements OnInit, AfterViewInit {
     // Initialize outer (vertical) Swiper
     if (this.outerSwiperRef && this.outerSwiperRef.nativeElement.swiper) {
       this.outerSwiper = this.outerSwiperRef.nativeElement.swiper;
+      this.outerSwiper.on('slideChange', () => {
+        console.log('Outer slide changed');
+    });
     }
 
     // Initialize inner (horizontal) Swipers

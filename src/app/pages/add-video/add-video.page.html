@@ -5,7 +5,6 @@
       <input type="file" accept="video/*" (change)="onFileSelected($event)" #fileInput hidden />
       <ion-button expand="full" (click)="fileInput.click()">Select Video from Gallery</ion-button>
     </div>
-    <ion-button expand="full" (click)="recordVideo()">Take Video</ion-button>
   </div>
 
   <!-- Cancel Button shown only when a video is selected -->
@@ -31,8 +30,6 @@
 
   <!-- Step 3: Review and Submit -->
   <div *ngIf="isDescriptionAdded">
-    <h2>Review</h2>
-
     <div class="video-container" *ngIf="videoUrl">
       <video [src]="videoUrl" controls></video>
     </div>

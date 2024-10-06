@@ -3,6 +3,7 @@ import { MediaCapture, MediaFile, CaptureError, CaptureVideoOptions } from '@ion
 import { DomSanitizer, SafeUrl } from '@angular/platform-browser';
 import { AlertController } from '@ionic/angular';
 import { TabsService } from '../../services/tabs/tab.service'; 
+import { ChallengeService } from '../../services/challenge/challenge.service';
 
 @Component({
   selector: 'app-add-video',
@@ -16,22 +17,28 @@ export class AddVideoPage implements OnInit {
   description: string = '';
   isVideoSelected: boolean = false;
   isDescriptionAdded: boolean = false;
+  selectedVideoFile: File | null = null; // Store the selected video file
 
   constructor(
     private mediaCapture: MediaCapture,
     private sanitizer: DomSanitizer,
     private alertController: AlertController,
-    private tabsService: TabsService
+    private tabsService: TabsService,
+    private challengeService: ChallengeService // Inject the video upload service
   ) {}
 
-  ngOnInit() {}
-
+  ngOnInit() {
+    this.tabsService.hideTabs();
+  }
+  ngAfterViewInit() {
+    this.fileInput.nativeElement.click()
+  }
   ionViewWillLeave() {
-    this.tabsService.showTabs();  // Show the tab bar again when leaving the page
+    this.tabsService.showTabs(); // Show the tab bar again when leaving the page
   }
 
   recordVideo() {
-    this.tabsService.hideTabs();  // Hide the tab bar when recording a video
+    this.tabsService.hideTabs(); // Hide the tab bar when the page is initialized
 
     const options: CaptureVideoOptions = {
       limit: 1,
@@ -43,19 +50,29 @@ export class AddVideoPage implements OnInit {
         const capturedFile = mediaFiles[0];
         const fullPath = capturedFile.fullPath;
 
-        this.videoUrl = this.sanitizer.bypassSecurityTrustUrl('file://' + fullPath);
-        this.isVideoSelected = true;
-        console.log('Captured video file: ', this.videoUrl);
+        // Convert MediaFile to Blob
+        fetch(fullPath)
+          .then(res => res.blob())
+          .then(blob => {
+            this.selectedVideoFile = new File([blob], 'capturedVideo.mp4', { type: 'video/mp4' }); // Create a File object for the captured video
+            this.videoUrl = this.sanitizer.bypassSecurityTrustUrl(URL.createObjectURL(blob));
+            this.isVideoSelected = true;
+            console.log('Captured video file: ', this.videoUrl);
+          })
+          .catch(err => {
+            console.error('Error fetching video blob:', err);
+            this.tabsService.showTabs(); // Show the tab bar again when leaving the page
+          });
       },
       (err: CaptureError) => {
         console.error(err);
-        this.tabsService.showTabs();  // Show the tab bar if there's an error
+        this.tabsService.showTabs(); // Show the tab bar again when leaving the page
       }
     );
   }
 
   async onFileSelected(event: any) {
-    this.tabsService.hideTabs();  // Hide the tab bar when a video is selected
+    this.tabsService.hideTabs(); // Hide the tab bar when the page is initialized
 
     const file: File = event.target.files[0];
 
@@ -67,9 +84,11 @@ export class AddVideoPage implements OnInit {
         if (videoElement.duration > 30) {
           this.showAlert();
           this.resetFileInput();
+          this.tabsService.showTabs(); // Show the tab bar again when leaving the page
         } else {
           this.videoUrl = this.sanitizer.bypassSecurityTrustUrl(videoElement.src);
           this.isVideoSelected = true;
+          this.selectedVideoFile = file; // Store the selected video file
           console.log('Selected video URL:', this.videoUrl);
         }
       };
@@ -77,6 +96,8 @@ export class AddVideoPage implements OnInit {
   }
 
   async showAlert() {
+    this.tabsService.showTabs(); // Show the tab bar again when leaving the page
+
     const alert = await this.alertController.create({
       header: 'Error',
       message: 'The selected video is longer than 30 seconds. Please select a shorter video.',
@@ -90,6 +111,7 @@ export class AddVideoPage implements OnInit {
     this.fileInput.nativeElement.value = '';
     this.videoUrl = null;
     this.isVideoSelected = false;
+    this.selectedVideoFile = null; // Reset selected video file
   }
 
   proceedToReview() {
@@ -102,10 +124,16 @@ export class AddVideoPage implements OnInit {
     this.isDescriptionAdded = false;
   }
 
-  submit() {
-    console.log('Submitting video with description:', this.description);
-    // Reset form state
-    this.cancel();
+  async submit() {
+    if (this.selectedVideoFile) {
+      try {
+        const challengeType = 'VIDEO'; // Set your challenge type accordingly
+        const response = await this.challengeService.uploadChallenge(this.description, challengeType, this.selectedVideoFile).toPromise();
+        console.log('Video submitted successfully:', response);
+      } catch (error) {
+        console.error('Error submitting video:', error);
+      }
+    }
   }
 
   cancel() {
@@ -117,7 +145,5 @@ export class AddVideoPage implements OnInit {
     if (this.fileInput && this.fileInput.nativeElement) {
       this.fileInput.nativeElement.value = '';
     }
-    
-    this.tabsService.showTabs(); // Show the tab bar when cancelled
   }
 }

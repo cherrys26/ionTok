@@ -7,45 +7,21 @@
   </ion-toolbar>
 </ion-header>
 
-<!-- <ion-content>
-  <swiper-container #outerSwiper class="swiper-v" direction="vertical">
-      <swiper-slide *ngFor="let video of videoList">
-        <swiper-container #innerSwiper class="swiper-h" direction="horizontal">
-            <swiper-slide>
-              <video autoplay loop playsinline [src]="video.url" [muted]="true"></video>
-              <app-feed [video]="video"></app-feed>
-              <app-footer [video]="video"></app-footer>
-            </swiper-slide>
-            <swiper-slide *ngFor="let response of video.responses">
-              <video autoplay loop playsinline [src]="response.url" [muted]="true"></video>
-              <app-feed [video]="response"></app-feed>
-              <app-footer [video]="response"></app-footer>
-            </swiper-slide>
-        </swiper-container>
-      </swiper-slide>
-  </swiper-container>
-</ion-content> -->
-
 <ion-content>
-  <!-- Outer Swiper (Vertical Scrolling) -->
-  <swiper-container class="swiper-v" #outerSwiper direction="vertical">
-    <!-- Loop through challenge list and display each challenge -->
+  <swiper-container #outerSwiper class="swiper-v" direction="vertical">
     <swiper-slide *ngFor="let challenge of challenges">
       
-      <!-- Inner Swiper (Horizontal Scrolling for responses) -->
-      <swiper-container class="swiper-h" #innerSwiper direction="horizontal">
+      <swiper-container #innerSwiper class="swiper-h" direction="horizontal">
         
-        <!-- Main Challenge Video -->
         <swiper-slide>
           <video autoplay loop playsinline [src]="challenge.videoUrl" [muted]="true"></video>
-          <app-feed [video]="challenge"></app-feed>
+          <app-feed [video]="challenge" [challengeGuid]="challenge.guid"></app-feed>
           <app-footer [video]="challenge"></app-footer>
         </swiper-slide>
         
-        <!-- Responses (If available) -->
         <swiper-slide *ngFor="let response of challenge.responses">
           <video autoplay loop playsinline [src]="response.videoUrl" [muted]="true"></video>
-          <app-feed [video]="response"></app-feed>
+          <app-feed [video]="response" [challengeGuid]="challenge.guid"></app-feed>
           <app-footer [video]="response"></app-footer>
         </swiper-slide>
         
