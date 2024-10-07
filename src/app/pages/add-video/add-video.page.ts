@@ -81,27 +81,33 @@ export class AddVideoPage implements OnInit {
       const videoElement = document.createElement('video');
       videoElement.src = URL.createObjectURL(file);
 
-      videoElement.onloadedmetadata = () => {
-        if (videoElement.duration > 30) {
-          this.showAlert();
-          this.resetFileInput();
-          this.tabsService.showTabs(); // Show the tab bar again when leaving the page
-        } else {
-          this.videoUrl = this.sanitizer.bypassSecurityTrustUrl(videoElement.src);
-          this.isVideoSelected = true;
-          this.selectedVideoFile = file; // Store the selected video file
-          console.log('Selected video URL:', this.videoUrl);
-        }
-      };
+      const fileSizeMB = file.size / (1024 * 1024); // Convert file size from bytes to MB
+
+      if (fileSizeMB > 30) { // Check if file size exceeds 30MB
+        this.showErrorAlert('The selected video is too large. Please select a video less than 30MB.');
+      }
+      else{
+        videoElement.onloadedmetadata = () => {
+          if (videoElement.duration > 31) {
+            this.showErrorAlert("The selected video is longer than 30 seconds. Please select a shorter video.");
+            this.resetFileInput();
+          } else {
+            this.videoUrl = this.sanitizer.bypassSecurityTrustUrl(videoElement.src);
+            this.isVideoSelected = true;
+            this.selectedVideoFile = file; // Store the selected video file
+            console.log('Selected video URL:', this.videoUrl);
+          }
+        };
+      }
     }
   }
 
-  async showAlert() {
+  async showErrorAlert(message: string) {
     this.tabsService.showTabs(); // Show the tab bar again when leaving the page
 
     const alert = await this.alertController.create({
       header: 'Error',
-      message: 'The selected video is longer than 30 seconds. Please select a shorter video.',
+      message: message,
       buttons: ['OK']
     });
 
@@ -129,8 +135,20 @@ export class AddVideoPage implements OnInit {
     if (this.selectedVideoFile) {
       try {
         const challengeType = 'VIDEO'; // Set your challenge type accordingly
-        const response = await this.challengeService.uploadChallenge(this.description, challengeType, this.selectedVideoFile).toPromise();
-        console.log('Video submitted successfully:', response);
+        await this.challengeService.uploadChallenge(this.description, challengeType, this.selectedVideoFile).toPromise();
+
+        const alert = await this.alertController.create({
+          header: 'Success',
+          message: 'Challenge Accepted!',
+          buttons: [{
+            text:'OK',
+            handler: () => {
+              this.cancel();
+            }
+          }]
+        });
+    
+        await alert.present();      
       } catch (error) {
         console.error('Error submitting video:', error);
       }
@@ -138,8 +156,9 @@ export class AddVideoPage implements OnInit {
   }
 
   cancel() {
+    this.selectedVideoFile = null;
     this.videoUrl = null; // Reset the selected video
-    this.description = ''; // Clear the description
+    this.description = null; // Clear the description
     this.isVideoSelected = false; // Reset the selection state
     this.isDescriptionAdded = false; // Go back to the first step
   

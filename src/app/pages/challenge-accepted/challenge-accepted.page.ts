@@ -110,7 +110,7 @@ export class ChallengeAcceptedPage implements OnInit {
           buttons: [{
             text:'OK',
             handler: () => {
-              this.router.navigate(['/tabs']);
+              this.cancel();
             }
           }]
         });
@@ -130,8 +130,10 @@ export class ChallengeAcceptedPage implements OnInit {
   }
 
   cancel() {
+    this.challengeGuid = null;
+    this.selectedVideoFile = null;
     this.videoUrl = null; // Reset the selected video
-    this.description = ''; // Clear the description
+    this.description = null; // Clear the description
     this.isVideoSelected = false; // Reset the selection state
     this.isDescriptionAdded = false; // Go back to the first step
   
