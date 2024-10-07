@@ -3,14 +3,18 @@
     <ion-icon size="large" name="heart"></ion-icon>
     <p>{{video.likes}}</p>
   </div>
-  <div>
+  <div (click)="openChallengeResponse()">
+    <ion-icon name="checkmark-outline"></ion-icon>
+    <p>Accept</p>
+  </div>
+  <!-- <div>
     <ion-icon size="large" src="../assets/svg/comment.svg">></ion-icon>
     <p>{{video.comments}}</p>
-  </div>
-  <div>
+  </div> -->
+  <!-- <div>
     <ion-icon size="large" src="../assets/svg/share.svg">></ion-icon>
     <p>Share</p>
-  </div>
+  </div> -->
 </div>
 
 

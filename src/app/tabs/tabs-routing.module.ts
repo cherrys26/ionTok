@@ -1,6 +1,7 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { TabsPage } from './tabs.page';
+import { authGuard } from '../guards/auth.guard'; // Import your guard function
 
 const routes: Routes = [
   {
@@ -13,19 +14,19 @@ const routes: Routes = [
       },
       {
         path: 'discover',
-        loadChildren: () => import('../pages/discover/discover.module').then(m => m.DiscoverPageModule)
+        loadChildren: () => import('../pages/discover/discover.module').then(m => m.DiscoverPageModule),
       },
       {
         path: 'add-video',
-        loadChildren: () => import('../pages/add-video/add-video.module').then(m => m.AddVideoPageModule)
+        loadChildren: () => import('../pages/add-video/add-video.module').then(m => m.AddVideoPageModule),
       },
       {
         path: 'inbox',
-        loadChildren: () => import('../pages/inbox/inbox.module').then(m => m.InboxPageModule)
+        loadChildren: () => import('../pages/inbox/inbox.module').then(m => m.InboxPageModule),
       },
       {
         path: 'profile',
-        loadChildren: () => import('../pages/profile/profile.module').then(m => m.ProfilePageModule)
+        loadChildren: () => import('../pages/profile/profile.module').then(m => m.ProfilePageModule),
       },
       {
         path: '',

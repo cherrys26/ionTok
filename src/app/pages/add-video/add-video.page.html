@@ -1,9 +1,42 @@
-<ion-header>
-  <ion-toolbar>
-    <ion-title>add-video</ion-title>
-  </ion-toolbar>
-</ion-header>
-
 <ion-content>
+  <!-- Step 1: Select or Record Video -->
+  <div *ngIf="!isVideoSelected">
+    <div class="file-input-container">
+      <input type="file" accept="video/*" (change)="onFileSelected($event)" #fileInput hidden />
+      <ion-button expand="full" (click)="fileInput.click()">Select Video from Gallery</ion-button>
+    </div>
+  </div>
 
+  <!-- Cancel Button shown only when a video is selected -->
+  <ion-button *ngIf="isVideoSelected" class="cancel-button" (click)="cancel()" fill="clear" color="danger">Cancel</ion-button>
+
+  <!-- Step 2: Show Video and Add Description -->
+  <div *ngIf="isVideoSelected && !isDescriptionAdded">
+    <div class="video-container" *ngIf="videoUrl">
+      <video [src]="videoUrl" controls></video>
+    </div>
+
+    <ion-item>
+      <ion-label position="floating">Add a Description (max 300 characters)</ion-label>
+      <ion-textarea [(ngModel)]="description" maxlength="300"></ion-textarea>
+    </ion-item>
+    
+    <p>{{ description.length }}/300 characters</p>
+    
+    <ion-button expand="full" [disabled]="description.length > 300 || description.length === 0" (click)="proceedToReview()">
+      Next: Review
+    </ion-button>
+  </div>
+
+  <!-- Step 3: Review and Submit -->
+  <div *ngIf="isDescriptionAdded">
+    <div class="video-container" *ngIf="videoUrl">
+      <video [src]="videoUrl" controls></video>
+    </div>
+
+    <p><strong>Description:</strong> {{ description }}</p>
+
+    <ion-button expand="full" (click)="submit()">Submit</ion-button>
+    <ion-button expand="full" color="light" (click)="goBackToEdit()">Go Back</ion-button>
+  </div>
 </ion-content>

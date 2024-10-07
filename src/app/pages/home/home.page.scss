@@ -19,20 +19,18 @@ ion-content {
   }
 }
 
-    video {
-      object-fit: cover;
-      width: 100%;
-      height: 100%;
-    }
- 
-swiper-container {
-  width:100%;
-  height: 100%
+.swiper-v {
+  height: 100%; /* Adjust height as needed */
 }
 
-swiper-slide {
+.swiper-v .swiper-slide {
   display: flex;
-  flex-direction: column;
-  align-items: center;
   justify-content: center;
+  align-items: center;
+}
+
+.swiper-v video {
+  width: 100%; /* Adjust size as needed */
+  height: auto;
+  object-fit: cover;
 }

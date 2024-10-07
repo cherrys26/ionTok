@@ -11,11 +11,11 @@ export class DiscoverPage implements OnInit {
     @ViewChild('swiper')
     swiperRef: ElementRef | undefined;
     swiper?: Swiper
- 
+
     swiperReady(){
       this.swiper = this.swiperRef?.nativeElement.swiper
     }    
-    
+
     hideIcon: boolean = false;
     options = {
         loop: true,

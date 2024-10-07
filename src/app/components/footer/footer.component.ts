@@ -19,12 +19,13 @@ export class FooterComponent implements OnInit {
   }
 
   ngOnInit() {
-    const animation: Animation = this.animationCtrl.create()
-      .addElement(this.animationImg.nativeElement)
-      .duration(5000)
-      .iterations(Infinity)
-      .fromTo('transform', 'rotate(0deg)', 'rotate(360deg)');
-    animation.play();
+    this.video.userName = "Username"
+    // const animation: Animation = this.animationCtrl.create()
+    //   .addElement(this.animationImg.nativeElement)
+    //   .duration(5000)
+    //   .iterations(Infinity)
+    //   .fromTo('transform', 'rotate(0deg)', 'rotate(360deg)');
+    // animation.play();
 
   }
 
