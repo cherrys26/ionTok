@@ -4,7 +4,7 @@
             <img src="https://avatars.githubusercontent.com/u/9548700?v=4" alt="" class="image-round">
         </ion-avatar>
         <div class="ion-text-center username">
-            <ion-text>&#64;cloneapplcaitons</ion-text>
+            <ion-text>&#64;{{ userProfile.userName }}</ion-text>
         </div>
         <ion-grid fixed>
             <ion-row class="ion-no-padding">
@@ -22,11 +22,17 @@
                 </ion-col>
             </ion-row>
         </ion-grid>
+
+      <div class="ion-text-center btn-edit" *ngIf="userProfile?.isLoggedInUser">
         <div class="ion-text-center btn-edit">
             <a routerLink="/settings-and-privacy">
                 <ion-icon size="large" name="cog-outline"></ion-icon>
             </a>
         </div>
+      </div>
+      <div class="ion-text-center btn-edit" *ngIf="userProfile && !userProfile.isLoggedInUser">
+        <ion-button color="primary">Follow</ion-button>
+      </div>
     </div>
     <div class="segment">
         <ion-segment (ionChange)="segmentChanged($event)" color="dark" mode="md">

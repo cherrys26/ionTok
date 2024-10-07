@@ -52,7 +52,11 @@ export class AuthService {
     localStorage.removeItem('jwtToken');
   }
 
-    getToken(): string | null {
-      return localStorage.getItem('jwtToken');
-    }
+  getToken(): string | null {
+    return localStorage.getItem('jwtToken');
+  }
+
+  getUser(userId : string): Observable<any> {
+    return this.http.get(`${this.baseApiUrl}/Identity/GetUser?userId=${userId}`)
+  }
 }

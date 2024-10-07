@@ -31,6 +31,7 @@ export class RegisterPage {
       firstName: ['', Validators.required],
       lastName: ['', Validators.required],
       birthday: ['', [Validators.required, this.minAgeValidator(12)]], // Min age validation
+      phoneNumber: ['', [Validators.required, Validators.pattern('^\\+?\\d{1,3}?[-.\\s]?\\(?\\d{1,4}?\\)?[-.\\s]?\\d{3,4}[-.\\s]?\\d{3,4}$')]],
       password: ['', [Validators.required, Validators.minLength(8), this.passwordComplexityValidator]],
       confirmPassword: ['', Validators.required],
       returnUrl: `${location.origin}/confirm-email`

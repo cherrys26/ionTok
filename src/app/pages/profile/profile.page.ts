@@ -1,5 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { ChallengeService } from '../../services/challenge/challenge.service';
+import { AuthService } from 'src/app/services/auth/auth.service';
+import { UserProfile } from 'src/app/models/userProfile.model';
 
 @Component({
   selector: 'app-profile',
@@ -7,6 +9,16 @@ import { ChallengeService } from '../../services/challenge/challenge.service';
   styleUrls: ['./profile.page.scss'],
 })
 export class ProfilePage implements OnInit {
+  userProfile: UserProfile = {
+    firstName: '',
+    lastName: '',
+    birthday: '',
+    userName: '',
+    email: '',
+    id: '',
+    created: '',
+    isLoggedInUser: false
+  };
   challenges: any[] = [];
   responses: any[] = [];
   likes: any[] = [];
@@ -17,10 +29,23 @@ export class ProfilePage implements OnInit {
     likes: false,
   };
 
-  constructor(private challengeService: ChallengeService) {}
+  constructor(private challengeService: ChallengeService, private authService: AuthService) {}
 
   ngOnInit() {
+    this.getUser();
     this.loadData('challenges');
+  }
+
+  getUser() {
+    this.authService.getUser("").subscribe(
+      (response) => {
+        this.userProfile = response; // Store the response in the variable
+        console.log(this.userProfile)
+      },
+      (error) => {
+        console.log(error);
+      }
+    )
   }
 
   segmentChanged(event: any) {

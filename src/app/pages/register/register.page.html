@@ -58,6 +58,23 @@
         You must be at least 12 years old.
       </ion-note>
 
+      <ion-item>
+        <ion-label position="floating">Phone Number</ion-label>
+        <ion-input
+          type="tel"
+          formControlName="phoneNumber"
+          required>
+        </ion-input>
+      </ion-item>
+      
+      <!-- Error message -->
+      <ion-note color="danger" *ngIf="registerForm.get('phoneNumber')?.hasError('required') && registerForm.get('phoneNumber')?.touched">
+        <p>Phone number is required.</p>
+      </ion-note>
+      <ion-note color="danger" *ngIf="registerForm.get('phoneNumber')?.hasError('pattern') && registerForm.get('phoneNumber')?.touched">
+        <p>Enter a valid phone number.</p>
+      </ion-note>
+      
       <!-- Password Field -->
       <ion-item>
         <ion-label position="floating">Password</ion-label>
@@ -67,7 +84,7 @@
         Password is required.
       </ion-note>
       <ion-note color="danger" *ngIf="registerForm.get('password')?.hasError('minlength') && registerForm.get('password')?.touched">
-        Password must be at least 6 characters.
+        Password must be at least 8 characters.
       </ion-note>
       <ion-note color="danger" *ngIf="registerForm.get('password')?.hasError('complexity') && registerForm.get('password')?.touched">
         Password must contain at least one uppercase and one lowercase letter.
