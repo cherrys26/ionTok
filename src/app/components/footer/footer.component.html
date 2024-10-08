@@ -1,15 +1,18 @@
 <div class="footer">
-  <h2>{{video.userName}}</h2>
-  <div>
-    {{video.description}}
-    <!-- <ion-img src="../assets/svg/vinyl.svg"></ion-img>
-    <img #animationImg src="https://avatars.githubusercontent.com/u/9548700?v=4"/>
-    <ng-lottie [options]="option"></ng-lottie> -->
+  <h2>{{ video?.userName || '' }}</h2>
+
+  <!-- Description logic -->
+  <div class="description">
+    <!-- If expanded, show full description; otherwise, show first 100 characters with "..." -->
+    {{ isExpanded 
+        ? (video?.description || '') 
+        : (video?.description?.slice(0, 100) || '') + (video?.description?.length > 100 ? '...' : '') 
+    }}
   </div>
-  <div>
-    <!-- <marquee behavior="" direction="">Cloned with ionic framework</marquee> -->
+
+  <!-- More/Less button only when description length is more than 100 -->
+  <div class="toggle-more" *ngIf="video?.description?.length > 100">
+    <a (click)="toggleDescription()">{{ isExpanded ? 'Less' : 'More' }}</a>
   </div>
-  <a class="ion-text-left">
-    <div class="music-icon"></div>
-  </a>
+
 </div>

@@ -1,32 +1,29 @@
-import {Component, ElementRef, Input, OnInit, ViewChild} from '@angular/core';
-import {Animation, AnimationController} from '@ionic/angular';
-import {AnimationOptions} from 'ngx-lottie';
+import { Component, Input, AfterViewInit, ViewChild, ElementRef } from '@angular/core';
 
 @Component({
   selector: 'app-footer',
   templateUrl: './footer.component.html',
-  styleUrls: ['./footer.component.scss'],
+  styleUrls: ['./footer.component.scss']
 })
-export class FooterComponent implements OnInit {
-  @ViewChild('animationImg', {read: ElementRef, static: true}) animationImg: ElementRef;
-  @Input() video: any;
+export class FooterComponent implements AfterViewInit {
+  @Input() video: any;  // Input for the video object
+  @ViewChild('descriptionElement') descriptionElement: ElementRef;  // Access to description element
+  @ViewChild('elementRef', { static: false }) elementRef: ElementRef;
 
-  option: AnimationOptions = {
-    path: './assets/animations/music-fly.json'
-  };
+  isExpanded: boolean = false;
+  showToggleButton: boolean = false;
 
-  constructor(private animationCtrl: AnimationController) {
+  ngAfterViewInit() {
+    this.video.userName = this.video.userName
+    // Check if the description overflows
+    if (this.elementRef) {
+      // Now it's safe to access the nativeElement
+      const element = this.elementRef.nativeElement;
+      // Do something with the element
+    }
   }
 
-  ngOnInit() {
-    this.video.userName = "Username"
-    // const animation: Animation = this.animationCtrl.create()
-    //   .addElement(this.animationImg.nativeElement)
-    //   .duration(5000)
-    //   .iterations(Infinity)
-    //   .fromTo('transform', 'rotate(0deg)', 'rotate(360deg)');
-    // animation.play();
-
+  toggleDescription() {
+    this.isExpanded = !this.isExpanded;
   }
-
 }

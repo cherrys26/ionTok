@@ -6,14 +6,14 @@ import {Component} from '@angular/core';
     styleUrls: ['tabs.page.scss']
 })
 export class TabsPage {
-    isIconChange: boolean = false;
-    isNotHome: boolean = false;
+    isIconChange: boolean = true;
+    isNotHome: boolean = true;
 
     constructor() {
     }
 
     tabClicked(e) {
-        e.tab !== 'home' ? this.isIconChange = true : this.isIconChange = false;
-        e.tab !== 'home' ? this.isNotHome = true : this.isNotHome = false;
+        // e.tab !== 'home' ? this.isIconChange = true : this.isIconChange = false;
+        // e.tab !== 'home' ? this.isNotHome = true : this.isNotHome = false;
     }
 }

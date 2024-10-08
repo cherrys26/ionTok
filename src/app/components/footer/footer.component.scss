@@ -1,8 +1,10 @@
 .footer {
   position: absolute;
-  right: 0px;
   bottom: 65px;
   display: flex;
+  flex-direction: column;
+  color: white;
+  left: 20px;
 
   ion-img {
     width: 50px;
@@ -48,7 +50,6 @@ marquee {
 }
 h2 {
   position: absolute;
-  left: -18%;
   bottom: 70%;
   transform: translateY(-50%);
   color: rgb(255, 255, 255);
@@ -59,4 +60,26 @@ h2 {
   margin-inline-start: 0px;
   margin-inline-end: 0px;
   font-weight: bold;
+}
+
+.description {
+  max-height: 4.5em; /* Limit the height to control overflow */
+  overflow: hidden;
+  white-space: normal;
+  text-overflow: ellipsis;
+  display: -webkit-box;
+  -webkit-line-clamp: 3; /* Number of lines before showing more */
+  -webkit-box-orient: vertical;
+}
+
+.toggle-more {
+  color: #fff;
+  cursor: pointer;
+  margin-top: 5px;
+}
+
+a {
+  color: #fff;
+  font-size: 0.9em;
+  text-decoration: none;
 }

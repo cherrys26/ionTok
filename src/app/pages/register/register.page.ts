@@ -12,6 +12,7 @@ import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 export class RegisterPage {
   registerForm: FormGroup;
   isDateModalOpen = false; // Modal state
+  isSubmitting = false; // New variable to track submission state
 
   constructor(
     private authService: AuthService,
@@ -75,6 +76,8 @@ export class RegisterPage {
   }
 
   async onSubmit() {
+    this.isSubmitting = true; // Set submitting state
+
     if (this.registerForm.valid) {
       if(this.registerForm.value.confirmPassword !== this.registerForm.value.password )
       {
@@ -84,6 +87,7 @@ export class RegisterPage {
           color: 'danger'
         });
         await toast.present();
+        this.isSubmitting = false; // Reset submitting state
       }
       else{
       this.authService.register(this.registerForm.value).subscribe(
@@ -117,9 +121,13 @@ export class RegisterPage {
             color: 'danger'
           });
           await toast.present();
+        },
+        () => {
+          this.isSubmitting = false; // Reset submitting state in case of error
         });
     }}else {
       this.registerForm.markAllAsTouched(); // Show validation errors
+      this.isSubmitting = false; // Reset submitting state in case of error
     }
   }
 

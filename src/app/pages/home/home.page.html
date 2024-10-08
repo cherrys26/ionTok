@@ -14,15 +14,19 @@
       <swiper-container #innerSwiper class="swiper-h" direction="horizontal">
         
         <swiper-slide>
-          <video autoplay loop playsinline [src]="challenge.videoUrl" [muted]="true"></video>
-          <app-feed [video]="challenge" [challengeGuid]="challenge.guid"></app-feed>
-          <app-footer [video]="challenge"></app-footer>
+          <div class="video-wrapper">
+            <video autoplay loop playsinline [src]="challenge.videoUrl" [muted]="true" [style.height]="videoHeight"></video>
+            <app-feed [video]="challenge" [challengeGuid]="challenge.guid"></app-feed>
+            <app-footer [video]="challenge"></app-footer>
+          </div>
         </swiper-slide>
         
         <swiper-slide *ngFor="let response of challenge.responses">
-          <video autoplay loop playsinline [src]="response.videoUrl" [muted]="true"></video>
-          <app-feed [video]="response" [challengeGuid]="challenge.guid"></app-feed>
-          <app-footer [video]="response"></app-footer>
+          <div class="video-wrapper">
+            <video autoplay loop playsinline [src]="response.videoUrl" [muted]="true" [style.height]="videoHeight"></video>
+            <app-feed [video]="response" [challengeGuid]="challenge.guid"></app-feed>
+            <app-footer [video]="response"></app-footer>
+          </div>
         </swiper-slide>
         
       </swiper-container>

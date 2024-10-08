@@ -29,8 +29,26 @@ ion-content {
   align-items: center;
 }
 
+.video-wrapper {
+  position: relative;
+  width: 100%; /* Full width */
+  max-width: 35%; /* Limit max width */
+  margin: auto; /* Center the video */
+  overflow: hidden; /* Hide overflow */
+  transition: transform 0.3s; /* Smooth scale effect on hover */
+  background-color: #fff; /* White background for the wrapper */
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2); /* Shadow for depth */
+}
+
 .swiper-v video {
-  width: 100%; /* Adjust size as needed */
-  height: auto;
-  object-fit: cover;
+  width: 100%; /* Full width for videos */
+  height: auto; /* Maintain aspect ratio */
+  object-fit: cover; /* Ensure the video covers the container */
+  height: 94vh;
+}
+
+@media (max-width: 768px) {
+  .video-wrapper {
+    max-width: 100%; /* Full width on smaller screens */
+  }
 }

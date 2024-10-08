@@ -1,15 +1,88 @@
 ion-content {
-    ion-list {
-      ion-item {
-        margin-bottom: 15px;
-      }
-    }
-  
-    ion-button {
-      margin-top: 20px;
-    }
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 20px;
+
+  .form-container {
+    width: 100%;
+    padding: 20px;
+    margin: auto;
+  }
+
+  .register-card {
+    width: 90%; /* Adjust card width as needed */
+    max-width: 45%; /* Set a max width for larger screens */
+    padding: 20px; /* Add padding for the content */
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1); /* Shadow for the card */
+    border-radius: 8px; /* Rounded corners */
+    background: #fff; /* Background color for the card */
+    margin: auto;
+    margin-top: 10vh;
+  }
+
+  .form-title {
+    text-align: center;
+    margin-bottom: 20px;
+    color: #000; /* Adjust the title color as needed */
+    font-size: 2.5em; /* Title size */
+  }
+
+  ion-button {
+    margin-top: 20px;
+    --color: white; /* Button text color */
+    border-radius: 8px; /* Rounded corners */
   }
 
   .custom-link {
     cursor: pointer; /* Change cursor to pointer on hover */
+    color: #3880ff; /* Link color */
+    font-weight: bold; /* Make the link text bold */
   }
+
+  .login-link {
+    text-align: center; /* Center the login link */
+    margin-top: 10px; /* Add margin on top */
+    text-decoration: none;
+  }
+
+  .login-link:hover {
+    text-decoration: underline;
+  }
+
+  /* Media Queries for Smaller Screens */
+  @media (max-width: 768px) {
+    .register-card {
+      max-width: 90%; /* Allow full width on smaller screens */
+      margin-top: 5vh; /* Adjust margin to give more space */
+    }
+
+    ion-row {
+      display: flex;
+      flex-direction: column; /* Stack items vertically */
+    }
+
+    ion-col {
+      width: 100%; /* Ensure columns take full width */
+    }
+
+    ion-button {
+      margin-top: 15px; /* Adjust button margin */
+    }
+  }
+}
+
+ion-item {
+  --ion-item-background: transparent; /* Remove the background of the item */
+}
+
+ion-datetime-button {
+  margin-top: 14px;
+}
+
+.spinner-container {
+  display: flex;              /* Use Flexbox to center the content */
+  justify-content: center;    /* Center horizontally */
+  align-items: center;        /* Center vertically */
+  margin-top: 20px;          /* Add some spacing if needed */
+}

@@ -1,24 +1,30 @@
 <ion-content>
-  <form (submit)="onSubmit()">
-    <ion-list>
-      <ion-item>
-        <ion-input labelPlacement="floating" [(ngModel)]="username" name="username" type="username">
-          <div slot="label">Username <ion-text color="danger"></ion-text></div>
-        </ion-input>
-      </ion-item>
-    </ion-list>
-    
-    <ion-list>
-      <ion-item>
-        <ion-input labelPlacement="floating" [(ngModel)]="password" name="password" type="password">
-          <div slot="label">Password <ion-text color="danger"></ion-text></div>
-        </ion-input>
-      </ion-item>
-    </ion-list>
-    
-    <ion-button expand="full" type="submit">Login</ion-button>
-    <div style="text-align: right; margin-top: 10px;">
-      <a ion-text class="custom-link" color="primary" (click)="goToSignUp()">Register</a>
-    </div>
-  </form>
+  <ion-card class="login-card">
+    <h1 class="card-header-text">Challenge Me</h1>
+    <form (submit)="onSubmit()">
+      <ion-list>
+        <ion-item>
+          <ion-input labelPlacement="stacked" [(ngModel)]="username" name="username" type="text" required>
+            <div slot="label">Username</div>
+          </ion-input>
+        </ion-item>
+        <ion-item>
+          <ion-input labelPlacement="stacked" [(ngModel)]="password" name="password" type="password" [clearOnEdit]="false" required>
+            <ion-input-password-toggle color="dark" slot="end"></ion-input-password-toggle>
+            <div slot="label">Password</div>
+          </ion-input>
+        </ion-item>
+      </ion-list>
+      
+      <ion-button expand="full" type="submit" class="login-button" *ngIf="!isSubmitting">Login</ion-button>
+
+      <div class="spinner-container" *ngIf="isSubmitting">
+        <ion-spinner color="primary"></ion-spinner>
+      </div>
+
+      <div class="footer" *ngIf="!isSubmitting">
+        <p>Don't have an account? <a class="custom-link" (click)="goToSignUp()">Register</a></p>
+      </div>
+    </form>
+  </ion-card>
 </ion-content>

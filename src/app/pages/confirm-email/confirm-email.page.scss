@@ -1,0 +1,38 @@
+.confirm-email-content {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    height: 100%;
+    padding: 20px;
+  }
+  
+  .confirmation-container {
+    text-align: center;
+    background: #fff; /* Background color for the container */
+    padding: 20px; /* Padding for the container */
+    border-radius: 10px; /* Rounded corners */
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1); /* Shadow for the container */
+    width: 90%; /* Width of the container */
+    max-width: 400px; /* Max width */
+    margin: auto;
+    margin-top: 20vh;
+  }
+  
+  .confirmation-title {
+    font-size: 1.8em; /* Title size */
+    margin-bottom: 10px; /* Space below title */
+    color: #000000; /* Title color */
+  }
+  
+  .confirmation-message {
+    font-size: 1.1em; /* Message size */
+    margin-bottom: 20px; /* Space below message */
+    color: #666; /* Message color */
+  }
+  .custom-alert {
+    --background: #fff; /* Alert background color */
+    --color: #000; /* Alert text color */
+    border-radius: 10px; /* Rounded corners */
+  }
+  

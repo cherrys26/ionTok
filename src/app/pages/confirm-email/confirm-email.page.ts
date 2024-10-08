@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { AfterViewInit, Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { Router } from '@angular/router';
 import { AlertController } from '@ionic/angular';
@@ -10,7 +10,7 @@ import { AuthService } from '../../services/auth/auth.service';
   templateUrl: './confirm-email.page.html',
   styleUrls: ['./confirm-email.page.scss'],
 })
-export class ConfirmEmailPage implements OnInit {
+export class ConfirmEmailPage implements OnInit, AfterViewInit {
   userId: string = '';
   code: string = '';
   constructor(
@@ -24,19 +24,22 @@ export class ConfirmEmailPage implements OnInit {
       this.userId = params['userId'];
       this.code = params['code'];
     });
+  }
 
+  ngAfterViewInit(){
     this.authService.confirmEmail({ userId: this.userId, code: this.code }).subscribe(
       async () => {
         const alert = await this.alertController.create({
           header: 'Success!',
           message: 'Thank you for joining',
           buttons: [{
-            text:'OK',
+            text: 'OK',
             handler: () => {
               this.router.navigate(['/login']);
             }
-        }]
-        });
+          }],
+          cssClass: 'custom-alert' // Add a custom class for styling
+        });        
         await alert.present();
       },
       async (error) => {
@@ -53,6 +56,6 @@ export class ConfirmEmailPage implements OnInit {
         await alert.present();
       }
     );
-  }
 
+  }
 }

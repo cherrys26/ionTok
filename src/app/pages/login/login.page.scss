@@ -1,3 +1,76 @@
+ion-content {
+  display: flex;
+  justify-content: center; /* Center horizontally */
+  align-items: center; /* Center vertically */
+  height: 100vh; /* Full viewport height */
+  margin: 0; /* Remove default margin */
+}
+
+.login-card {
+  width: 90%; /* Adjust card width as needed */
+  max-width: 400px; /* Set a max width for larger screens */
+  padding: 20px; /* Add padding for the content */
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1); /* Optional shadow for the card */
+  border-radius: 10px; /* Optional rounded corners */
+  margin: auto;
+  margin-top: 20vh;
+}
+
+.card-header-text {
+  text-align: center; /* Center the header text */
+  font-size: 2.5em; /* Larger font size for the header */
+  color: #000000; /* Primary color for the header */
+  margin: 20px 0; /* Space above and below the header */
+}
+
+.header-text {
+  text-align: center; /* Center the header text */
+  margin-bottom: 20px; /* Space between header and form */
+}
+
+.header-text h1 {
+  font-size: 2.5em; /* Larger font size for the header */
+  margin: 0; /* Remove default margin */
+}
+
+form {
+  padding: 20px; /* Inner padding for form elements */
+}
+
+ion-input {
+  --background: transparent; /* Set the background to transparent */
+  --color: inherit; /* Inherit the text color from the parent */
+  --placeholder-color: #888; /* Set a default placeholder color */
+}
+
+ion-item {
+  --ion-item-background: transparent; /* Remove the background of the item */
+  margin-bottom: 20px;
+}
+
+.login-button {
+  background-color: #3880ff; /* Primary color for the button */
+  color: white; /* White text for contrast */
+}
+
+.footer {
+  text-align: right;
+  margin-top: 10px;
+}
+
 .custom-link {
-    cursor: pointer; /* Change cursor to pointer on hover */
-  }
+  color: #3880ff; /* Primary color for the link */
+  cursor: pointer; /* Change cursor to pointer on hover */
+  text-decoration: none; /* Remove underline */
+}
+
+.custom-link:hover {
+  text-decoration: underline; /* Underline on hover for interactivity */
+}
+
+.spinner-container {
+  display: flex;              /* Use Flexbox to center the content */
+  justify-content: center;    /* Center horizontally */
+  align-items: center;        /* Center vertically */
+  margin-top: 20px;          /* Add some spacing if needed */
+}
