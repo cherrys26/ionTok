@@ -7,5 +7,7 @@ export interface UserProfile {
     id: string;
     created: string;  // Could be `Date` as well, if needed
     isLoggedInUser: boolean;
+    imageUrl?: string;
+    profileImageUrl: string; // Add the property for image URL
   }
   

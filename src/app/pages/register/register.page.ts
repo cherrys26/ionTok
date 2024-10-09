@@ -1,8 +1,9 @@
-import { Component } from '@angular/core';
+import { Component, ElementRef, ViewChild } from '@angular/core';
 import { NavController, ToastController } from '@ionic/angular';
 import { AuthService } from '../../services/auth/auth.service'; // Create this service for API calls
 import { Router } from '@angular/router';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
+import { DomSanitizer, SafeUrl } from '@angular/platform-browser';
 
 @Component({
   selector: 'app-register',
@@ -10,16 +11,22 @@ import { FormGroup, FormBuilder, Validators } from '@angular/forms';
   styleUrls: ['./register.page.scss'],
 })
 export class RegisterPage {
+  @ViewChild('fileInput', { static: false }) fileInput: ElementRef;
+
   registerForm: FormGroup;
   isDateModalOpen = false; // Modal state
   isSubmitting = false; // New variable to track submission state
+
+  imageUrlTest: SafeUrl | null = null;
+  selectedImageFile: File | null = null;
 
   constructor(
     private authService: AuthService,
     private navCtrl: NavController,
     private toastCtrl: ToastController,
     private router: Router,
-    private fb: FormBuilder // Ensure FormBuilder is injected
+    private fb: FormBuilder,
+    private sanitizer: DomSanitizer
   ) {
     this.initializeForm();
   }
@@ -35,6 +42,7 @@ export class RegisterPage {
       phoneNumber: ['', [Validators.required, Validators.pattern('^\\+?\\d{1,3}?[-.\\s]?\\(?\\d{1,4}?\\)?[-.\\s]?\\d{3,4}[-.\\s]?\\d{3,4}$')]],
       password: ['', [Validators.required, Validators.minLength(8), this.passwordComplexityValidator]],
       confirmPassword: ['', Validators.required],
+      imageUrl: [''],
       returnUrl: `${location.origin}/confirm-email`
     });
   }
@@ -74,6 +82,32 @@ export class RegisterPage {
   onDateChange(event: any) {
     this.registerForm.patchValue({ birthday: event.detail.value });
   }
+  
+  async onFileSelected(event: Event) {
+    const target = event.target as HTMLInputElement; // Type assertion
+    const file: File = target.files[0];
+
+    if (file) {
+      const imageElement = document.createElement('img');
+      imageElement.src = URL.createObjectURL(file);
+
+      imageElement.onload = () => {
+        this.imageUrlTest = this.sanitizer.bypassSecurityTrustUrl(imageElement.src); // Sanitize the image URL
+        this.selectedImageFile = file; // Store the selected image file
+      };
+    }
+  }
+
+  convertFileToBase64(file: File): Promise<string> {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.onload = () => {
+        resolve(reader.result as string);
+      };
+      reader.onerror = error => reject(error);
+      reader.readAsDataURL(file); // Convert to base64
+    });
+  }
 
   async onSubmit() {
     this.isSubmitting = true; // Set submitting state
@@ -90,7 +124,22 @@ export class RegisterPage {
         this.isSubmitting = false; // Reset submitting state
       }
       else{
-      this.authService.register(this.registerForm.value).subscribe(
+        const formData = new FormData();
+        formData.append('username', this.registerForm.value.username);
+        formData.append('email', this.registerForm.value.email);
+        formData.append('firstName', this.registerForm.value.firstName);
+        formData.append('lastName', this.registerForm.value.lastName);
+        formData.append('birthday', this.registerForm.value.birthday);
+        formData.append('phoneNumber', this.registerForm.value.phoneNumber);
+        formData.append('password', this.registerForm.value.password);
+        formData.append('confirmPassword', this.registerForm.value.confirmPassword);
+        formData.append('returnUrl', this.registerForm.value.returnUrl);
+
+        if (this.selectedImageFile) {
+          formData.append('imageFile', this.selectedImageFile); // Append file to FormData
+        }
+
+      this.authService.register(formData).subscribe(
         async (response) => {
           const toast = await this.toastCtrl.create({
             message: 'Registration successful! Please check your email to confirm.',
@@ -99,6 +148,9 @@ export class RegisterPage {
           });
           await toast.present();
           this.navCtrl.navigateForward('/login');
+          this.registerForm.reset();
+          this.selectedImageFile = null;
+          this.isSubmitting = false;
         },
         async (error) => {
           let errorMessages: string[] = [];
@@ -121,8 +173,6 @@ export class RegisterPage {
             color: 'danger'
           });
           await toast.present();
-        },
-        () => {
           this.isSubmitting = false; // Reset submitting state in case of error
         });
     }}else {

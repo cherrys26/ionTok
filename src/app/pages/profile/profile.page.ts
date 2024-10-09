@@ -17,7 +17,11 @@ export class ProfilePage implements OnInit {
     email: '',
     id: '',
     created: '',
-    isLoggedInUser: false
+    isLoggedInUser: false,
+    imageUrl: '',
+    get profileImageUrl(): string {
+      return this.imageUrl ? this.imageUrl : 'https://ionicframework.com/docs/img/demos/avatar.svg';
+    }
   };
   challenges: any[] = [];
   responses: any[] = [];
@@ -40,6 +44,7 @@ export class ProfilePage implements OnInit {
     this.authService.getUser("").subscribe(
       (response) => {
         this.userProfile = response; // Store the response in the variable
+        if(this.userProfile.imageUrl == '' || this.userProfile.imageUrl)
         console.log(this.userProfile)
       },
       (error) => {

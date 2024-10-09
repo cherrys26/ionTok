@@ -36,19 +36,34 @@ ion-content {
   margin: auto; /* Center the video */
   overflow: hidden; /* Hide overflow */
   transition: transform 0.3s; /* Smooth scale effect on hover */
-  background-color: #fff; /* White background for the wrapper */
+  background-color: #000000; /* White background for the wrapper */
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2); /* Shadow for depth */
+  border-radius: 20px;
+}
+
+.swiper-h{
+  padding-top: 5vh;
 }
 
 .swiper-v video {
-  width: 100%; /* Full width for videos */
-  height: auto; /* Maintain aspect ratio */
-  object-fit: cover; /* Ensure the video covers the container */
-  height: 94vh;
+  max-width: 100%;
+  height: 90vh;
+  width: auto; /* Override to allow natural width if needed */
 }
 
 @media (max-width: 768px) {
   .video-wrapper {
     max-width: 100%; /* Full width on smaller screens */
+    border-radius: 0px;
+  }
+
+  .swiper-v video {
+    width: 100%; /* Ensures video fills container width */
+    height: 94vh; /* Retain aspect ratio */
+    object-fit: cover;
+  }
+
+  .swiper-h{
+    padding-top: 0;
   }
 }
