@@ -22,22 +22,22 @@ export class LoginPage {
   async onSubmit() {
     this.router.navigate(['/tabs/home']); // Redirect after successful login
 
-    this.isSubmitting = true; // Set submitting state to true
-    this.authService.login({ username: this.username, password: this.password }).subscribe(
-      async () => {
-        this.isSubmitting = false; // Reset submitting state
-        this.router.navigate(['/tabs/home']); // Redirect after successful login
-      },
-      async (error) => {
-        this.isSubmitting = false; // Reset submitting state
-        const alert = await this.alertController.create({
-          header: 'Login Failed',
-          message: 'Invalid credentials. Please try again.',
-          buttons: ['OK']
-        });
-        await alert.present();
-      }
-    );
+    // this.isSubmitting = true; // Set submitting state to true
+    // this.authService.login({ username: this.username, password: this.password }).subscribe(
+    //   async () => {
+    //     this.isSubmitting = false; // Reset submitting state
+    //     this.router.navigate(['/tabs/home']); // Redirect after successful login
+    //   },
+    //   async (error) => {
+    //     this.isSubmitting = false; // Reset submitting state
+    //     const alert = await this.alertController.create({
+    //       header: 'Login Failed',
+    //       message: 'Invalid credentials. Please try again.',
+    //       buttons: ['OK']
+    //     });
+    //     await alert.present();
+    //   }
+    // );
   }
 
   goToSignUp() {

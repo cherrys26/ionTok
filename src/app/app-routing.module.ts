@@ -18,7 +18,7 @@ const routes: Routes = [
   {
     path: '',
     loadChildren: () => import('./tabs/tabs.module').then(m => m.TabsPageModule),
-    canMatch: [authGuard]  // Apply the guard function
+    // canMatch: [authGuard]  // Apply the guard function
   },
   {
     path: 'home',
