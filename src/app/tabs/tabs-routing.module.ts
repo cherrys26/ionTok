@@ -25,7 +25,7 @@ const routes: Routes = [
         loadChildren: () => import('../pages/inbox/inbox.module').then(m => m.InboxPageModule),
       },
       {
-        path: 'profile',
+        path: 'profile/:userName',
         loadChildren: () => import('../pages/profile/profile.module').then(m => m.ProfilePageModule),
       },
       {

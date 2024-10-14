@@ -7,6 +7,7 @@ import { IonicModule } from '@ionic/angular';
 import { SettingsAndPrivacyPageRoutingModule } from './settings-and-privacy-routing.module';
 
 import { SettingsAndPrivacyPage } from './settings-and-privacy.page';
+import { HeaderComponent } from '../../components/header/header.component';
 
 @NgModule({
   imports: [
@@ -15,6 +16,6 @@ import { SettingsAndPrivacyPage } from './settings-and-privacy.page';
     IonicModule,
     SettingsAndPrivacyPageRoutingModule
   ],
-  declarations: [SettingsAndPrivacyPage]
+  declarations: [SettingsAndPrivacyPage, HeaderComponent]
 })
 export class SettingsAndPrivacyPageModule {}

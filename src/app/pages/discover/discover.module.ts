@@ -8,6 +8,7 @@ import { DiscoverPageRoutingModule } from './discover-routing.module';
 
 import { DiscoverPage } from './discover.page';
 import { LottieComponent } from 'ngx-lottie';
+import { HeaderComponent } from '../../components/header/header.component';
 
 @NgModule({
   imports: [
@@ -17,6 +18,6 @@ import { LottieComponent } from 'ngx-lottie';
     DiscoverPageRoutingModule,
     LottieComponent
   ],
-  declarations: [DiscoverPage]
+  declarations: [DiscoverPage, HeaderComponent]
 })
 export class DiscoverPageModule {}

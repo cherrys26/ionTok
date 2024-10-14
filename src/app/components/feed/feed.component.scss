@@ -1,7 +1,7 @@
 .actions {
   position: absolute;
   right: 10px;
-  top: 40%;
+  bottom: 30px;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -13,6 +13,11 @@ ion-icon {
   width: 50px;
 }
 
+.avatar {
+  width: 40px; /* Adjust size to match your ion-icon */
+  height: 40px; /* Adjust size to match your ion-icon */
+}
+
 p {
   display: block;
   color: white;
@@ -20,4 +25,12 @@ p {
   font-size: 13px;
   line-height: 16px;
   font-weight: normal;
+}
+
+.heart-icon {
+  transition: color 0.3s; /* Smooth transition for color change */
+}
+
+.filled {
+  color: red; /* Change color to red when filled */
 }

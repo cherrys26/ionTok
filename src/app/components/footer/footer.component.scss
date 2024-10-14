@@ -5,6 +5,7 @@
   flex-direction: column;
   color: white;
   left: 20px;
+  width: 75%;
 
   ion-img {
     width: 50px;
@@ -49,27 +50,22 @@ marquee {
   height: 15px;
 }
 h2 {
-  position: absolute;
   bottom: 70%;
-  transform: translateY(-50%);
   color: rgb(255, 255, 255);
   display: block;
-  font-size: 1em;
-  margin-block-start: 0.83em;
-  margin-block-end: 0.83em;
+  font-size: 1.25em;
+  margin-block-start: 0px;
+  margin-block-end: 0px;
   margin-inline-start: 0px;
   margin-inline-end: 0px;
   font-weight: bold;
 }
 
 .description {
-  max-height: 4.5em; /* Limit the height to control overflow */
-  overflow: hidden;
   white-space: normal;
-  text-overflow: ellipsis;
   display: -webkit-box;
-  -webkit-line-clamp: 3; /* Number of lines before showing more */
   -webkit-box-orient: vertical;
+  padding-top: 10px;
 }
 
 .toggle-more {

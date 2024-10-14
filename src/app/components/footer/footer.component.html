@@ -6,12 +6,12 @@
     <!-- If expanded, show full description; otherwise, show first 100 characters with "..." -->
     {{ isExpanded 
         ? (video?.description || '') 
-        : (video?.description?.slice(0, 100) || '') + (video?.description?.length > 100 ? '...' : '') 
+        : ((video?.description?.slice(0, 100) || '') + (video?.description?.length > 100 ? '...' : '')) 
     }}
   </div>
 
   <!-- More/Less button only when description length is more than 100 -->
-  <div class="toggle-more" *ngIf="video?.description?.length > 100">
+  <div class="toggle-more" *ngIf="showToggleButton">
     <a (click)="toggleDescription()">{{ isExpanded ? 'Less' : 'More' }}</a>
   </div>
 

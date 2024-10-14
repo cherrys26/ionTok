@@ -1,4 +1,4 @@
-<ion-tabs (ionTabsDidChange)="tabClicked($event)">
+<ion-tabs>
 
     <ion-tab-bar slot="bottom" [ngClass]="isNotHome === true ? 'bg-white' : 'bg-transparent'">
         <ion-tab-button tab="home">
@@ -24,7 +24,7 @@
             <ion-label>Inbox</ion-label>
         </ion-tab-button>
 
-        <ion-tab-button tab="profile">
+        <ion-tab-button tab="profile/{{ userName }}">
             <ion-icon size="large"
                       src="{{isIconChange ? '../assets/svg/user-black.svg' : '../assets/svg/user.svg'}}"></ion-icon>
             <ion-label>Profile</ion-label>

@@ -1,14 +1,16 @@
 <ion-header class="ion-no-border ion-text-center">
   <ion-toolbar>
     <ion-title>
-      <ion-text></ion-text>
       <strong>For You</strong>
     </ion-title>
   </ion-toolbar>
 </ion-header>
 
 <ion-content>
-  <swiper-container #outerSwiper class="swiper-v" direction="vertical">
+  <div *ngIf="isLoading" class="loading-container">
+    <ion-spinner name="crescent"></ion-spinner>
+  </div>
+  <swiper-container #outerSwiper class="swiper-v" direction="vertical" *ngIf="!isLoading">
     <swiper-slide *ngFor="let challenge of challenges">
       
       <swiper-container #innerSwiper class="swiper-h" direction="horizontal">

@@ -7,7 +7,7 @@ import { IonicModule } from '@ionic/angular';
 import { AddVideoPageRoutingModule } from './add-video-routing.module';
 
 import { AddVideoPage } from './add-video.page';
-
+import { HeaderComponent } from '../../components/header/header.component';
 @NgModule({
   imports: [
     CommonModule,
@@ -15,6 +15,6 @@ import { AddVideoPage } from './add-video.page';
     IonicModule,
     AddVideoPageRoutingModule
   ],
-  declarations: [AddVideoPage]
+  declarations: [AddVideoPage, HeaderComponent]
 })
 export class AddVideoPageModule {}

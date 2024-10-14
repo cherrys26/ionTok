@@ -1,19 +1,23 @@
-import {Component} from '@angular/core';
+import {Component, OnInit} from '@angular/core';
+import { ActivatedRoute } from '@angular/router';
+import { AuthService } from '../services/auth/auth.service';
 
 @Component({
     selector: 'app-tabs',
     templateUrl: 'tabs.page.html',
     styleUrls: ['tabs.page.scss']
 })
-export class TabsPage {
+export class TabsPage implements OnInit {
     isIconChange: boolean = true;
     isNotHome: boolean = true;
-
-    constructor() {
+    userName: string;
+    constructor(private route: ActivatedRoute, private authService: AuthService) {
     }
+    ngOnInit() {
+        this.route.params.subscribe(params => {
+            this.userName = this.authService.getUsernameFromToken();
+        });
+      }
 
-    tabClicked(e) {
-        // e.tab !== 'home' ? this.isIconChange = true : this.isIconChange = false;
-        // e.tab !== 'home' ? this.isNotHome = true : this.isNotHome = false;
-    }
+
 }

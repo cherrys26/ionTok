@@ -41,7 +41,7 @@ const routes: Routes = [
     canMatch: [authGuard]  // Apply the guard function
   },
   {
-    path: 'profile',
+    path: 'profile/:userName',
     loadChildren: () => import('./pages/profile/profile.module').then(m => m.ProfilePageModule),
     canMatch: [authGuard]  // Apply the guard function
   },

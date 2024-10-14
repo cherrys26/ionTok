@@ -37,15 +37,15 @@ export class ChallengeService {
     return this.http.post(`${this.apiUrl}/ChallengeResponse`, formData);
   }
 
-  getUserChallenges(userId: string): Observable<any> {
+  getUserChallenges(userName: string): Observable<any> {
     return this.http.get<Challenge[]>(
-      `${this.apiUrl}/challenge/userId?userId=${userId}`
+      `${this.apiUrl}/challenge/username/${userName}`
     );
   }
 
-  getUserChallengeResponses(userId: string): Observable<any> {
+  getUserChallengeResponses(userName: string): Observable<any> {
     return this.http.get<Response[]>(
-      `${this.apiUrl}/challengeResponse/userId?userId=${userId}`
+      `${this.apiUrl}/challengeResponse/UserName/${userName}`
     );
   }
 }

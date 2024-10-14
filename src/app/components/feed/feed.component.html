@@ -1,20 +1,23 @@
 <div class="actions">
   <div>
-    <ion-icon size="large" name="heart"></ion-icon>
+    <ion-avatar class="avatar" (click)="goToProfile(video.userName)">
+      <img [src]="video.imageUrl || 'https://ionicframework.com/docs/img/demos/avatar.svg'" />
+    </ion-avatar>
+    <p></p>
+
+  </div>
+    <div>
+      <ion-icon 
+      [name]="isHeartFilled ? 'heart' : 'heart-outline'" 
+      class="heart-icon" 
+      [ngClass]="{'filled': isHeartFilled}" 
+      (click)="toggleHeart()">
+    </ion-icon>
     <p>{{video.likes}}</p>
   </div>
   <div (click)="openChallengeResponse()">
     <ion-icon name="checkmark-outline"></ion-icon>
-    <p>Accept</p>
   </div>
-  <!-- <div>
-    <ion-icon size="large" src="../assets/svg/comment.svg">></ion-icon>
-    <p>{{video.comments}}</p>
-  </div> -->
-  <!-- <div>
-    <ion-icon size="large" src="../assets/svg/share.svg">></ion-icon>
-    <p>Share</p>
-  </div> -->
 </div>
 
 

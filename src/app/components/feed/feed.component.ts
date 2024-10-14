@@ -10,6 +10,7 @@ import { Router } from '@angular/router'; // Import Router
 export class FeedComponent implements OnInit {
   @Input() video: any;
   @Input() challengeGuid: string;
+  isHeartFilled = false; // Property to track heart state
 
   option: AnimationOptions = {
     path: './assets/animations/music.json'
@@ -20,6 +21,14 @@ export class FeedComponent implements OnInit {
 
   ngOnInit() {
 
+  }
+
+  goToProfile(userName: string) {
+    this.router.navigate([`/tabs/profile/${userName}`]);
+  }
+
+  toggleHeart() {
+    this.isHeartFilled = !this.isHeartFilled; // Toggle the state
   }
 
   openChallengeResponse() {

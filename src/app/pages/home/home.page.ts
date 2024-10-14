@@ -10,8 +10,14 @@ import { ChallengeService } from '../../services/challenge/challenge.service';
 })
 export class HomePage implements OnInit, AfterViewInit {
   challenges: Challenge[] = [];
+  isLoading: boolean = true; // Track loading state
 
-  constructor(private challengeService: ChallengeService, private cdr: ChangeDetectorRef, private renderer: Renderer2) {}
+  constructor(
+    private challengeService: ChallengeService,
+    private cdr: ChangeDetectorRef,
+    private renderer: Renderer2
+  ) {}
+
   @ViewChild('outerSwiper', { static: false }) outerSwiperRef!: ElementRef;
   outerSwiper!: Swiper | null;
 
@@ -23,7 +29,6 @@ export class HomePage implements OnInit, AfterViewInit {
   }
 
   ngAfterViewInit() {
-    // Use requestAnimationFrame to ensure DOM rendering is complete before initializing Swipers
     requestAnimationFrame(() => {
       this.initializeSwipers();
     });
@@ -33,24 +38,25 @@ export class HomePage implements OnInit, AfterViewInit {
     this.challengeService.getAllChallenges().subscribe(
       (response) => {
         this.challenges = response;
+        this.isLoading = false; // Hide spinner when videos are loaded
         this.cdr.detectChanges(); // Ensure changes are reflected in the DOM
+
         requestAnimationFrame(() => {
           this.initializeSwipers(); // Re-initialize Swipers after videos are loaded
         });
       },
       (error) => {
         console.error('Error loading challenges:', error);
+        this.isLoading = false; // Hide spinner even on error
       }
     );
   }
 
   initializeSwipers() {
-    // Destroy existing Swipers to avoid conflicts
     if (this.outerSwiper) {
       this.outerSwiper.destroy(true, true);
     }
 
-    // Initialize outer (vertical) Swiper
     if (this.outerSwiperRef && this.outerSwiperRef.nativeElement.swiper) {
       this.outerSwiper = new Swiper(this.outerSwiperRef.nativeElement, {
         direction: 'vertical',
@@ -64,11 +70,10 @@ export class HomePage implements OnInit, AfterViewInit {
       });
     }
 
-    // Initialize inner (horizontal) Swipers
-    this.innerSwipers.forEach((swiper) => swiper.destroy(true, true)); // Destroy existing inner Swipers
-    this.innerSwipers = []; // Clear the array
+    this.innerSwipers.forEach((swiper) => swiper.destroy(true, true));
+    this.innerSwipers = [];
 
-    this.innerSwiperRefs.forEach((swiperRef: ElementRef, index: number) => {
+    this.innerSwiperRefs.forEach((swiperRef: ElementRef) => {
       const innerSwiperElement = swiperRef.nativeElement;
       if (innerSwiperElement) {
         const innerSwiper = new Swiper(innerSwiperElement, {

@@ -7,6 +7,7 @@ import { IonicModule } from '@ionic/angular';
 import { ChallengeAcceptedPageRoutingModule } from './challenge-accepted-routing.module';
 
 import { ChallengeAcceptedPage } from './challenge-accepted.page';
+import { HeaderComponent } from '../../components/header/header.component';
 
 @NgModule({
   imports: [
@@ -15,6 +16,6 @@ import { ChallengeAcceptedPage } from './challenge-accepted.page';
     IonicModule,
     ChallengeAcceptedPageRoutingModule
   ],
-  declarations: [ChallengeAcceptedPage]
+  declarations: [ChallengeAcceptedPage, HeaderComponent]
 })
 export class ChallengeAcceptedPageModule {}

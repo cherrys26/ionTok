@@ -8,7 +8,6 @@ import { Component, Input, AfterViewInit, ViewChild, ElementRef } from '@angular
 export class FooterComponent implements AfterViewInit {
   @Input() video: any;  // Input for the video object
   @ViewChild('descriptionElement') descriptionElement: ElementRef;  // Access to description element
-  @ViewChild('elementRef', { static: false }) elementRef: ElementRef;
 
   isExpanded: boolean = false;
   showToggleButton: boolean = false;
@@ -16,10 +15,10 @@ export class FooterComponent implements AfterViewInit {
   ngAfterViewInit() {
     this.video.userName = this.video.userName
     // Check if the description overflows
-    if (this.elementRef) {
-      // Now it's safe to access the nativeElement
-      const element = this.elementRef.nativeElement;
-      // Do something with the element
+    if (this.video?.description && this.video.description.length > 100) {
+      this.showToggleButton = true;
+    } else {
+      this.showToggleButton = false;
     }
   }
 
