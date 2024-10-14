@@ -33,7 +33,7 @@ const routes: Routes = [
   {
     path: 'add-video',
     loadChildren: () => import('./pages/add-video/add-video.module').then(m => m.AddVideoPageModule),
-    canMatch: [authGuard]  // Apply the guard function
+    // canMatch: [authGuard]  // Apply the guard function
   },
   {
     path: 'inbox',
