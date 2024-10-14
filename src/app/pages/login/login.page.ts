@@ -20,6 +20,8 @@ export class LoginPage {
   ) {}
 
   async onSubmit() {
+    this.router.navigate(['/tabs/home']); // Redirect after successful login
+
     this.isSubmitting = true; // Set submitting state to true
     this.authService.login({ username: this.username, password: this.password }).subscribe(
       async () => {
