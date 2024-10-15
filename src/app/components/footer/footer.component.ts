@@ -7,6 +7,7 @@ import { Component, Input, AfterViewInit, ViewChild, ElementRef } from '@angular
 })
 export class FooterComponent implements AfterViewInit {
   @Input() video: any;  // Input for the video object
+  @Input() title: string;
   @ViewChild('descriptionElement') descriptionElement: ElementRef;  // Access to description element
 
   isExpanded: boolean = false;

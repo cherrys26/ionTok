@@ -34,6 +34,9 @@ export class AddVideoPage implements OnInit {
   ngAfterViewInit() {
     this.fileInput.nativeElement.click()
   }
+  ionViewWillEnter() {
+    this.tabsService.hideTabs();
+  }
   ionViewWillLeave() {
     this.tabsService.showTabs(); // Show the tab bar again when leaving the page
   }

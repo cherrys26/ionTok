@@ -39,15 +39,17 @@ ion-content {
   background-color: #000000; /* White background for the wrapper */
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2); /* Shadow for depth */
   border-radius: 20px;
+  height: 100%;
 }
 
 .swiper-h{
   padding-top: 2vh;
+  height: 98%;
 }
 
 .swiper-v video {
   max-width: 100%;
-  height: 90vh;
+  height: 98%;
   width: auto; /* Override to allow natural width if needed */
 }
 
@@ -61,6 +63,11 @@ ion-content {
   justify-content: center;
 }
 
+@media (max-width: 996px) {
+  .video-wrapper {
+    max-width: 50%; /* Full width on smaller screens */
+  }
+}
 
 @media (max-width: 768px) {
   .video-wrapper {
@@ -70,11 +77,16 @@ ion-content {
 
   .swiper-v video {
     width: 100%; /* Ensures video fills container width */
-    height: 94vh; /* Retain aspect ratio */
+    height: 100%; /* Retain aspect ratio */
     object-fit: cover;
   }
 
+  .swiper-v {
+    height: 100%; /* Adjust height as needed */
+  }
+
   .swiper-h{
+    height: 100%;
     padding-top: 0;
   }
 
@@ -83,4 +95,13 @@ ion-title {
   display: block;
   color: #ffffff;
 }
+}
+
+#infe, #infe2{
+  margin-top: -14rem;
+  position: absolute;
+  z-index: 100;
+}
+#infe2{
+  margin-top: -10rem;
 }

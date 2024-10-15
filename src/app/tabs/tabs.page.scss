@@ -31,3 +31,9 @@ ion-tabs .bg-transparent {
     font-weight: bold;
   }
 }
+
+@media (max-width: 768px) {
+  ion-label {
+    display: none;
+  }
+}

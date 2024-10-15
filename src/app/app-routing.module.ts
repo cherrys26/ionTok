@@ -18,7 +18,7 @@ const routes: Routes = [
   {
     path: '',
     loadChildren: () => import('./tabs/tabs.module').then(m => m.TabsPageModule),
-    // canMatch: [authGuard]  // Apply the guard function
+    canMatch: [authGuard]  // Apply the guard function
   },
   {
     path: 'home',
@@ -33,7 +33,7 @@ const routes: Routes = [
   {
     path: 'add-video',
     loadChildren: () => import('./pages/add-video/add-video.module').then(m => m.AddVideoPageModule),
-    // canMatch: [authGuard]  // Apply the guard function
+    canMatch: [authGuard]  // Apply the guard function
   },
   {
     path: 'inbox',
@@ -54,7 +54,11 @@ const routes: Routes = [
     path: 'challenge-accepted',
     loadChildren: () => import('./pages/challenge-accepted/challenge-accepted.module').then( m => m.ChallengeAcceptedPageModule),
     canMatch: [authGuard]  // Apply the guard function
+  },  {
+    path: 'user-challenge',
+    loadChildren: () => import('./pages/user-challenge/user-challenge.module').then( m => m.UserChallengePageModule)
   },
+
 
 ];
 @NgModule({
