@@ -1,4 +1,5 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
+import { NavController } from '@ionic/angular';
 
 @Component({
   selector: 'app-header',
@@ -7,8 +8,13 @@ import { Component, OnInit } from '@angular/core';
 })
 export class HeaderComponent  implements OnInit {
 
-  constructor() { }
+  @Input() title: string = "";
+
+  constructor(private navCtrl: NavController) { }
 
   ngOnInit() {}
 
+  goBack() {
+    this.navCtrl.back(); // Navigate back in history
+  }
 }

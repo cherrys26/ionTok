@@ -7,6 +7,9 @@ import { IonicModule } from '@ionic/angular';
 import { UserChallengePageRoutingModule } from './user-challenge-routing.module';
 
 import { UserChallengePage } from './user-challenge.page';
+import { HeaderComponent } from 'src/app/components/header/header.component';
+import { FooterComponent } from 'src/app/components/footer/footer.component';
+import { UserChallengeFeedComponent } from 'src/app/components/user-challenge-feed/user-challenge-feed.component';
 
 @NgModule({
   imports: [
@@ -15,6 +18,6 @@ import { UserChallengePage } from './user-challenge.page';
     IonicModule,
     UserChallengePageRoutingModule
   ],
-  declarations: [UserChallengePage]
+  declarations: [UserChallengePage, HeaderComponent, FooterComponent, UserChallengeFeedComponent]
 })
 export class UserChallengePageModule {}

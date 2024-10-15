@@ -1,13 +1,32 @@
-<ion-header [translucent]="true">
-  <ion-toolbar>
-    <ion-title>user-challenge</ion-title>
-  </ion-toolbar>
-</ion-header>
+<app-header></app-header>
 
-<ion-content [fullscreen]="true">
-  <ion-header collapse="condense">
-    <ion-toolbar>
-      <ion-title size="large">user-challenge</ion-title>
-    </ion-toolbar>
-  </ion-header>
+<ion-content>
+  <div *ngIf="isLoading" class="loading-container">
+    <ion-spinner name="crescent"></ion-spinner>
+  </div>
+  <swiper-container #outerSwiper class="swiper-v" direction="vertical" [initialSlide]="2">
+    <swiper-slide *ngFor="let challenge of challenges; let i = index">
+      
+      <swiper-container #innerSwiper class="swiper-h" direction="horizontal">
+        
+        <swiper-slide>
+          <div class="video-wrapper">
+            <video autoplay loop playsinline [src]="challenge.videoUrl" [muted]="true" [style.height]="videoHeight"></video>
+            <app-user-challenge-feed [video]="challenge" [challengeGuid]="challenge.guid"></app-user-challenge-feed>
+            <app-footer [video]="challenge" [title]="'Main Challenge'"></app-footer>
+          </div>
+        </swiper-slide>
+        
+        <swiper-slide *ngFor="let response of challenge.responses">
+          <div class="video-wrapper">
+            <video autoplay loop playsinline [src]="response.videoUrl" [muted]="true" [style.height]="videoHeight"></video>
+            <app-user-challenge-feed [video]="response" [challengeGuid]="challenge.guid"></app-user-challenge-feed>
+            <app-footer [video]="response" [title]="'Challenge Response'"></app-footer>
+          </div>
+        </swiper-slide>
+        
+      </swiper-container>
+      
+    </swiper-slide>
+  </swiper-container>
 </ion-content>

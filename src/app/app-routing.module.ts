@@ -54,10 +54,18 @@ const routes: Routes = [
     path: 'challenge-accepted',
     loadChildren: () => import('./pages/challenge-accepted/challenge-accepted.module').then( m => m.ChallengeAcceptedPageModule),
     canMatch: [authGuard]  // Apply the guard function
-  },  {
-    path: 'user-challenge',
-    loadChildren: () => import('./pages/user-challenge/user-challenge.module').then( m => m.UserChallengePageModule)
   },
+  {
+    path: 'user-challenge/:userName/:index',
+    loadChildren: () => import('./pages/user-challenge/user-challenge.module').then( m => m.UserChallengePageModule),
+    canMatch: [authGuard]  // Apply the guard function
+  },
+  {
+    path: 'user-response/:guid',
+    loadChildren: () => import('./pages/user-response/user-response.module').then( m => m.UserResponsePageModule),
+    canMatch: [authGuard]  // Apply the guard function
+  },
+
 
 
 ];

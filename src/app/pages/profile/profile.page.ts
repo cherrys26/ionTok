@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { ChallengeService } from '../../services/challenge/challenge.service';
 import { AuthService } from 'src/app/services/auth/auth.service';
 import { UserProfile } from 'src/app/models/userProfile.model';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 
 @Component({
   selector: 'app-profile',
@@ -36,7 +36,8 @@ export class ProfilePage implements OnInit {
   constructor(
     private challengeService: ChallengeService,
     private authService: AuthService,
-    private route: ActivatedRoute
+    private route: ActivatedRoute,
+    private router: Router
   ) {}
 
   ngOnInit() {
@@ -99,5 +100,14 @@ export class ProfilePage implements OnInit {
         }
       );
     }
+  }
+
+  onChallengeClick(index: number) {
+    this.router.navigate([`/user-challenge/${this.userName}/${index}`]);
+  }
+
+  onResponseClick(guid: string){
+    this.router.navigate([`/user-response/${guid}`]);
+
   }
 }

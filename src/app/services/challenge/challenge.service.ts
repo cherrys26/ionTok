@@ -43,9 +43,21 @@ export class ChallengeService {
     );
   }
 
+  getChallenge(id: number): Observable<any> {
+    return this.http.get<Challenge[]>(
+      `${this.apiUrl}/challenge/Id/${id}`
+    );
+  }
+
   getUserChallengeResponses(userName: string): Observable<any> {
     return this.http.get<Response[]>(
       `${this.apiUrl}/challengeResponse/UserName/${userName}`
+    );
+  }
+  
+  getUserChallengeResponse(guid: string): Observable<any> {
+    return this.http.get<Response[]>(
+      `${this.apiUrl}/challengeResponse/${guid}`
     );
   }
 }

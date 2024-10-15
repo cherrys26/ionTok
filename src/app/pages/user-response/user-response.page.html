@@ -1,0 +1,22 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-button (click)="goBack()" fill="clear">
+        <ion-icon name="chevron-back"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+    <ion-buttons slot="end">
+      <ion-button (click)="GoToChallenge(challengeResponse.challengeId)" fill="primary" >
+        Main Challenge
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+
+<ion-content>
+  <div class="video-wrapper">
+    <video autoplay loop playsinline [src]="challengeResponse.videoUrl"></video>
+    <app-footer [video]="challengeResponse"></app-footer>
+  </div>
+</ion-content>
