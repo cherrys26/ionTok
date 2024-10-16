@@ -4,11 +4,7 @@
   <div *ngIf="isLoading" class="loading-container">
     <ion-spinner name="crescent"></ion-spinner>
   </div>
-  <swiper-container #outerSwiper class="swiper-v" direction="vertical">
-    <swiper-slide *ngFor="let challenge of challenges; let i = index">
-      
-      <swiper-container #innerSwiper class="swiper-h" direction="horizontal">
-        
+      <swiper-container #outerSwiper class="swiper-h" direction="horizontal">
         <swiper-slide>
           <div class="video-wrapper">
             <video autoplay loop playsinline [src]="challenge.videoUrl" [muted]="true" [style.height]="videoHeight"></video>
@@ -16,7 +12,6 @@
             <app-footer [video]="challenge" [title]="'Main Challenge'"></app-footer>
           </div>
         </swiper-slide>
-        
         <swiper-slide *ngFor="let response of challenge.responses">
           <div class="video-wrapper">
             <video autoplay loop playsinline [src]="response.videoUrl" [muted]="true" [style.height]="videoHeight"></video>
@@ -24,9 +19,5 @@
             <app-footer [video]="response" [title]="'Challenge Response'"></app-footer>
           </div>
         </swiper-slide>
-        
       </swiper-container>
-      
-    </swiper-slide>
-  </swiper-container>
 </ion-content>

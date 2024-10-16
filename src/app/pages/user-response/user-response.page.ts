@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { NavController } from '@ionic/angular';
 import { Response } from 'src/app/models/response.model';
 import { ChallengeService } from 'src/app/services/challenge/challenge.service';
@@ -17,7 +17,9 @@ export class UserResponsePage implements OnInit {
   constructor(
     private challengeService: ChallengeService,
     private route: ActivatedRoute,
-    private navCtrl: NavController) { }
+    private navCtrl: NavController,
+    private router: Router
+  ) { }
 
   ngOnInit() {
     this.route.paramMap.subscribe(params => {
@@ -37,9 +39,7 @@ export class UserResponsePage implements OnInit {
     }
 
     GoToChallenge(challengeId: number){
-      this.challengeService.getChallenge(challengeId).subscribe(challenge => {
-        this.challenge = challenge; 
-      });
+      this.router.navigate([`/view-challenge/${challengeId}`])
     }
 }
 

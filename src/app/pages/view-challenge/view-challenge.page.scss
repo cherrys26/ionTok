@@ -1,0 +1,92 @@
+ion-toolbar {
+  --background: transparent;
+  --ion-color-base: transparent !important;
+  position: absolute;
+}
+
+ion-title {
+  display: none;
+
+  ion-text {
+    opacity: 0.2;
+  }
+}
+
+ion-content {
+  ion-title {
+    position: absolute;
+    top: 0;
+  }
+}
+
+.swiper-h {
+  height: 100%; /* Adjust height as needed */
+}
+
+.swiper-h .swiper-slide {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.video-wrapper {
+  position: relative;
+  width: 100%; /* Full width */
+  max-width: 32%; /* Limit max width */
+  margin: auto; /* Center the video */
+  overflow: hidden; /* Hide overflow */
+  transition: transform 0.3s; /* Smooth scale effect on hover */
+  background-color: #000000; /* White background for the wrapper */
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2); /* Shadow for depth */
+  border-radius: 20px;
+  height: 100%;
+}
+
+.swiper-h{
+  padding-top: 2vh;
+}
+
+.swiper-h video {
+  max-width: 100%;
+  height: 98%;
+  width: auto; /* Override to allow natural width if needed */
+}
+
+.loading-container {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+@media (max-width: 996px) {
+  .video-wrapper {
+    max-width: 50%; /* Full width on smaller screens */
+  }
+}
+
+@media (max-width: 768px) {
+  .video-wrapper {
+    max-width: 100%; /* Full width on smaller screens */
+    border-radius: 0px;
+  }
+
+  .swiper-h video {
+    width: 100%; /* Ensures video fills container width */
+    height: 100%; /* Retain aspect ratio */
+    object-fit: cover;
+  }
+  .swiper-h{
+    height: 100%;
+    padding-top: 0;
+  }
+
+  
+ion-title {
+  display: block;
+  color: #ffffff;
+}
+}
