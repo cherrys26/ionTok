@@ -69,7 +69,12 @@ const routes: Routes = [
         path: 'view-challenge/:id',
         loadChildren: () => import('./pages/view-challenge/view-challenge.module').then( m => m.ViewChallengePageModule),
         canMatch: [authGuard]  // Apply the guard function
-      },  
+      },
+      {
+        path: 'follows/:userName/:selectedSegment',
+        loadChildren: () => import('./pages/follows/follows.module').then( m => m.FollowsPageModule),
+        canMatch: [authGuard]  // Apply the guard function
+      },
       {
         path: '',
         redirectTo: 'home',
@@ -82,6 +87,7 @@ const routes: Routes = [
     loadChildren: () => import('./tabs/tabs.module').then(m => m.TabsPageModule),
     canMatch: [authGuard]  // Apply the guard function
   },
+
 ];
 @NgModule({
   imports: [

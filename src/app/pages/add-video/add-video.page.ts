@@ -4,6 +4,7 @@ import { DomSanitizer, SafeUrl } from '@angular/platform-browser';
 import { AlertController, NavController } from '@ionic/angular';
 import { TabsService } from '../../services/tabs/tab.service'; 
 import { ChallengeService } from '../../services/challenge/challenge.service';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-add-video',
@@ -25,7 +26,8 @@ export class AddVideoPage implements OnInit {
     private alertController: AlertController,
     private tabsService: TabsService,
     private challengeService: ChallengeService, // Inject the video upload service
-    private navCtrl: NavController // <-- Inject NavController
+    private navCtrl: NavController,
+    private router: Router
   ) {}
 
   ngOnInit() {
@@ -137,6 +139,8 @@ export class AddVideoPage implements OnInit {
   async submit() {
     if (this.selectedVideoFile) {
       try {
+        console.log(this.selectedVideoFile)
+
         const challengeType = 'VIDEO'; // Set your challenge type accordingly
         await this.challengeService.uploadChallenge(this.description, challengeType, this.selectedVideoFile).toPromise();
 
@@ -168,7 +172,6 @@ export class AddVideoPage implements OnInit {
     if (this.fileInput && this.fileInput.nativeElement) {
       this.fileInput.nativeElement.value = '';
     }
-    this.navCtrl.back();
-
+    this.router.navigate([`/tabs/add-video`]);
   }
 }

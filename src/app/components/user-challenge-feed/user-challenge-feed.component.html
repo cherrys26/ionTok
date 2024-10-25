@@ -11,8 +11,8 @@
       [name]="isHeartFilled ? 'heart' : 'heart-outline'" 
       class="heart-icon" 
       [ngClass]="{'filled': isHeartFilled}" 
-      (click)="toggleHeart()">
+      (click)="likeChallenge(video.guid)">
     </ion-icon>
-    <p>{{video.likes}}</p>
+    <p>{{video.likesCount}}</p>
   </div>
 </div>

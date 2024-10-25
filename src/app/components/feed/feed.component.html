@@ -8,13 +8,19 @@
   </div>
     <div>
       <ion-icon 
-      [name]="isHeartFilled ? 'heart' : 'heart-outline'" 
+      [name]="video.isLiked ? 'heart' : 'heart-outline'" 
       class="heart-icon" 
-      [ngClass]="{'filled': isHeartFilled}" 
-      (click)="toggleHeart()">
+      [ngClass]="{'filled': video.isLiked}" 
+      (click)="likeChallenge(video.guid)">
     </ion-icon>
-    <p>{{video.likes}}</p>
+    <p>{{video.likesCount}}</p>
   </div>
+
+  <div (click)="openComments(video.guid, challengeType)">
+    <ion-icon id="chat-icon" name="chatbubble-outline"></ion-icon>
+    <p>{{video.commentsCount}}</p>
+  </div>
+
   <div (click)="openChallengeResponse()">
     <ion-icon name="checkmark-outline"></ion-icon>
   </div>

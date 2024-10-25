@@ -10,6 +10,7 @@ import { HomePage } from './home.page';
 import {FeedComponent} from "../../components/feed/feed.component";
 import { LottieComponent } from 'ngx-lottie';
 import {FooterComponent} from "../../components/footer/footer.component";
+import { CommentComponent } from 'src/app/components/comment/comment.component';
 
 @NgModule({
     imports: [
@@ -19,7 +20,7 @@ import {FooterComponent} from "../../components/footer/footer.component";
         HomePageRoutingModule,
         LottieComponent
     ],
-  declarations: [HomePage, FeedComponent, FooterComponent],
+  declarations: [HomePage, FeedComponent, FooterComponent, CommentComponent],
   schemas: [CUSTOM_ELEMENTS_SCHEMA]
 })
 export class HomePageModule {}

@@ -18,7 +18,7 @@
         <swiper-slide>
           <div class="video-wrapper">
             <video autoplay loop playsinline [src]="challenge.videoUrl" [muted]="true" [style.height]="videoHeight"></video>
-            <app-feed [video]="challenge" [challengeGuid]="challenge.guid"></app-feed>
+            <app-feed [video]="challenge" [challengeGuid]="challenge.guid" [challengeType]="'CHALLENGE'"></app-feed>
             <app-footer [video]="challenge" [title]="'Main Challenge'"></app-footer>
           </div>
         </swiper-slide>
@@ -26,7 +26,7 @@
         <swiper-slide *ngFor="let response of challenge.responses">
           <div class="video-wrapper">
             <video autoplay loop playsinline [src]="response.videoUrl" [muted]="true" [style.height]="videoHeight"></video>
-            <app-feed [video]="response" [challengeGuid]="challenge.guid"></app-feed>
+            <app-feed [video]="response" [challengeGuid]="challenge.guid" [challengeType]="'CHALLENGE_RESPONSE'"></app-feed>
             <app-footer [video]="response" [title]="'Challenge Response'"></app-footer>
           </div>
         </swiper-slide>

@@ -1,45 +1,76 @@
-<app-header></app-header>
+<ion-header>
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-button (click)="goBack()" fill="clear">
+        <ion-icon name="chevron-back"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+        <div class="ion-text-center username">
+          <ion-text>{{ userProfile.userName }}</ion-text>
+        </div>
+    <ion-buttons slot="end" *ngIf="userProfile?.isLoggedInUser">
+      <ion-button fill="clear">
+        <a routerLink="/settings-and-privacy">
+          <ion-icon name="ellipsis-vertical"></ion-icon>
+        </a>
+        </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
 
 <ion-content [fullscreen]="true" class="ion-padding">
-  <!-- Full Page Loading Spinner -->
   <div *ngIf="isLoading" class="loading-container">
     <ion-spinner name="crescent"></ion-spinner>
   </div>
 
   <div class="ion-padding-vertical container" *ngIf="!isLoading">
-    <ion-avatar class="avatar">
-      <img [src]="userProfile.imageUrl || 'https://ionicframework.com/docs/img/demos/avatar.svg'" 
-           alt="User Profile Image" class="image-round" />
-    </ion-avatar>
-    <div class="ion-text-center username">
-      <ion-text>&#64;{{ userProfile.userName }}</ion-text>
-    </div>
-
     <ion-grid fixed>
       <ion-row class="ion-no-padding">
-        <ion-col size="6">
+        <ion-col size="3">
+          <ion-avatar class="avatar">
+            <img [src]="userProfile.imageUrl || 'https://ionicframework.com/docs/img/demos/avatar.svg'" 
+                 alt="User Profile Image" class="image-round" />
+          </ion-avatar>      
+        </ion-col>
+        <ion-col size="3" class="m-auto">
           <div class="ion-text-center">
-            <span><strong>0</strong></span> <br />
-            <small>Following</small>
+            <span><strong>{{ challengesCount }}</strong></span> <br />
+            <small>challenges</small>
+          </div>
+        </ion-col>
+        <ion-col size="3" class="m-auto">
+          <div class="ion-text-center clickable-div" (click)="GoToFollows(userProfile.userName, 'followers')">
+            <span><strong>{{ followersCount }}</strong></span> <br />
+            <small>followers</small>
+          </div>
+        </ion-col>
+        <ion-col size="3" class="m-auto">
+          <div class="ion-text-center clickable-div" (click)="GoToFollows(userProfile.userName, 'following')">
+            <span><strong>{{ followingCount }}</strong></span> <br />
+            <small>following</small>
           </div>
         </ion-col>
         <ion-col size="6">
-          <div class="ion-text-center">
-            <span><strong>0</strong></span> <br />
-            <small>Followers</small>
-          </div>
+            <ion-text class="info">{{ userProfile.firstName }} {{userProfile.lastName}}</ion-text>
         </ion-col>
       </ion-row>
+      <ion-row>
+        <ion-text class="info">{{ userProfile.description }}</ion-text>
+      </ion-row>
     </ion-grid>
-
-    <div *ngIf="userProfile?.isLoggedInUser" class="btn-edit ion-text-center">
-      <a routerLink="/settings-and-privacy">
-        <ion-icon size="large" name="cog-outline"></ion-icon>
-      </a>
+    <div *ngIf="userProfile?.isLoggedInUser" class="btn-edit ion-text-center mt-2">
+      <ion-button color="medium" fill="outline" size="small" expand="block">Edit Profile</ion-button>
     </div>
 
     <div *ngIf="userProfile && !userProfile.isLoggedInUser" class="btn-edit ion-text-center">
-      <ion-button color="primary">Follow</ion-button>
+      <ion-grid fixed>
+        <ion-row class="ion-no-padding">
+          <ion-col size="12">
+            <ion-button color="secondary" fill="solid" size="small" *ngIf="!isFollowing" (click)="postFollow()" expand="block">Follow</ion-button>
+            <ion-button color="secondary" fill="outline" size="small" *ngIf="isFollowing" (click)="postFollow()" expand="block">Unfollow</ion-button>
+          </ion-col>
+        </ion-row>
+      </ion-grid>
     </div>
   </div>
 

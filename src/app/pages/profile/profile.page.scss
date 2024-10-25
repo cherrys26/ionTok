@@ -1,8 +1,8 @@
 .avatar {
   margin-left: auto;
   margin-right: auto;
-  width: 90px;
-  height: 90px;
+  width: 70px;
+  height: 70px;
 
   img {
     object-fit: cover;
@@ -154,4 +154,32 @@ h3 {
   justify-content: center;
   align-items: center;
   margin-top: 20px;
+}
+
+.clickable-div {
+  cursor: pointer; /* Changes the cursor to a pointer */
+}
+
+ion-title{
+  text-align: center;
+}
+
+.settings{
+  padding-right: 2vw
+}
+
+a{
+  color: black;
+}
+
+.m-auto{
+  margin: auto
+}
+
+.mt-2 {
+  margin-top: 2vh;
+}
+
+.info{
+  font-size: 14px
 }

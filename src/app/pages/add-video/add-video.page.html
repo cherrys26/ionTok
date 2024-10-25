@@ -12,35 +12,23 @@
     </ion-button>
   </div>
 
-  <!-- Cancel Button when video is selected -->
-  <ion-button *ngIf="isVideoSelected" class="cancel-button" (click)="cancel()" fill="clear" color="danger">
-    Cancel
-  </ion-button>
-
-  <!-- Step 2: Show Video and Add Description -->
-  <div *ngIf="isVideoSelected && !isDescriptionAdded" class="video-edit-container">
-    <div class="video-container" *ngIf="videoUrl">
-      <video [src]="videoUrl" controls></video>
-    </div>
-
+ <!-- Step 2: Review and Submit -->
+<div *ngIf="isVideoSelected" class="review-container">
+  <div class="video-container">
+    <video [src]="videoUrl" controls></video>
+  </div>
+  <div class="description">
     <ion-item>
-      <ion-label position="floating">Add a Description (max 300 characters)</ion-label>
+      <ion-label position="floating" class="mb-10">Description</ion-label>
       <ion-textarea [(ngModel)]="description" maxlength="300"></ion-textarea>
     </ion-item>
     <p class="character-count">{{ description.length }}/300 characters</p>
-
-    <ion-button expand="full" [disabled]="description.length > 300 || description.length === 0" 
-                (click)="proceedToReview()">Next: Review</ion-button>
   </div>
-
-  <!-- Step 3: Review and Submit -->
-  <div *ngIf="isDescriptionAdded" class="review-container">
-    <div class="video-container" *ngIf="videoUrl">
-      <video [src]="videoUrl" controls></video>
-    </div>
-    <p class="description-preview"><strong>Description:</strong> {{ description }}</p>
-
-    <ion-button expand="full" (click)="submit()">Submit</ion-button>
-    <ion-button expand="full" color="light" (click)="goBackToEdit()">Go Back</ion-button>
+  <!-- Action buttons -->
+  <div class="action-buttons">
+    <ion-button expand="block" class="share-btn" fill="outline" color="medium" (click)="cancel()">Cancel</ion-button>
+    <ion-button [disabled]="description.length > 300 || description.length === 0" expand="block" class="share-btn" (click)="submit()">Share</ion-button>
   </div>
+</div>
+
 </ion-content>

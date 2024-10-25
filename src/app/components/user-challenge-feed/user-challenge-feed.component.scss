@@ -16,6 +16,7 @@
   .avatar {
     width: 40px; /* Adjust size to match your ion-icon */
     height: 40px; /* Adjust size to match your ion-icon */
+    margin-bottom: 10px;
   }
   
   p {
@@ -25,6 +26,8 @@
     font-size: 13px;
     line-height: 16px;
     font-weight: normal;
+    margin-bottom: 0;
+    text-align: center;
   }
   
   .heart-icon {

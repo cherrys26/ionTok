@@ -2,6 +2,7 @@ import { Component, OnInit, ViewChild, ElementRef, AfterViewInit, ChangeDetector
 import { Swiper } from 'swiper';
 import { Challenge } from 'src/app/models/challenge.model';
 import { ChallengeService } from '../../services/challenge/challenge.service';
+import { LikeService } from 'src/app/services/likes/like.service';
 
 @Component({
   selector: 'app-home',
@@ -15,7 +16,8 @@ export class HomePage implements OnInit, AfterViewInit {
   constructor(
     private challengeService: ChallengeService,
     private cdr: ChangeDetectorRef,
-    private renderer: Renderer2
+    private renderer: Renderer2,
+    private likeService: LikeService
   ) {}
 
   @ViewChild('outerSwiper', { static: false }) outerSwiperRef!: ElementRef;

@@ -24,10 +24,11 @@ export class ChallengeService {
     formData.append('description', description);
     formData.append('challengeType', challengeType);
     formData.append('videoFile', videoFile); // Append the video file
-
+console.log(videoFile)
     return this.http.post(`${this.apiUrl}/Challenge`, formData);
   }
 
+  
   uploadChallengeResponse(description: string, challengeGuid: string, videoFile: File): Observable<any> {
     var formData = new FormData();
     formData.append('description', description);

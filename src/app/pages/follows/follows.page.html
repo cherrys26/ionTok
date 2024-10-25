@@ -1,0 +1,53 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-button (click)="goBack()" fill="clear">
+        <ion-icon name="chevron-back"></ion-icon>
+      </ion-button>
+    </ion-buttons>    
+    <ion-title>{{ userName }}'s Profile</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <div class="segment" >
+    <!-- Segment Control -->
+    <ion-segment [(ngModel)]="selectedSegment" (ionChange)="segmentChanged($event)" [value]="selectedSegment" color="dark" mode="md">
+      <ion-segment-button value="followers">
+        Followers
+      </ion-segment-button>
+      <ion-segment-button value="following">
+        Following
+      </ion-segment-button>
+    </ion-segment>
+  </div>
+  <!-- Content for Followers -->
+  <ng-container *ngIf="selectedSegment === 'followers'">
+    <ion-list>
+      <ion-item *ngFor="let follower of followers" (click)="goToProfile(follower.username)">
+          <ion-avatar slot="start">
+            <img [src]="follower.imageUrl" />
+          </ion-avatar>
+          <ion-label>
+            <h2>{{ follower.username }}</h2>
+            <p>{{ follower.firstName }} {{ follower.lastName }}</p>
+          </ion-label>
+      </ion-item>
+    </ion-list>
+  </ng-container>
+
+  <!-- Content for Following -->
+  <ng-container *ngIf="selectedSegment === 'following'">
+    <ion-list>
+      <ion-item *ngFor="let user of following"  (click)="goToProfile(user.username)">
+          <ion-avatar slot="start">
+            <img [src]="user.imageUrl" />
+          </ion-avatar>
+          <ion-label>
+            <h2>{{ user.username }}</h2>
+            <p>{{ user.firstName }} {{ user.lastName }}</p>
+          </ion-label>
+      </ion-item>
+    </ion-list>
+  </ng-container>
+</ion-content>

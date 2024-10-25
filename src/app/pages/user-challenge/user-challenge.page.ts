@@ -3,6 +3,7 @@ import { ActivatedRoute } from '@angular/router';
 import { Swiper } from 'swiper';
 import { Challenge } from 'src/app/models/challenge.model';
 import { ChallengeService } from 'src/app/services/challenge/challenge.service';
+import { LikeService } from 'src/app/services/likes/like.service';
 
 @Component({
   selector: 'app-user-challenge',
@@ -13,6 +14,7 @@ export class UserChallengePage implements OnInit {
   challenges: Challenge[] = [];
   selectedChallengeIndex: number = 0;
   userName: string = '';
+  userLikes: string[] = [];
 
   @ViewChild('outerSwiper', { static: false }) outerSwiperRef!: ElementRef;
   outerSwiper!: Swiper | null;
@@ -24,13 +26,17 @@ export class UserChallengePage implements OnInit {
     private route: ActivatedRoute,
     private challengeService: ChallengeService, // Inject the service
     private cdr: ChangeDetectorRef,
+    private likeService: LikeService
   ) {}
 
   ngOnInit() {
     this.route.paramMap.subscribe(params => {
       this.selectedChallengeIndex = +params.get('index') || 0; // Get the index from route parameters
       this.userName = params.get('userName');
-      this.loadChallenges(); // Load all challenges after getting the index
+      this.likeService.getLikes().subscribe(likes => {
+        this.userLikes = likes
+        this.loadChallenges();
+      })
     });
   }
 

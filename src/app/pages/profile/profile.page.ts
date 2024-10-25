@@ -3,6 +3,8 @@ import { ChallengeService } from '../../services/challenge/challenge.service';
 import { AuthService } from 'src/app/services/auth/auth.service';
 import { UserProfile } from 'src/app/models/userProfile.model';
 import { ActivatedRoute, Router } from '@angular/router';
+import { FollowService } from 'src/app/services/follow/follow.service';
+import { NavController } from '@ionic/angular';
 
 @Component({
   selector: 'app-profile',
@@ -33,16 +35,25 @@ export class ProfilePage implements OnInit {
   isLoading: boolean = true; // Track overall page loading state
   loadedData: { [key: string]: boolean } = { challenges: false, responses: false, likes: false };
 
+  isFollowing: boolean = false;
+  followersCount: number = 0;
+  followingCount: number = 0;
+
   constructor(
     private challengeService: ChallengeService,
+    private followService: FollowService,
     private authService: AuthService,
     private route: ActivatedRoute,
-    private router: Router
+    private router: Router,
+    private navCtrl: NavController
   ) {}
 
   ngOnInit() {
     this.userName = this.route.snapshot.paramMap.get('userName');
     this.getUser(this.userName);
+    this.isUserFollowing(this.userName);
+    this.getFollowersCount(this.userName);
+    this.getFollowingCount(this.userName);
     this.loadData('challenges'); // Load challenges by default
   }
 
@@ -109,5 +120,45 @@ export class ProfilePage implements OnInit {
   onResponseClick(guid: string){
     this.router.navigate([`/user-response/${guid}`]);
 
+  }
+
+  isUserFollowing(userName: string) {
+    if(!this.userProfile.isLoggedInUser)
+    {
+      this.followService.IsFollowing(userName).subscribe(follow => {
+        this.isFollowing = follow;
+      });
+    }
+  }
+
+  getFollowingCount(userName: string) {
+      this.followService.GetFollowingCount(userName).subscribe(count => {
+        this.followingCount = count;
+      });
+  }  
+
+  getFollowersCount(userName: string) {
+      this.followService.GetFollowersCount(userName).subscribe(count => {
+        this.followersCount = count;
+      });
+  }
+
+  postFollow(){
+    this.followService.postFollow(this.userName).subscribe(response => {
+      this.isFollowing = !this.isFollowing;
+
+      if(this.isFollowing)
+        this.followersCount++
+      else
+        this.followersCount--      
+    })
+  }
+  
+  GoToFollows(userName: string, segment: string) {
+    this.router.navigate([`/follows/${userName}/${segment}`]);
+  }
+
+  goBack() {
+    this.navCtrl.back(); // Navigate back in history
   }
 }
