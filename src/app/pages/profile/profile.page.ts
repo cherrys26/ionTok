@@ -1,10 +1,10 @@
 import { Component, OnInit } from '@angular/core';
 import { ChallengeService } from '../../services/challenge/challenge.service';
-import { AuthService } from 'src/app/services/auth/auth.service';
 import { UserProfile } from 'src/app/models/userProfile.model';
 import { ActivatedRoute, Router } from '@angular/router';
 import { FollowService } from 'src/app/services/follow/follow.service';
 import { NavController } from '@ionic/angular';
+import { ProfileService } from 'src/app/services/profile/profile.service';
 
 @Component({
   selector: 'app-profile',
@@ -23,6 +23,11 @@ export class ProfilePage implements OnInit {
     created: '',
     isLoggedInUser: false,
     imageUrl: '',
+    description: '',
+    websiteUrl: '',
+    followersCount: 0,
+    followingCount: 0,
+    challengesCount: 0,
     get profileImageUrl(): string {
       return this.imageUrl ? this.imageUrl : 'https://ionicframework.com/docs/img/demos/avatar.svg';
     }
@@ -42,7 +47,7 @@ export class ProfilePage implements OnInit {
   constructor(
     private challengeService: ChallengeService,
     private followService: FollowService,
-    private authService: AuthService,
+    private profileService: ProfileService,
     private route: ActivatedRoute,
     private router: Router,
     private navCtrl: NavController
@@ -52,19 +57,16 @@ export class ProfilePage implements OnInit {
     this.userName = this.route.snapshot.paramMap.get('userName');
     this.getUser(this.userName);
     this.isUserFollowing(this.userName);
-    this.getFollowersCount(this.userName);
-    this.getFollowingCount(this.userName);
     this.loadData('challenges'); // Load challenges by default
   }
 
   getUser(userName: string) {
-    this.authService.getUser(userName).subscribe(
+    this.profileService.getUser(userName).subscribe(
       (response) => {
         this.userProfile = response;
         this.isLoading = false; // Stop full-page loading after user data is loaded
       },
       (error) => {
-        console.log(error);
         this.isLoading = false;
       }
     );
@@ -131,26 +133,14 @@ export class ProfilePage implements OnInit {
     }
   }
 
-  getFollowingCount(userName: string) {
-      this.followService.GetFollowingCount(userName).subscribe(count => {
-        this.followingCount = count;
-      });
-  }  
-
-  getFollowersCount(userName: string) {
-      this.followService.GetFollowersCount(userName).subscribe(count => {
-        this.followersCount = count;
-      });
-  }
-
   postFollow(){
     this.followService.postFollow(this.userName).subscribe(response => {
       this.isFollowing = !this.isFollowing;
 
       if(this.isFollowing)
-        this.followersCount++
+        this.userProfile.followersCount++
       else
-        this.followersCount--      
+        this.userProfile.followersCount--      
     })
   }
   
@@ -161,4 +151,14 @@ export class ProfilePage implements OnInit {
   goBack() {
     this.navCtrl.back(); // Navigate back in history
   }
+
+  goToEdit(){
+    this.router.navigate(['/edit-profile'])
+  }
+
+  openExternalUrl() {
+    var url = this.userProfile.websiteUrl.replace(/^https?:\/\//, '');
+    window.open(`https://${url}`, '_system'); // Opens in the device's default browser
+  }
+
 }

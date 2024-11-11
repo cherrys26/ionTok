@@ -1,85 +1,85 @@
+  
+.no-comments {
+  text-align: center;
+  margin-top: 20px;
+  color: gray;
+}
 .comment-toolbar {
-    text-align: center;
-  }
-  
-  .comment-item {
-    display: flex;
-    align-items: flex-start;
-    margin-bottom: 10px;
-  }
-  
-  .comment-content {
-    flex: 1;
-  }
-  
-  .comment-header {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-  }
-  
-  .username {
-    font-weight: bold;
-    font-size: 14px;
-  }
-  
-  .time {
-    font-size: 12px;
-    color: gray;
-  }
-  
-  .comment-text {
-    margin: 5px 0;
-    font-size: 14px;
-  }
-  
-  .comment-actions {
-    text-align: center;
-    font-size: 12px;
-    color: gray;
-  }
-  
-  .like-count {
-    display: inline-block;
-  }
-  
-  .no-comments {
-    text-align: center;
-    margin-top: 20px;
-    color: gray;
-  }
+  text-align: center;
+}
 
-  .comment-like{
-    margin:auto;
-  }
-  
-.heart-icon {
-    transition: color 0.3s; /* Smooth transition for color change */
-  }
-  
-  .filled {
-    color: red; /* Change color to red when filled */
-  }
-  
-  .comment-input-bar {
-    padding: 0;
-    background-color: #1e1e1e; /* Dark background matching your screenshot */
-    border-top: 1px solid rgba(255, 255, 255, 0.1); /* Optional subtle border */
-  }
-  
-  .comment-input-bar ion-item {
-    display: flex;
-    align-items: center;
-  }
-  
-  .comment-input {
-    color: #fff; /* White text for dark mode */
-    font-size: 16px;
-    --placeholder-color: rgba(255, 255, 255, 0.6); /* Placeholder color */
-  }
-  
-  ion-avatar img {
-    border-radius: 50%; /* Ensure avatar is circular */
-  }
-  
-  
+.comment-item {
+  display: flex;
+  align-items: flex-start;
+  margin-bottom: 10px;
+}
+
+.comment-content {
+  flex: 1;
+}
+
+.comment-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.username {
+  font-weight: bold;
+  font-size: 14px;
+}
+
+.time {
+  font-size: 12px;
+  color: gray;
+}
+
+.comment-text {
+  margin: 5px 0;
+  font-size: 14px;
+}
+
+.comment-actions {
+  text-align: center;
+  font-size: 12px;
+  color: gray;
+}
+
+.like-count {
+  display: inline-block;
+}
+
+.no-comments {
+  text-align: center;
+  margin-top: 20px;
+  color: gray;
+}
+
+.comment-like{
+  margin:auto;
+}
+
+.comment-input-bar {
+  padding: 0;
+  background-color: #1e1e1e; /* Dark background matching your screenshot */
+  border-top: 1px solid rgba(255, 255, 255, 0.1); /* Optional subtle border */
+}
+
+.comment-input-bar ion-item {
+  display: flex;
+  align-items: center;
+}
+
+.comment-input {
+  color: #fff; /* White text for dark mode */
+  font-size: 16px;
+  --placeholder-color: rgba(255, 255, 255, 0.6); /* Placeholder color */
+}
+
+ion-avatar img {
+  border-radius: 50%; /* Ensure avatar is circular */
+}
+
+.custom-footer {
+  box-shadow: none;
+}

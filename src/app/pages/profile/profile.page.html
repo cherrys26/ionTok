@@ -6,7 +6,7 @@
       </ion-button>
     </ion-buttons>
         <div class="ion-text-center username">
-          <ion-text>{{ userProfile.userName }}</ion-text>
+          <ion-text>{{ userProfile.username }}</ion-text>
         </div>
     <ion-buttons slot="end" *ngIf="userProfile?.isLoggedInUser">
       <ion-button fill="clear">
@@ -34,19 +34,19 @@
         </ion-col>
         <ion-col size="3" class="m-auto">
           <div class="ion-text-center">
-            <span><strong>{{ challengesCount }}</strong></span> <br />
+            <span><strong>{{ userProfile.challengeCount }}</strong></span> <br />
             <small>challenges</small>
           </div>
         </ion-col>
         <ion-col size="3" class="m-auto">
-          <div class="ion-text-center clickable-div" (click)="GoToFollows(userProfile.userName, 'followers')">
-            <span><strong>{{ followersCount }}</strong></span> <br />
+          <div class="ion-text-center clickable-div" (click)="GoToFollows(userProfile.username, 'followers')">
+            <span><strong>{{ userProfile.followersCount }}</strong></span> <br />
             <small>followers</small>
           </div>
         </ion-col>
         <ion-col size="3" class="m-auto">
-          <div class="ion-text-center clickable-div" (click)="GoToFollows(userProfile.userName, 'following')">
-            <span><strong>{{ followingCount }}</strong></span> <br />
+          <div class="ion-text-center clickable-div" (click)="GoToFollows(userProfile.username, 'following')">
+            <span><strong>{{ userProfile.followingCount }}</strong></span> <br />
             <small>following</small>
           </div>
         </ion-col>
@@ -55,13 +55,21 @@
         </ion-col>
       </ion-row>
       <ion-row>
-        <ion-text class="info">{{ userProfile.description }}</ion-text>
+        <ion-col size="6">
+          <ion-text class="info">{{ userProfile.description }}</ion-text>
+        </ion-col>
+      </ion-row>
+      <ion-row class="ion-padding-top" *ngIf="userProfile.websiteUrl != null">
+        <ion-col size="6">
+          <ion-text class="info underline" (click)="openExternalUrl()">
+            <ion-icon name="link-outline"></ion-icon> {{ userProfile.websiteUrl }}
+          </ion-text>
+        </ion-col>
       </ion-row>
     </ion-grid>
     <div *ngIf="userProfile?.isLoggedInUser" class="btn-edit ion-text-center mt-2">
-      <ion-button color="medium" fill="outline" size="small" expand="block">Edit Profile</ion-button>
+      <ion-button color="medium" fill="outline" size="small" expand="block" (click)="goToEdit()">Edit Profile</ion-button>
     </div>
-
     <div *ngIf="userProfile && !userProfile.isLoggedInUser" class="btn-edit ion-text-center">
       <ion-grid fixed>
         <ion-row class="ion-no-padding">

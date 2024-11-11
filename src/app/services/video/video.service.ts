@@ -5,13 +5,14 @@ import { DataService } from '../data.service';
 
 import { Video } from '../../models/video.model';
 import { Response } from '../../models/response.model';
+import { environment } from 'src/environments/environment';
 
 @Injectable({
   providedIn: 'root'
 })
 
 export class VideoService {
-  private apiUrl = 'https://localhost:7282/api'; // Replace with your API endpoint
+  private apiUrl = environment.apiUrl;
 
   private startIndex = 0;
   private chunkSize = 3;

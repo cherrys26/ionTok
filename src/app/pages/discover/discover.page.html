@@ -1,36 +1,81 @@
-<app-header></app-header>
+<ion-header>
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-button (click)="goBack()" fill="clear">
+        <ion-icon name="chevron-back"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+    <div class="search-container">
+      <ion-searchbar 
+      [(ngModel)]="searchText" 
+      (ionInput)="textChange($event)" 
+      placeholder="Search"
+      search-icon="none"
+      showCancelButton="never"
+      showClearButton="never"
+      class="custom-searchbar"></ion-searchbar>
+      <ion-icon name="search" class="search-icon" (click)="search()"></ion-icon>
+    </div>
+  </ion-toolbar>
+</ion-header>
 
-<ion-content [fullscreen]="true">
-    <swiper-container
-    #swiper
-    (afterinint)="swiperReady()"
-    pager="true" ,
-    loop="true",
-    autoplay="true"
-    class="first-slides"
-  >
-  <swiper-slide *ngFor="let slide of slides">
-    <img src="{{slide.photo}}" />
-  </swiper-slide>
-</swiper-container>
-    <div *ngFor="let trend of trends" class="ion-padding">
-        <ion-row>
-            <ion-col class="ion-text-left ion-align-self-center ion-tappable">
-                <ion-label fixed class="hashtag">#</ion-label>
-                <p><strong>{{trend.trendName}}</strong></p>
+<ion-content>
+
+  <ion-list *ngIf="!isSearched">
+    <ion-item *ngFor="let user of users" (click)="goToProfile(user.userName)">
+        <ion-avatar slot="start">
+          <img [src]="user.imageUrl" />
+        </ion-avatar>
+        <ion-label>
+          <h2>{{ user.userName }}</h2>
+          <p>{{ user.firstName }} {{ user.lastName }}</p>
+        </ion-label>
+    </ion-item>
+  </ion-list>
+
+  <div *ngIf="isSearched">
+    <div class="segment" *ngIf="!isLoading">
+      <ion-segment (ionChange)="segmentChanged($event)" color="dark" mode="md" value="people">
+        <ion-segment-button value="people">People</ion-segment-button>
+        <ion-segment-button value="hashtag">Hashtags</ion-segment-button>
+      </ion-segment>
+  
+      <!-- Challenges Segment -->
+      <div *ngIf="selectedSegment === 'people'">
+        <div *ngIf="segmentLoading">
+          <ion-list>
+            <ion-item>
+              <ion-thumbnail slot="start">
+                <ion-skeleton-text [animated]="true"></ion-skeleton-text>
+              </ion-thumbnail>
+              <ion-label>
+                <h3>
+                  <ion-skeleton-text [animated]="true" style="width: 80%;"></ion-skeleton-text>
+                </h3>
+                <p>
+                  <ion-skeleton-text [animated]="true" style="width: 60%;"></ion-skeleton-text>
+                </p>
+                <p>
+                  <ion-skeleton-text [animated]="true" style="width: 30%;"></ion-skeleton-text>
+                </p>
+              </ion-label>
+            </ion-item>
+          </ion-list>
+        </div>
+        <div *ngIf="!segmentLoading">
+          <ion-list>
+            <ion-item *ngFor="let user of users" (click)="goToProfile(user.userName)">
+                <ion-avatar slot="start">
+                  <img [src]="user.imageUrl" />
+                </ion-avatar>
                 <ion-label>
-                    <p>Trending Hashtag</p>
+                  <h2>{{ user.userName }}</h2>
+                  <p>{{ user.firstName }} {{ user.lastName }}</p>
                 </ion-label>
-            </ion-col>
-            <ion-col class="ion-text-right ion-align-self-center ion-tappable">
-                <ion-label class="count-view">{{trend.viewCounts}}
-                    <ion-icon class="icon-view" name="chevron-forward-outline"></ion-icon>
-                </ion-label>
-            </ion-col>
-        </ion-row>
-        <ion-slides class="trend-slides" [options]="optionsTrends">
-            <ion-slide *ngFor="let profile of trend.trendProfiles">
-                <img src="{{profile.photo}}"/>
-            </ion-slide>
-        </ion-slides>
-    </div></ion-content>
+            </ion-item>
+          </ion-list>
+        </div>
+      </div>
+    </div>
+  </div>
+</ion-content>

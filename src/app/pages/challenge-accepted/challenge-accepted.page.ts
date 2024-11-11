@@ -2,7 +2,6 @@ import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
 import { MediaCapture, MediaFile, CaptureError, CaptureVideoOptions } from '@ionic-native/media-capture/ngx';
 import { DomSanitizer, SafeUrl } from '@angular/platform-browser';
 import { AlertController, NavController } from '@ionic/angular';
-import { TabsService } from '../../services/tabs/tab.service'; 
 import { ChallengeService } from '../../services/challenge/challenge.service';
 import { ActivatedRoute, Router } from '@angular/router';
 
@@ -20,68 +19,64 @@ export class ChallengeAcceptedPage implements OnInit {
   isDescriptionAdded: boolean = false;
   selectedVideoFile: File | null = null; // Store the selected video file
   challengeGuid: string;
+  submitting: boolean = false;
 
   constructor(
-    private mediaCapture: MediaCapture,
     private sanitizer: DomSanitizer,
     private alertController: AlertController,
-    private tabsService: TabsService,
     private challengeService: ChallengeService,
     private route: ActivatedRoute,
-    private router: Router,
-    private navCtrl: NavController // <-- Inject NavController
+    private navCtrl: NavController
   ) {}
 
   ngOnInit() {
-    this.tabsService.hideTabs();
     this.route.queryParams.subscribe(params => {
       this.challengeGuid = params['challengeGuid'];
-      console.log(this.challengeGuid)
     });
   }
+
   ngAfterViewInit() {
     this.fileInput.nativeElement.click()
   }
 
-  ionViewWillLeave() {
-    this.tabsService.showTabs(); // Show the tab bar again when leaving the page
-  }
-
   async onFileSelected(event: any) {
-    this.tabsService.hideTabs(); // Hide the tab bar when the page is initialized
-
-    const file: File = event.target.files[0];
+    const target = event.target as HTMLInputElement;
+    const file: File = target.files ? target.files[0] : null;
 
     if (file) {
       const videoElement = document.createElement('video');
       videoElement.src = URL.createObjectURL(file);
 
-      videoElement.onloadedmetadata = () => {
-        if (videoElement.duration > 30) {
-          this.showAlert();
-          this.resetFileInput();
-          this.tabsService.showTabs(); // Show the tab bar again when leaving the page
-        } else {
-          this.videoUrl = this.sanitizer.bypassSecurityTrustUrl(videoElement.src);
-          this.isVideoSelected = true;
-          this.selectedVideoFile = file; // Store the selected video file
-          console.log('Selected video URL:', this.videoUrl);
-        }
-      };
+      const fileSizeMB = file.size / (1024 * 1024); // Convert file size from bytes to MB
+
+      if (fileSizeMB > 27) { // Check if file size exceeds 27MB
+        this.showErrorAlert('The selected video is too large. Please select a video less than 27MB.');
+      }
+      else {
+        videoElement.onloadedmetadata = () => {
+          if (videoElement.duration > 31) {
+            this.showErrorAlert("The selected video is longer than 30 seconds. Please select a shorter video.");
+            this.resetFileInput();
+          } else {
+            this.videoUrl = this.sanitizer.bypassSecurityTrustUrl(videoElement.src);
+            this.isVideoSelected = true;
+            this.selectedVideoFile = file; // Store the selected video file
+          }
+        };
+      }
     }
   }
 
-  async showAlert() {
-    this.tabsService.showTabs(); // Show the tab bar again when leaving the page
-
+  async showErrorAlert(message: string) {
     const alert = await this.alertController.create({
       header: 'Error',
-      message: 'The selected video is longer than 30 seconds. Please select a shorter video.',
+      message: message,
       buttons: ['OK']
     });
 
     await alert.present();
   }
+
 
   resetFileInput() {
     this.fileInput.nativeElement.value = '';
@@ -100,32 +95,41 @@ export class ChallengeAcceptedPage implements OnInit {
 
   async submit() {
     if (this.selectedVideoFile) {
-      try {
-        const response = await this.challengeService.uploadChallengeResponse(this.description, this.challengeGuid, this.selectedVideoFile).toPromise();
-        this.tabsService.showTabs(); // Show the tab bar again when leaving the page
+      this.submitting = true;
 
-        const alert = await this.alertController.create({
-          header: 'Success',
-          message: 'Challenge Accepted!',
-          buttons: [{
-            text:'OK',
-            handler: () => {
-              this.cancel();
-            }
-          }]
-        });
-    
-        await alert.present();      
-      } catch (error) {
-          this.tabsService.showTabs(); // Show the tab bar again when leaving the page
+        this.challengeService.uploadChallengeResponse(this.description, this.challengeGuid, this.selectedVideoFile).subscribe({
+          next: async (response) =>{
+            const alert = await this.alertController.create({
+              header: 'Success',
+              message: 'Challenge Accepted!',
+              buttons: [{
+                text:'OK',
+                handler: () => {
+                  this.cancel();
+                }
+              }]
+            });
+        
+            await alert.present();     
+          },
+          error: async (err) => {
+            this.submitting = false;
 
-          const alert = await this.alertController.create({
-            header: 'Error',
-            message: `Error submitting response. ${error.error}`,
-            buttons: ['OK']
-          });
-      
-          await alert.present();      }
+            const alert = await this.alertController.create({
+              header: 'Error',
+              message: `Error submitting response. ${err.error}`,
+              buttons: [{
+                text:'OK',
+                handler: () => {
+                  this.cancel();
+                }
+              }]
+            });
+        
+            await alert.present();      
+          }
+        }
+        );
     }
   }
 

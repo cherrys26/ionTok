@@ -7,7 +7,6 @@ import { Component, Input, AfterViewInit, ViewChild, ElementRef } from '@angular
 })
 export class FooterComponent implements AfterViewInit {
   @Input() video: any;  // Input for the video object
-  @Input() title: string;
   @ViewChild('descriptionElement') descriptionElement: ElementRef;  // Access to description element
 
   isExpanded: boolean = false;
@@ -16,7 +15,7 @@ export class FooterComponent implements AfterViewInit {
   ngAfterViewInit() {
     this.video.userName = this.video.userName
     // Check if the description overflows
-    if (this.video?.description && this.video.description.length > 100) {
+    if (this.video?.description && this.video.description.length > 70) {
       this.showToggleButton = true;
     } else {
       this.showToggleButton = false;

@@ -76,6 +76,11 @@ const routes: Routes = [
         canMatch: [authGuard]  // Apply the guard function
       },
       {
+        path: 'edit-profile',
+        loadChildren: () => import('./pages/edit-profile/edit-profile.module').then( m => m.EditProfilePageModule),
+        canMatch: [authGuard]  // Apply the guard function
+      },
+      {
         path: '',
         redirectTo: 'home',
         pathMatch: 'full',
@@ -86,8 +91,7 @@ const routes: Routes = [
     path: '',
     loadChildren: () => import('./tabs/tabs.module').then(m => m.TabsPageModule),
     canMatch: [authGuard]  // Apply the guard function
-  },
-
+  }
 ];
 @NgModule({
   imports: [

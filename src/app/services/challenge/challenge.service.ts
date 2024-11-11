@@ -1,15 +1,16 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Observable } from 'rxjs';
+import { map, Observable } from 'rxjs';
 
 import { Challenge } from '../../models/challenge.model';
+import { environment } from 'src/environments/environment';
 
 @Injectable({
   providedIn: 'root'
 })
 
 export class ChallengeService {
-  private apiUrl = 'https://localhost:7282/api';
+  private apiUrl = environment.apiUrl;
   
   constructor(private http: HttpClient) {}
 
@@ -20,12 +21,16 @@ export class ChallengeService {
   }
 
   uploadChallenge(description: string, challengeType: string, videoFile: File): Observable<any> {
-    var formData = new FormData();
-    formData.append('description', description);
-    formData.append('challengeType', challengeType);
-    formData.append('videoFile', videoFile); // Append the video file
-console.log(videoFile)
-    return this.http.post(`${this.apiUrl}/Challenge`, formData);
+    var req = new FormData();
+    req.append('description', description);
+    req.append('challengeType', challengeType);
+    req.append('videoFile', videoFile); // Append the video file
+
+    return this.http.post(`${this.apiUrl}/Challenge`, req).pipe(
+      map((response: any) => {
+        return response
+      })
+    );
   }
 
   
@@ -35,7 +40,11 @@ console.log(videoFile)
     formData.append('challengeGuid', challengeGuid);
     formData.append('videoFile', videoFile); // Append the video file
 
-    return this.http.post(`${this.apiUrl}/ChallengeResponse`, formData);
+    return this.http.post(`${this.apiUrl}/ChallengeResponse`, formData).pipe(
+      map((response: any) => {
+        return response
+      })
+    );
   }
 
   getUserChallenges(userName: string): Observable<any> {

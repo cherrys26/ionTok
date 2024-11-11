@@ -1,22 +1,18 @@
-<ion-header class="ion-no-border ion-text-center">
-  <ion-toolbar>
-    <ion-title>
-      <strong>For You</strong>
-    </ion-title>
-  </ion-toolbar>
-</ion-header>
-
 <ion-content>
+  <ion-refresher *ngIf="refreshEnabled" slot="fixed" (ionRefresh)="refresh($event)">
+    <ion-refresher-content></ion-refresher-content>
+  </ion-refresher>
   <div *ngIf="isLoading" class="loading-container">
     <ion-spinner name="crescent"></ion-spinner>
   </div>
-  <swiper-container #outerSwiper class="swiper-v" direction="vertical" *ngIf="!isLoading">
-    <swiper-slide *ngFor="let challenge of challenges">
+  <swiper-container #outerSwiper class="swiper-v" direction="vertical" *ngIf="!isLoading" allowSlideNext=true (swiperslidechange)="slideChanged($event)">
+    <swiper-slide *ngFor="let challenge of challenges; let i = index">
       
       <swiper-container #innerSwiper class="swiper-h" direction="horizontal">
         
-        <swiper-slide>
+        <swiper-slide  class="slide-index-{{i}}">
           <div class="video-wrapper">
+            <div class="ion-text-center challenge-title">Main Challenge</div>
             <video autoplay loop playsinline [src]="challenge.videoUrl" [muted]="true" [style.height]="videoHeight"></video>
             <app-feed [video]="challenge" [challengeGuid]="challenge.guid" [challengeType]="'CHALLENGE'"></app-feed>
             <app-footer [video]="challenge" [title]="'Main Challenge'"></app-footer>
@@ -25,6 +21,7 @@
         
         <swiper-slide *ngFor="let response of challenge.responses">
           <div class="video-wrapper">
+            <div class="ion-text-center challenge-title">Challenge Response</div>
             <video autoplay loop playsinline [src]="response.videoUrl" [muted]="true" [style.height]="videoHeight"></video>
             <app-feed [video]="response" [challengeGuid]="challenge.guid" [challengeType]="'CHALLENGE_RESPONSE'"></app-feed>
             <app-footer [video]="response" [title]="'Challenge Response'"></app-footer>

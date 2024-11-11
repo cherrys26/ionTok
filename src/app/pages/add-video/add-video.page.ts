@@ -19,6 +19,7 @@ export class AddVideoPage implements OnInit {
   isVideoSelected: boolean = false;
   isDescriptionAdded: boolean = false;
   selectedVideoFile: File | null = null; // Store the selected video file
+  submitting: boolean = false;
 
   constructor(
     private mediaCapture: MediaCapture,
@@ -80,7 +81,8 @@ export class AddVideoPage implements OnInit {
   async onFileSelected(event: any) {
     this.tabsService.hideTabs(); // Hide the tab bar when the page is initialized
 
-    const file: File = event.target.files[0];
+    const target = event.target as HTMLInputElement;
+    const file: File = target.files ? target.files[0] : null;
 
     if (file) {
       const videoElement = document.createElement('video');
@@ -88,8 +90,8 @@ export class AddVideoPage implements OnInit {
 
       const fileSizeMB = file.size / (1024 * 1024); // Convert file size from bytes to MB
 
-      if (fileSizeMB > 30) { // Check if file size exceeds 30MB
-        this.showErrorAlert('The selected video is too large. Please select a video less than 30MB.');
+      if (fileSizeMB > 27) { // Check if file size exceeds 27MB
+        this.showErrorAlert('The selected video is too large. Please select a video less than 27MB.');
       }
       else{
         videoElement.onloadedmetadata = () => {
@@ -100,7 +102,6 @@ export class AddVideoPage implements OnInit {
             this.videoUrl = this.sanitizer.bypassSecurityTrustUrl(videoElement.src);
             this.isVideoSelected = true;
             this.selectedVideoFile = file; // Store the selected video file
-            console.log('Selected video URL:', this.videoUrl);
           }
         };
       }
@@ -108,8 +109,6 @@ export class AddVideoPage implements OnInit {
   }
 
   async showErrorAlert(message: string) {
-    this.tabsService.showTabs(); // Show the tab bar again when leaving the page
-
     const alert = await this.alertController.create({
       header: 'Error',
       message: message,
@@ -138,34 +137,47 @@ export class AddVideoPage implements OnInit {
 
   async submit() {
     if (this.selectedVideoFile) {
-      try {
-        console.log(this.selectedVideoFile)
-
+        this.submitting = true;
         const challengeType = 'VIDEO'; // Set your challenge type accordingly
-        await this.challengeService.uploadChallenge(this.description, challengeType, this.selectedVideoFile).toPromise();
-
-        const alert = await this.alertController.create({
-          header: 'Success',
-          message: 'Challenge Accepted!',
-          buttons: [{
-            text:'OK',
-            handler: () => {
-              this.cancel();
-            }
-          }]
+        this.challengeService.uploadChallenge(this.description, challengeType, this.selectedVideoFile).subscribe({
+          next: async (response) => {
+            const alert = await this.alertController.create({
+              header: 'Success',
+              message: 'Challenge Created!',
+              buttons: [{
+                text:'OK',
+                handler: () => {
+                  this.toHome();
+                }
+              }]
+            });
+        
+            await alert.present();          
+          },
+          error: async(error) => {
+            this.submitting = false;
+            const alert = await this.alertController.create({
+              header: 'Error',
+              message: `Error submitting challenge. ${error.error}`,
+              buttons: [{
+                text:'OK',
+                handler: () => {
+                  this.cancel();
+                }
+              }]
+            });
+        
+            await alert.present();
+          }
         });
-    
-        await alert.present();      
-      } catch (error) {
-        console.error('Error submitting video:', error);
-      }
+
     }
   }
 
   cancel() {
     this.selectedVideoFile = null;
     this.videoUrl = null; // Reset the selected video
-    this.description = null; // Clear the description
+    this.description = ''; // Clear the description
     this.isVideoSelected = false; // Reset the selection state
     this.isDescriptionAdded = false; // Go back to the first step
   
@@ -173,5 +185,18 @@ export class AddVideoPage implements OnInit {
       this.fileInput.nativeElement.value = '';
     }
     this.router.navigate([`/tabs/add-video`]);
+  }
+  
+  toHome() {
+    this.selectedVideoFile = null;
+    this.videoUrl = null; // Reset the selected video
+    this.description = ''; // Clear the description
+    this.isVideoSelected = false; // Reset the selection state
+    this.isDescriptionAdded = false; // Go back to the first step
+  
+    if (this.fileInput && this.fileInput.nativeElement) {
+      this.fileInput.nativeElement.value = '';
+    }
+    this.router.navigate([`/tabs/home`]);
   }
 }

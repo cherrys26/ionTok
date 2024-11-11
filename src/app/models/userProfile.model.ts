@@ -9,5 +9,10 @@ export interface UserProfile {
     isLoggedInUser: boolean;
     imageUrl?: string;
     profileImageUrl: string; // Add the property for image URL
+    description: string;
+    followersCount: number;
+    followingCount: number;
+    challengesCount: number;
+    websiteUrl: string;
   }
   

@@ -1,43 +1,37 @@
 <app-header></app-header>
 <ion-content>
   <!-- Step 1: Select or Record Video -->
-  <div *ngIf="!isVideoSelected">
+  <div *ngIf="!isVideoSelected" class="upload-container">
     <div class="file-input-container">
       <input type="file" accept="video/*" (change)="onFileSelected($event)" #fileInput hidden />
-      <ion-button expand="full" (click)="fileInput.click()">Select Video from Gallery</ion-button>
+      <ion-icon name="cloud-upload-outline" class="upload-icon"></ion-icon>
+      <p class="upload-text">Select a Video</p>
     </div>
-  </div>
-
-  <!-- Cancel Button shown only when a video is selected -->
-  <ion-button *ngIf="isVideoSelected" class="cancel-button" (click)="cancel()" fill="clear" color="danger">Cancel</ion-button>
-
-  <!-- Step 2: Show Video and Add Description -->
-  <div *ngIf="isVideoSelected && !isDescriptionAdded">
-    <div class="video-container" *ngIf="videoUrl">
-      <video [src]="videoUrl" controls></video>
-    </div>
-
-    <ion-item>
-      <ion-label position="floating">Add a Description (max 300 characters)</ion-label>
-      <ion-textarea [(ngModel)]="description" maxlength="300"></ion-textarea>
-    </ion-item>
-    
-    <p>{{ description.length }}/300 characters</p>
-    
-    <ion-button expand="full" (click)="proceedToReview()">
-      Next: Review
+    <ion-button (click)="fileInput.click()" expand="block" class="record-button">
+      Select Video
     </ion-button>
   </div>
 
-  <!-- Step 3: Review and Submit -->
-  <div *ngIf="isDescriptionAdded">
-    <div class="video-container" *ngIf="videoUrl">
-      <video [src]="videoUrl" controls></video>
-    </div>
-
-    <p><strong>Description:</strong> {{ description }}</p>
-
-    <ion-button expand="full" (click)="submit()">Submit</ion-button>
-    <ion-button expand="full" color="light" (click)="goBackToEdit()">Go Back</ion-button>
+ <!-- Step 2: Review and Submit -->
+ <div *ngIf="isVideoSelected" class="review-container">
+  <div class="video-container">
+    <video [src]="videoUrl" controls></video>
   </div>
+  <div class="description">
+    <ion-item>
+      <ion-label position="floating" class="mb-10">Description</ion-label>
+      <ion-textarea [(ngModel)]="description" maxlength="150"></ion-textarea>
+    </ion-item>
+    <p class="character-count">{{ description.length }}/150 characters</p>
+  </div>
+  <!-- Action buttons -->
+  <div class="action-buttons" *ngIf="!submitting">
+    <ion-button expand="block" class="share-btn" fill="outline" color="medium" (click)="cancel()">Cancel</ion-button>
+    <ion-button expand="block" class="share-btn" (click)="submit()">Submit</ion-button>
+  </div>
+  <div class="action-buttons" *ngIf="submitting">
+    <ion-spinner ng-hide="showing" class="spinner-energized"></ion-spinner>
+  </div>
+</div>
+
 </ion-content>

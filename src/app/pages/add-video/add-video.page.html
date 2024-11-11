@@ -20,14 +20,17 @@
   <div class="description">
     <ion-item>
       <ion-label position="floating" class="mb-10">Description</ion-label>
-      <ion-textarea [(ngModel)]="description" maxlength="300"></ion-textarea>
+      <ion-textarea [(ngModel)]="description" maxlength="150"></ion-textarea>
     </ion-item>
-    <p class="character-count">{{ description.length }}/300 characters</p>
+    <p class="character-count">{{ description.length }}/150 characters</p>
   </div>
   <!-- Action buttons -->
-  <div class="action-buttons">
+  <div class="action-buttons" *ngIf="!submitting">
     <ion-button expand="block" class="share-btn" fill="outline" color="medium" (click)="cancel()">Cancel</ion-button>
-    <ion-button [disabled]="description.length > 300 || description.length === 0" expand="block" class="share-btn" (click)="submit()">Share</ion-button>
+    <ion-button [disabled]="description.length > 150 || description.length === 0" expand="block" class="share-btn" (click)="submit()">Share</ion-button>
+  </div>
+  <div class="action-buttons" *ngIf="submitting">
+    <ion-spinner ng-hide="showing" class="spinner-energized"></ion-spinner>
   </div>
 </div>
 

@@ -3,6 +3,7 @@ import { Swiper } from 'swiper';
 import { Challenge } from 'src/app/models/challenge.model';
 import { ChallengeService } from '../../services/challenge/challenge.service';
 import { LikeService } from 'src/app/services/likes/like.service';
+import { TabsPage } from 'src/app/tabs/tabs.page';
 
 @Component({
   selector: 'app-home',
@@ -12,12 +13,15 @@ import { LikeService } from 'src/app/services/likes/like.service';
 export class HomePage implements OnInit, AfterViewInit {
   challenges: Challenge[] = [];
   isLoading: boolean = true; // Track loading state
+  activeIndex: number = 0;
+  refreshEnabled: boolean = true;
 
   constructor(
     private challengeService: ChallengeService,
     private cdr: ChangeDetectorRef,
     private renderer: Renderer2,
-    private likeService: LikeService
+    private likeService: LikeService,
+    private tabsPage: TabsPage
   ) {}
 
   @ViewChild('outerSwiper', { static: false }) outerSwiperRef!: ElementRef;
@@ -28,17 +32,18 @@ export class HomePage implements OnInit, AfterViewInit {
 
   ngOnInit() {
     this.loadVideos();
-  }
-
-  ngAfterViewInit() {
-    requestAnimationFrame(() => {
-      this.initializeSwipers();
+    this.tabsPage.homeTabClickedAgain.subscribe(() => {
+      this.handleHomeTabClickedAgain();
     });
   }
 
+  ngAfterViewInit() {
+
+  }
+
   loadVideos() {
-    this.challengeService.getAllChallenges().subscribe(
-      (response) => {
+    this.challengeService.getAllChallenges().subscribe({
+      next: (response) => {
         this.challenges = response;
         this.isLoading = false; // Hide spinner when videos are loaded
         this.cdr.detectChanges(); // Ensure changes are reflected in the DOM
@@ -47,11 +52,11 @@ export class HomePage implements OnInit, AfterViewInit {
           this.initializeSwipers(); // Re-initialize Swipers after videos are loaded
         });
       },
-      (error) => {
+      error: (error) => {
         console.error('Error loading challenges:', error);
         this.isLoading = false; // Hide spinner even on error
       }
-    );
+  });
   }
 
   initializeSwipers() {
@@ -65,8 +70,7 @@ export class HomePage implements OnInit, AfterViewInit {
         slidesPerView: 1,
         spaceBetween: 10,
         on: {
-          slideChange: () => {
-            console.log('Outer slide changed');
+          slideChange: (event) => {
           },
         },
       });
@@ -81,16 +85,35 @@ export class HomePage implements OnInit, AfterViewInit {
         const innerSwiper = new Swiper(innerSwiperElement, {
           direction: 'horizontal',
           slidesPerView: 1,
-          spaceBetween: 10,
-          on: {
-            slideChange: () => {
-              console.log('Inner slide changed');
-            },
-          },
+          spaceBetween: 10
         });
 
         this.innerSwipers.push(innerSwiper);
       }
     });
+  }
+  
+  slideChanged(e){
+    var swiper = e.detail[0];
+
+    if((swiper.isVertical() && swiper.activeIndex == 0) || (swiper.isHorizontal() && swiper.slides[0].classList.contains("slide-index-0")))
+      this.refreshEnabled = true;
+    else
+      this.refreshEnabled = false;
+  }
+
+  refresh(event) {
+      setTimeout(() => {
+        this.loadVideos();
+        requestAnimationFrame(() => {
+          this.initializeSwipers();
+        });
+          event.target.complete();
+      }, 1500);
+  }
+
+  handleHomeTabClickedAgain() {
+    this.cdr.detectChanges();
+    this.outerSwiper.update()
   }
 }

@@ -1,0 +1,105 @@
+<app-header></app-header>
+
+<ion-content [fullscreen]="true" class="ion-padding">
+  <!-- Avatar Section -->
+  <div class="avatar-container" (click)="openActionSheet()">
+    <ion-avatar class="avatar">
+      <img 
+        [src]="userProfile.imageUrl || 'https://ionicframework.com/docs/img/demos/avatar.svg'" 
+        alt="Profile Image" 
+        class="image-round" />
+    </ion-avatar>
+    <div class="edit-icon">
+      <ion-icon name="camera-outline"></ion-icon>
+    </div>
+  </div>
+  <form [formGroup]="profileForm" (ngSubmit)="onSubmit()">
+  <ion-grid>
+    <ion-row>
+      <ion-col size="12" size-md="6">
+        <ion-item>
+          <ion-label position="stacked">First Name</ion-label>
+          <ion-input formControlName="firstName" required></ion-input>
+        </ion-item>
+        <ion-note color="danger" *ngIf="profileForm.get('firstName')?.hasError('required')">
+          First Name is required.
+        </ion-note>
+      </ion-col>
+
+      <ion-col size="12" size-md="6">
+        <ion-item>
+          <ion-label position="stacked">Last Name</ion-label>
+          <ion-input formControlName="lastName" required></ion-input>
+        </ion-item>
+        <ion-note color="danger" *ngIf="profileForm.get('lastName')?.hasError('required') && profileForm.get('lastName')?.touched">
+          Last Name is required.
+        </ion-note>
+      </ion-col>
+    </ion-row>
+
+    <ion-row>
+      <ion-col size="12" size-md="6">
+        <ion-item>
+          <ion-label position="stacked">Date of Birth</ion-label>
+          <ion-datetime-button datetime="datetime" (click)="openDatePicker()"></ion-datetime-button>
+        </ion-item>
+        <ion-note color="danger" *ngIf="profileForm.get('birthday')?.hasError('required') && profileForm.get('birthday')?.touched">
+          Birthday is required.
+        </ion-note>
+        <ion-note color="danger" *ngIf="profileForm.get('birthday')?.hasError('minAge') && profileForm.get('birthday')?.touched">
+          You must be at least 12 years old.
+        </ion-note>
+      </ion-col>
+    </ion-row>
+    
+    <ion-row>
+      <ion-col size="12" size-md="6">
+        <ion-item lines="none" style="--padding-end: 0;">
+          <ion-label position="stacked">Bio</ion-label>
+          <ion-textarea type="text" formControlName="description" [counter]="true" maxlength="150"></ion-textarea>
+        </ion-item>
+      </ion-col>
+
+      <ion-col size="12" size-md="6">
+        <ion-item>
+          <ion-label position="stacked">Website Url</ion-label>
+          <ion-input formControlName="websiteUrl"></ion-input>
+        </ion-item>
+      </ion-col>
+    </ion-row>
+  </ion-grid>
+  <ion-button expand="full" type="submit" *ngIf="!isSubmitting">Update</ion-button>
+  <ion-button fill="outline" expand="block" (click)="goBack()">Cancel</ion-button>
+  <div *ngIf="isSubmitting" class="spinner-container">
+    <ion-spinner color="dark"></ion-spinner>
+  </div>
+  </form>
+<ion-modal keepContentsMounted="true" [isOpen]="isDateModalOpen">
+  <ng-template>
+    <ion-datetime id="datetime" presentation="date" [value]="profileForm.get('birthday').value" (ionChange)="onDateChange($event)"></ion-datetime>
+    <ion-footer>
+      <ion-button expand="full" (click)="closeDatePicker()">Done</ion-button>
+    </ion-footer>
+  </ng-template>
+</ion-modal>
+
+  <!-- Hidden File Input -->
+  <input 
+    type="file" 
+    id="file-input" 
+    accept="image/*" 
+    (change)="onFileSelected($event)" 
+    style="display: none;" 
+  />
+
+  <!-- Preview Modal -->
+  <ion-modal [isOpen]="isPreviewOpen" (ionModalDidDismiss)="cancel()">
+    <ng-container *ngIf="selectedImagePreview">
+      <img [src]="selectedImagePreview" class="preview-img" />
+      <div class="submit-btns">
+        <ion-button expand="block" (click)="saveProfileImage()">Save</ion-button>
+        <ion-button fill="outline" expand="block" (click)="cancel()">Cancel</ion-button>
+      </div>
+    </ng-container>
+  </ion-modal>
+</ion-content>

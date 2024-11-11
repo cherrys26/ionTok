@@ -4,19 +4,20 @@ import { JwtHelperService } from '@auth0/angular-jwt';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { jwtDecode } from 'jwt-decode';
+import { environment } from 'src/environments/environment';
 
 @Injectable({
   providedIn: 'root'
 })
 export class AuthService {
-  private baseApiUrl = 'https://localhost:7282'; // Replace with your API URL
+  private baseApiUrl = environment.baseApiUrl;
 
   constructor(private http: HttpClient, private jwtHelper: JwtHelperService) {}
 
   register(registerRequest: any): Observable<any> {
     return this.http.post(`${this.baseApiUrl}/Identity/Register`, registerRequest).pipe(
       map((response: any) => {
-        console.log(response)
+        return response
       })
     );
   }
@@ -24,7 +25,7 @@ export class AuthService {
   confirmEmail(model: {userId: string, code: string}): Observable<any>{
     return this.http.post(`${this.baseApiUrl}/Identity/ConfirmEmail?userId=${model.userId}&code=${model.code}`, null).pipe(
       map((response: any) => {
-        console.log(response)
+        return response
       })
     );
   }
@@ -55,10 +56,6 @@ export class AuthService {
 
   getToken(): string | null {
     return localStorage.getItem('jwtToken');
-  }
-
-  getUser(userName : string): Observable<any> {
-    return this.http.get(`${this.baseApiUrl}/Identity/GetUser/${userName}`)
   }
 
   getUsernameFromToken(): string | null {

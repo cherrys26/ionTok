@@ -14,6 +14,7 @@ ion-content {
   border-radius: 10px; /* Optional rounded corners */
   margin: auto;
   margin-top: 20vh;
+  background: rgba(255, 255, 255, 0.5);
 }
 
 .card-header-text {
@@ -21,6 +22,7 @@ ion-content {
   font-size: 2.5em; /* Larger font size for the header */
   color: #000000; /* Primary color for the header */
   margin: 20px 0; /* Space above and below the header */
+  font-weight: bolder;
 }
 
 .header-text {
@@ -37,6 +39,10 @@ form {
   padding: 20px; /* Inner padding for form elements */
 }
 
+ion-list{
+  background: none;
+}
+
 ion-input {
   --background: transparent; /* Set the background to transparent */
   --color: inherit; /* Inherit the text color from the parent */
@@ -46,6 +52,7 @@ ion-input {
 ion-item {
   --ion-item-background: transparent; /* Remove the background of the item */
   margin-bottom: 20px;
+  font-weight: bold;
 }
 
 .login-button {
@@ -76,7 +83,7 @@ ion-item {
 }
 
 ::part(background) {
-  background: url("https://img.freepik.com/free-vector/comic-style-background_23-2148836600.jpg");
+  background: url("https://media.istockphoto.com/id/1335420509/vector/colorful-versus-comic-style-background-with-lightning-and-halftone-effect.jpg?s=612x612&w=0&k=20&c=xJPYvjsEtJpZrFF1jjYa1q-u0XmaX7B6jlxXm7_1tcs=");
   background-position: center;
   background-repeat: no-repeat;
   background-size: 100% 100%;

@@ -1,4 +1,4 @@
-import {Component, OnInit} from '@angular/core';
+import {Component, EventEmitter, OnInit, Output} from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { AuthService } from '../services/auth/auth.service';
 
@@ -11,6 +11,10 @@ export class TabsPage implements OnInit {
     isIconChange: boolean = true;
     isNotHome: boolean = true;
     userName: string;
+    selectedTab: string;
+    
+    @Output() homeTabClickedAgain = new EventEmitter<void>();
+
     constructor(private route: ActivatedRoute, private authService: AuthService) {
     }
     ngOnInit() {
@@ -19,5 +23,14 @@ export class TabsPage implements OnInit {
         });
       }
 
+    tabClicked(e) {
+        const tab = e.tab;
+        this.selectedTab = tab;
+    }
 
+    homeClicked(event) {
+        if (this.selectedTab === 'home') {
+            this.homeTabClickedAgain.emit();
+        }
+    }
 }

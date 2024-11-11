@@ -1,38 +1,51 @@
-<ion-header>
-  <ion-toolbar class="comment-toolbar">
-    <ion-title>Comments</ion-title>
-  </ion-toolbar>
-</ion-header>
-
-<ion-content class="">
-  <ion-list *ngIf="comments.length > 0; else noComments">
-    <ion-item lines="none" *ngFor="let comment of comments" class="comment-item">
-      <ion-avatar slot="start">
-        <img [src]="comment.userImageUrl" />
-      </ion-avatar>
-      <ion-label class="comment-content">
-        <div class="comment-header">
-          <span class="username">{{ comment.username }}</span>
-          <span class="time">{{ comment.created }}</span>
-        </div>
-        <p class="comment-text">{{ comment.text }}</p>
-      </ion-label>
-      <div slot="end" class="comment-like" (click)="toggleLike(comment.guid, 'COMMENT')">
-        <ion-icon 
-          [name]="comment.isLiked ? 'heart' : 'heart-outline'" 
-          class="heart-icon" 
-          [ngClass]="{'filled': comment.isLiked}">
-        </ion-icon>
-        <div class="comment-actions">
-          <span class="like-count">{{ comment.likesCount }}</span>
-        </div>
-      </div>
-    </ion-item>
-  </ion-list>
-
-  <ng-template #noComments>
-    <div class="no-comments">
-      <p>No comments available.</p>
-    </div>
-  </ng-template>
-</ion-content>
+    <ion-header>
+      <ion-toolbar class="comment-toolbar">
+        <ion-title>Comments</ion-title>
+      </ion-toolbar>
+    </ion-header>
+      <ion-content class="scrollable-content">
+      <ng-template>
+        <ion-list *ngIf="comments.length > 0; else noComments">
+          <ion-item lines="none" *ngFor="let comment of comments" class="comment-item">
+            <ion-avatar slot="start">
+              <img [src]="comment.userImageUrl" />
+            </ion-avatar>
+            <ion-label class="comment-content">
+              <div class="comment-header">
+                <span class="username">{{ comment.username }}</span>
+                <span class="time">{{ comment.created | date:'MMM d, y, h:mm a'}}</span>
+              </div>
+              <p class="comment-text">{{ comment.text }}</p>
+            </ion-label>
+            <div slot="end" class="comment-like" (click)="toggleLike(comment.guid, 'COMMENT')">
+              <ion-icon 
+                [name]="comment.isLiked ? 'heart' : 'heart-outline'" 
+                class="heart-icon" 
+                [ngClass]="{'filled': comment.isLiked}">
+              </ion-icon>
+              <div class="comment-actions">
+                <span class="like-count">{{ comment.likesCount }}</span>
+              </div>
+            </div>
+          </ion-item>
+        </ion-list>
+      
+          <div *ngIf="comments.length == 0" class="no-comments">
+            <p>No comments available.</p>
+          </div>
+        </ng-template>
+      </ion-content>
+      <ion-footer class="custom-footer">
+        <ion-textarea 
+          fill="outline" 
+          shape="round" 
+          placeholder="Add a Comment"
+          [maxlength]="300"
+          [counter]="true"
+          [(ngModel)]="newComment"
+          [clearOnEdit]="true">
+          <ion-button fill="clear" slot="end" (click)="postComment(video.guid)">
+            <ion-icon slot="icon-only" name="send"></ion-icon>
+          </ion-button>
+        </ion-textarea>
+      </ion-footer>

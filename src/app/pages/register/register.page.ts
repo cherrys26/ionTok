@@ -98,17 +98,6 @@ export class RegisterPage {
     }
   }
 
-  convertFileToBase64(file: File): Promise<string> {
-    return new Promise((resolve, reject) => {
-      const reader = new FileReader();
-      reader.onload = () => {
-        resolve(reader.result as string);
-      };
-      reader.onerror = error => reject(error);
-      reader.readAsDataURL(file); // Convert to base64
-    });
-  }
-
   async onSubmit() {
     this.isSubmitting = true; // Set submitting state
 
