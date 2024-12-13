@@ -9,5 +9,6 @@ export interface Challenge {
     url: string;
     userPic: string;
     responses: Response[];
+    responseCount: number;
   }
   

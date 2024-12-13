@@ -4,8 +4,8 @@
 
 export const environment = {
   production: false,
-  baseApiUrl: 'http://dev.challengeme.api',
-  apiUrl: 'http://dev.challengeme.api/api'
+  baseApiUrl: 'https://dev.challengeme.api',
+  apiUrl: 'https://dev.challengeme.api/api'
 };
 
 /*

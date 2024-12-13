@@ -5,6 +5,7 @@ import { AlertController, NavController } from '@ionic/angular';
 import { TabsService } from '../../services/tabs/tab.service'; 
 import { ChallengeService } from '../../services/challenge/challenge.service';
 import { Router } from '@angular/router';
+import { HomeRefreshService } from 'src/app/services/homeRefresh/home-refresh.service';
 
 @Component({
   selector: 'app-add-video',
@@ -28,7 +29,8 @@ export class AddVideoPage implements OnInit {
     private tabsService: TabsService,
     private challengeService: ChallengeService, // Inject the video upload service
     private navCtrl: NavController,
-    private router: Router
+    private router: Router,
+    private homeRefreshService: HomeRefreshService
   ) {}
 
   ngOnInit() {
@@ -78,34 +80,55 @@ export class AddVideoPage implements OnInit {
     );
   }
 
-  async onFileSelected(event: any) {
-    this.tabsService.hideTabs(); // Hide the tab bar when the page is initialized
-
+  async onFileSelected(event: Event) {
+    // Hide the tab bar when the page is initialized
+    this.tabsService.hideTabs();
+  
     const target = event.target as HTMLInputElement;
-    const file: File = target.files ? target.files[0] : null;
-
-    if (file) {
-      const videoElement = document.createElement('video');
-      videoElement.src = URL.createObjectURL(file);
-
-      const fileSizeMB = file.size / (1024 * 1024); // Convert file size from bytes to MB
-
-      if (fileSizeMB > 27) { // Check if file size exceeds 27MB
-        this.showErrorAlert('The selected video is too large. Please select a video less than 27MB.');
-      }
-      else{
-        videoElement.onloadedmetadata = () => {
-          if (videoElement.duration > 31) {
-            this.showErrorAlert("The selected video is longer than 30 seconds. Please select a shorter video.");
-            this.resetFileInput();
-          } else {
-            this.videoUrl = this.sanitizer.bypassSecurityTrustUrl(videoElement.src);
-            this.isVideoSelected = true;
-            this.selectedVideoFile = file; // Store the selected video file
-          }
-        };
-      }
+    const file: File | null = target.files ? target.files[0] : null;
+  
+    if (!file) {
+      this.showErrorAlert("No file selected. Please choose a video file.");
+      return;
     }
+  
+    // Best practice: Check the file type to ensure it’s a video
+    if (!file.type.startsWith("video/")) {
+      this.showErrorAlert("Invalid file type. Please select a video file.");
+      this.resetFileInput();
+      return;
+    }
+  
+    // Create a video element to load the metadata (such as duration)
+    const videoElement = document.createElement("video");
+    videoElement.src = URL.createObjectURL(file);
+  
+    // Use a Promise to handle the loaded metadata asynchronously
+    try {
+      await this.loadVideoMetadata(videoElement);
+  
+      // Check video duration
+      if (videoElement.duration > 30) {
+        this.showErrorAlert("The selected video is longer than 30 seconds. Please select a shorter video.");
+        this.resetFileInput();
+      } else {
+        // Safe URL assignment for the preview
+        this.videoUrl = this.sanitizer.bypassSecurityTrustUrl(videoElement.src);
+        this.isVideoSelected = true;
+        this.selectedVideoFile = file; // Store the selected video file
+      }
+    } catch (error) {
+      this.showErrorAlert("Error loading video metadata. Please try another video file.");
+      console.error(error); // Log the error for debugging purposes
+    }
+  }
+  
+  // Helper function to load video metadata asynchronously
+  private loadVideoMetadata(videoElement: HTMLVideoElement): Promise<void> {
+    return new Promise((resolve, reject) => {
+      videoElement.onloadedmetadata = () => resolve();
+      videoElement.onerror = () => reject(new Error("Failed to load video metadata."));
+    });
   }
 
   async showErrorAlert(message: string) {
@@ -139,6 +162,7 @@ export class AddVideoPage implements OnInit {
     if (this.selectedVideoFile) {
         this.submitting = true;
         const challengeType = 'VIDEO'; // Set your challenge type accordingly
+        console.log(this.selectedVideoFile)
         this.challengeService.uploadChallenge(this.description, challengeType, this.selectedVideoFile).subscribe({
           next: async (response) => {
             const alert = await this.alertController.create({
@@ -155,6 +179,9 @@ export class AddVideoPage implements OnInit {
             await alert.present();          
           },
           error: async(error) => {
+            console.log(error)
+            console.log(error.error)
+
             this.submitting = false;
             const alert = await this.alertController.create({
               header: 'Error',
@@ -197,6 +224,9 @@ export class AddVideoPage implements OnInit {
     if (this.fileInput && this.fileInput.nativeElement) {
       this.fileInput.nativeElement.value = '';
     }
+
+    this.homeRefreshService.triggerRefresh();
+
     this.router.navigate([`/tabs/home`]);
   }
 }

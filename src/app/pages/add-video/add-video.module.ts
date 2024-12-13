@@ -8,6 +8,7 @@ import { AddVideoPageRoutingModule } from './add-video-routing.module';
 
 import { AddVideoPage } from './add-video.page';
 import { HeaderComponent } from '../../components/header/header.component';
+
 @NgModule({
   imports: [
     CommonModule,

@@ -37,7 +37,7 @@
     <div class="segment" *ngIf="!isLoading">
       <ion-segment (ionChange)="segmentChanged($event)" color="dark" mode="md" value="people">
         <ion-segment-button value="people">People</ion-segment-button>
-        <ion-segment-button value="hashtag">Hashtags</ion-segment-button>
+        <ion-segment-button value="hashtag" disabled>Hashtags</ion-segment-button>
       </ion-segment>
   
       <!-- Challenges Segment -->

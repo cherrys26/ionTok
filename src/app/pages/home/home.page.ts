@@ -4,6 +4,7 @@ import { Challenge } from 'src/app/models/challenge.model';
 import { ChallengeService } from '../../services/challenge/challenge.service';
 import { LikeService } from 'src/app/services/likes/like.service';
 import { TabsPage } from 'src/app/tabs/tabs.page';
+import { HomeRefreshService } from 'src/app/services/homeRefresh/home-refresh.service';
 
 @Component({
   selector: 'app-home',
@@ -15,14 +16,19 @@ export class HomePage implements OnInit, AfterViewInit {
   isLoading: boolean = true; // Track loading state
   activeIndex: number = 0;
   refreshEnabled: boolean = true;
+  isMuted:boolean = true;
+  showMuteIcon:boolean = false;
 
   constructor(
     private challengeService: ChallengeService,
     private cdr: ChangeDetectorRef,
     private renderer: Renderer2,
     private likeService: LikeService,
-    private tabsPage: TabsPage
+    private tabsPage: TabsPage,
+    private homeRefreshService: HomeRefreshService
   ) {}
+  @ViewChildren('videoElement') videoElements!: QueryList<HTMLVideoElement>;
+  @ViewChildren('innerVideos') innerVideos!: QueryList<HTMLVideoElement>;
 
   @ViewChild('outerSwiper', { static: false }) outerSwiperRef!: ElementRef;
   outerSwiper!: Swiper | null;
@@ -35,9 +41,54 @@ export class HomePage implements OnInit, AfterViewInit {
     this.tabsPage.homeTabClickedAgain.subscribe(() => {
       this.handleHomeTabClickedAgain();
     });
+
+    this.homeRefreshService.refreshHome$.subscribe(() => {
+      this.loadVideos();
+      this.tabsPage.homeTabClickedAgain.subscribe(() => {
+        this.handleHomeTabClickedAgain();
+      });  
+    });
   }
 
   ngAfterViewInit() {
+    const observer = new IntersectionObserver((entries) => {
+      console.log("observe")
+      entries.forEach(entry => {
+        console.log(entry,"entry")
+        const video = entry.target as HTMLVideoElement;
+        if (entry.isIntersecting) {
+          video.play().catch(err => console.log('Error playing video:', err));
+        } else {
+          video.pause();
+        }
+      });
+    }, { threshold: 0.5 });
+  
+    console.log("loaded")
+    document.querySelectorAll('video').forEach(video => observer.observe(video));
+  }
+
+  togglePlayPause(videoElement: HTMLVideoElement) {
+    console.log(videoElement)
+
+    if (videoElement.paused) {
+      videoElement.play();
+    } else {
+      videoElement.pause();
+    }
+  }
+
+  // Method to toggle mute/unmute
+  toggleMute(videoElement: HTMLVideoElement) {
+    console.log("toggle", videoElement)
+
+    this.isMuted = !this.isMuted
+    videoElement.muted = this.isMuted;
+
+    this.showMuteIcon = true;
+    setTimeout(() => {
+      this.showMuteIcon = false;
+    }, 1000); // Icon will disappear after 1 second
 
   }
 
@@ -45,6 +96,7 @@ export class HomePage implements OnInit, AfterViewInit {
     this.challengeService.getAllChallenges().subscribe({
       next: (response) => {
         this.challenges = response;
+        console.log(this.challenges)
         this.isLoading = false; // Hide spinner when videos are loaded
         this.cdr.detectChanges(); // Ensure changes are reflected in the DOM
 
@@ -72,6 +124,7 @@ export class HomePage implements OnInit, AfterViewInit {
         on: {
           slideChange: (event) => {
           },
+          
         },
       });
     }
@@ -85,7 +138,11 @@ export class HomePage implements OnInit, AfterViewInit {
         const innerSwiper = new Swiper(innerSwiperElement, {
           direction: 'horizontal',
           slidesPerView: 1,
-          spaceBetween: 10
+          spaceBetween: 10,
+          on: {
+            slideChange: (event) => {
+            },  
+          }
         });
 
         this.innerSwipers.push(innerSwiper);
@@ -96,10 +153,37 @@ export class HomePage implements OnInit, AfterViewInit {
   slideChanged(e){
     var swiper = e.detail[0];
 
+    console.log(swiper)
+    console.log(swiper.activeIndex)
+    console.log(this.activeIndex)
+    console.log(this.activeIndex)
+
+    console.log(this.challenges[swiper.activeIndex])
+    
+    console.log(this.videoElements.get(this.activeIndex))
+
+    console.log(this.innerVideos)
+
+    if(this.isMuted)
+
+    if(swiper.isVertical())
+      this.activeIndex = swiper.activeIndex;
+
+    if(swiper.isHorizontal())
+    {
+      console.log(this.activeIndex)
+      console.log(swiper.activeIndex)
+    }
+
+    console.log(swiper.slides[0])
     if((swiper.isVertical() && swiper.activeIndex == 0) || (swiper.isHorizontal() && swiper.slides[0].classList.contains("slide-index-0")))
       this.refreshEnabled = true;
     else
       this.refreshEnabled = false;
+  }
+
+  innerslideChanged(e){
+    console.log(e)
   }
 
   refresh(event) {
@@ -115,5 +199,11 @@ export class HomePage implements OnInit, AfterViewInit {
   handleHomeTabClickedAgain() {
     this.cdr.detectChanges();
     this.outerSwiper.update()
+  }
+
+  onVideoLoad(event: Event) {
+    console.log(event)
+    const videoElement = event.target as HTMLVideoElement;
+    videoElement.play().catch(error => console.log('Video play error:', error));
   }
 }
