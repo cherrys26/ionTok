@@ -60,12 +60,11 @@ export class AuthService {
 
   getUsernameFromToken(): string | null {
     const token = this.getToken();
-    console.log(token)
+
     if (!token) return null;
 
     try {
       const decoded: any = jwtDecode(token);
-      console.log(decoded)
       return decoded.unique_name || null;  // Replace 'username' if your token uses a different key
     } catch (error) {
       console.error('Invalid token:', error);

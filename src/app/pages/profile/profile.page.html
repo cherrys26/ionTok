@@ -120,8 +120,8 @@
       <ng-template #responsesList>
         <ion-grid>
           <ion-row>
-            <ion-col size="4" *ngFor="let response of responses">
-              <ion-card (click)="onResponseClick(response.guid)">
+            <ion-col size="4" *ngFor="let response of responses; let i = index">
+              <ion-card (click)="onResponseClick(i)">
                 <img [src]="response.thumbnailUrl" alt="Response Thumbnail" />
               </ion-card>
             </ion-col>

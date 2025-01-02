@@ -5,37 +5,42 @@
   <div *ngIf="isLoading" class="loading-container">
     <ion-spinner name="crescent"></ion-spinner>
   </div>
-  <swiper-container #outerSwiper class="swiper-v" direction="vertical" *ngIf="!isLoading" allowSlideNext=true (swiperslidechange)="slideChanged($event, this)">
+  <swiper-container #outerSwiper class="swiper-v" direction="vertical" *ngIf="!isLoading" allowSlideNext=true (swiperslidechange)="slideChanged($event)">
     <swiper-slide *ngFor="let challenge of challenges; let i = index" >
       
       <swiper-container #innerSwiper class="swiper-h" direction="horizontal" (swiperslidechange)="innerslideChanged($event)">
-        <div class="mute-indicator" [class.visible]="showMuteIcon">
-          <ion-icon [name]="isMuted ? 'volume-mute' : 'volume-high'"></ion-icon>
-        </div>
 
         <swiper-slide class="slide-index-{{i}}">
+          <div class="mute-indicator" [class.visible]="showMuteIcon">
+            <ion-icon [name]="isMuted ? 'volume-mute' : 'volume-high'"></ion-icon>
+          </div>
+  
           <div class="video-wrapper">
             <div class="ion-text-center challenge-title">Main Challenge</div>
             <video 
               [muted]="true"
-              autoplay
               class="outer-video-{{i}}"
               #videoElement
               loop 
               playsinline 
               [src]="challenge.videoUrl" 
               [style.height]="videoHeight" 
-              (click)="toggleMute(videoElement)">
+              (click)="toggleMute(videoElement)"
+              id="{{i}}-0">
             </video>
             <app-feed [video]="challenge" [challengeGuid]="challenge.guid" [challengeType]="'CHALLENGE'"></app-feed>
             <app-footer [video]="challenge" [title]="'Main Challenge'"></app-footer>
           </div>
         </swiper-slide>
-        
-        <swiper-slide *ngFor="let response of challenge.responses">
+
+        <swiper-slide *ngFor="let response of challenge.responses; let r = index">
+          <div class="mute-indicator" [class.visible]="showMuteIcon">
+            <ion-icon [name]="isMuted ? 'volume-mute' : 'volume-high'"></ion-icon>
+          </div>
+  
           <div class="video-wrapper">
             <div class="ion-text-center challenge-title">Challenge Response</div>
-            <video autoplay loop playsinline [src]="response.videoUrl" [muted]="true" [style.height]="videoHeight" #innerVideos></video>
+            <video loop playsinline [src]="response.videoUrl" [muted]="true" [style.height]="videoHeight" id="{{i}}-{{r + 1}}" #innerVideo (click)="toggleMute(innerVideo)"></video>
             <app-feed [video]="response" [challengeGuid]="challenge.guid" [challengeType]="'CHALLENGE_RESPONSE'"></app-feed>
             <app-footer [video]="response" [title]="'Challenge Response'"></app-footer>
           </div>

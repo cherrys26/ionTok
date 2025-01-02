@@ -11,8 +11,10 @@ import { ChallengeService } from 'src/app/services/challenge/challenge.service';
 })
 export class UserResponsePage implements OnInit {
   challengeResponse: Response = {} as Response;
-  challenge: Response = {} as Response;
+  challengeResponses: Response[];
   guid: string = '';
+  userName: string = '';
+  selectedChallengeIndex: number = 0;
 
   constructor(
     private challengeService: ChallengeService,
@@ -23,12 +25,18 @@ export class UserResponsePage implements OnInit {
 
   ngOnInit() {
     this.route.paramMap.subscribe(params => {
-      this.guid = params.get('guid')
-      this.loadChallengeResponse();
+      this.selectedChallengeIndex = +params.get('index') || 0; // Get the index from route parameters
+      this.userName = params.get('userName') || '';
     });
+    this.loadChallengeResponse();
   }
   
     loadChallengeResponse() {
+      this.challengeService.getUserChallengeResponses(this.userName).subscribe(challengeResponses => {
+        this.challengeResponses = challengeResponses; 
+        console.log(challengeResponses)
+      });
+      
       this.challengeService.getUserChallengeResponse(this.guid).subscribe(challengeResponse => {
         this.challengeResponse = challengeResponse; 
       });

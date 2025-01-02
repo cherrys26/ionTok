@@ -119,8 +119,8 @@ export class ProfilePage implements OnInit {
     this.router.navigate([`/user-challenge/${this.userName}/${index}`]);
   }
 
-  onResponseClick(guid: string){
-    this.router.navigate([`/user-response/${guid}`]);
+  onResponseClick(index: number){
+    this.router.navigate([`/user-response/${this.userName}/${index}`]);
 
   }
 

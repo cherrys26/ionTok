@@ -78,7 +78,7 @@ ion-toolbar {
     .swiper-v video {
       width: 100%; /* Ensures video fills container width */
       height: 100%; /* Retain aspect ratio */
-      object-fit: cover;
+      object-fit: fill;
     }
   
     .swiper-v {
@@ -97,11 +97,25 @@ ion-toolbar {
   }
   }
   
-  #infe, #infe2{
-    margin-top: -14rem;
+  .mute-indicator {
     position: absolute;
-    z-index: 100;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-size: 1.5rem;
+    color: white;
+    background-color: rgba(0, 0, 0, 0.267);
+    border-radius: 50%;
+    padding: 1.25rem;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    pointer-events: none; // Prevent interaction with the icon
+    z-index: 1000;
+    opacity: 0;
+    transition: opacity 0.2s ease-in-out; // Fade transition
   }
-  #infe2{
-    margin-top: -10rem;
+  
+  .mute-indicator.visible {
+    opacity: 1; // Fully visible
   }

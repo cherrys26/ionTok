@@ -10,9 +10,7 @@ export class TabsService {
   constructor(private router: Router) {}
 
   hideTabs() {
-    console.log("gide")
     const tabBar = document.querySelector('ion-tab-bar');
-    console.log(tabBar)
     if (tabBar) {
       tabBar.style.display = 'none';
     }
@@ -20,8 +18,6 @@ export class TabsService {
   }
 
   showTabs() {
-    console.log("show")
-
     const tabBar = document.querySelector('ion-tab-bar');
     if (tabBar && this.isHidden) {
       tabBar.style.display = 'flex';

@@ -1,17 +1,15 @@
-import { Component, OnInit, ViewChild, ElementRef, AfterViewInit, ChangeDetectorRef, QueryList, ViewChildren, Renderer2 } from '@angular/core';
+import { Component, OnInit, ViewChild, ElementRef, ChangeDetectorRef, QueryList, ViewChildren } from '@angular/core';
 import { Swiper } from 'swiper';
 import { Challenge } from 'src/app/models/challenge.model';
 import { ChallengeService } from '../../services/challenge/challenge.service';
-import { LikeService } from 'src/app/services/likes/like.service';
 import { TabsPage } from 'src/app/tabs/tabs.page';
-import { HomeRefreshService } from 'src/app/services/homeRefresh/home-refresh.service';
 
 @Component({
   selector: 'app-home',
   templateUrl: './home.page.html',
   styleUrls: ['./home.page.scss'],
 })
-export class HomePage implements OnInit, AfterViewInit {
+export class HomePage implements OnInit {
   challenges: Challenge[] = [];
   isLoading: boolean = true; // Track loading state
   activeIndex: number = 0;
@@ -22,14 +20,14 @@ export class HomePage implements OnInit, AfterViewInit {
   constructor(
     private challengeService: ChallengeService,
     private cdr: ChangeDetectorRef,
-    private renderer: Renderer2,
-    private likeService: LikeService,
     private tabsPage: TabsPage,
-    private homeRefreshService: HomeRefreshService
   ) {}
-  @ViewChildren('videoElement') videoElements!: QueryList<HTMLVideoElement>;
-  @ViewChildren('innerVideos') innerVideos!: QueryList<HTMLVideoElement>;
 
+  videoId: string = '0-0';
+
+  activeOuterIndex: number = 0; // Currently active outer swiper index
+  activeInnerIndexMap: Map<number, string> = new Map(); // Maps outer slide index to the active inner swiper index
+  
   @ViewChild('outerSwiper', { static: false }) outerSwiperRef!: ElementRef;
   outerSwiper!: Swiper | null;
 
@@ -41,54 +39,44 @@ export class HomePage implements OnInit, AfterViewInit {
     this.tabsPage.homeTabClickedAgain.subscribe(() => {
       this.handleHomeTabClickedAgain();
     });
+  } 
 
-    this.homeRefreshService.refreshHome$.subscribe(() => {
-      this.loadVideos();
-      this.tabsPage.homeTabClickedAgain.subscribe(() => {
-        this.handleHomeTabClickedAgain();
-      });  
-    });
+  ionViewWillEnter() {
+    // Play the video when entering the page
+    var video = document.getElementById(this.videoId) as HTMLVideoElement;
+    console.log(this.videoId, video)
+
+    if (video) {
+      video.play();
+    }
   }
 
-  ngAfterViewInit() {
-    const observer = new IntersectionObserver((entries) => {
-      console.log("observe")
-      entries.forEach(entry => {
-        console.log(entry,"entry")
-        const video = entry.target as HTMLVideoElement;
-        if (entry.isIntersecting) {
-          video.play().catch(err => console.log('Error playing video:', err));
-        } else {
-          video.pause();
-        }
-      });
-    }, { threshold: 0.5 });
-  
-    console.log("loaded")
-    document.querySelectorAll('video').forEach(video => observer.observe(video));
+  ionViewDidLeave() {
+    // Pause the video when leaving the page
+    var video = document.getElementById(this.videoId) as HTMLVideoElement;
+    if (video) {
+      video.pause();
+    }
   }
 
-  togglePlayPause(videoElement: HTMLVideoElement) {
-    console.log(videoElement)
-
-    if (videoElement.paused) {
-      videoElement.play();
-    } else {
-      videoElement.pause();
+  ngOnDestroy() {
+    // Ensure the video is paused when the component is destroyed
+    var video = document.getElementById(this.videoId) as HTMLVideoElement;
+    console.log("destroy")
+    if (video) {
+      video.pause();
     }
   }
 
   // Method to toggle mute/unmute
   toggleMute(videoElement: HTMLVideoElement) {
-    console.log("toggle", videoElement)
-
     this.isMuted = !this.isMuted
     videoElement.muted = this.isMuted;
 
     this.showMuteIcon = true;
     setTimeout(() => {
       this.showMuteIcon = false;
-    }, 1000); // Icon will disappear after 1 second
+    }, 1000);
 
   }
 
@@ -96,19 +84,20 @@ export class HomePage implements OnInit, AfterViewInit {
     this.challengeService.getAllChallenges().subscribe({
       next: (response) => {
         this.challenges = response;
-        console.log(this.challenges)
         this.isLoading = false; // Hide spinner when videos are loaded
         this.cdr.detectChanges(); // Ensure changes are reflected in the DOM
 
         requestAnimationFrame(() => {
           this.initializeSwipers(); // Re-initialize Swipers after videos are loaded
         });
+        var video = document.getElementById(this.videoId) as HTMLVideoElement
+        video.play() 
       },
       error: (error) => {
         console.error('Error loading challenges:', error);
         this.isLoading = false; // Hide spinner even on error
       }
-  });
+    });
   }
 
   initializeSwipers() {
@@ -117,7 +106,7 @@ export class HomePage implements OnInit, AfterViewInit {
     }
 
     if (this.outerSwiperRef && this.outerSwiperRef.nativeElement.swiper) {
-      this.outerSwiper = new Swiper(this.outerSwiperRef.nativeElement, {
+      new Swiper(this.outerSwiperRef.nativeElement, {
         direction: 'vertical',
         slidesPerView: 1,
         spaceBetween: 10,
@@ -150,60 +139,78 @@ export class HomePage implements OnInit, AfterViewInit {
     });
   }
   
-  slideChanged(e){
-    var swiper = e.detail[0];
-
-    console.log(swiper)
-    console.log(swiper.activeIndex)
-    console.log(this.activeIndex)
-    console.log(this.activeIndex)
-
-    console.log(this.challenges[swiper.activeIndex])
-    
-    console.log(this.videoElements.get(this.activeIndex))
-
-    console.log(this.innerVideos)
-
-    if(this.isMuted)
-
-    if(swiper.isVertical())
-      this.activeIndex = swiper.activeIndex;
-
-    if(swiper.isHorizontal())
-    {
-      console.log(this.activeIndex)
-      console.log(swiper.activeIndex)
+  slideChanged(e) {
+    var previousVideo = document.getElementById(this.videoId) as HTMLVideoElement;
+    if (previousVideo && typeof previousVideo.pause === 'function') {
+      previousVideo.pause();
     }
 
-    console.log(swiper.slides[0])
+    var swiper = e.detail[0];
+    var activeIndex = swiper.activeIndex; // Get the active slide index
+    var activeSlide = swiper.slides[activeIndex]; // Get the active slide element
+
+    if(swiper.isVertical())
+      this.activeOuterIndex = activeIndex
+
+    if(this.activeInnerIndexMap.get(activeIndex)) {
+      this.videoId = this.activeInnerIndexMap.get(activeIndex);
+    }
+    else {
+      var videoElement = activeSlide.querySelector('video') as HTMLVideoElement;
+
+      if (videoElement) {
+        this.videoId = videoElement.id;
+      }
+    }
+
+    var newVideo = document.getElementById(this.videoId) as HTMLVideoElement;
+
+    if (newVideo && typeof newVideo.play === 'function') {
+      newVideo.play().catch(err => console.log('Error playing video:', err));
+      newVideo.muted = this.isMuted;
+    }
+
+    // Handle refresher enable/disable
     if((swiper.isVertical() && swiper.activeIndex == 0) || (swiper.isHorizontal() && swiper.slides[0].classList.contains("slide-index-0")))
       this.refreshEnabled = true;
     else
-      this.refreshEnabled = false;
+      this.refreshEnabled = false;   
   }
 
-  innerslideChanged(e){
-    console.log(e)
+  innerslideChanged(event) {
+    var swiper = event.detail[0];
+  
+    // Update the map with the active inner index for the current outer slide
+    this.activeInnerIndexMap.set(this.activeOuterIndex, `${this.activeOuterIndex}-${swiper.activeIndex}`);
   }
+  
 
   refresh(event) {
       setTimeout(() => {
         this.loadVideos();
-        requestAnimationFrame(() => {
-          this.initializeSwipers();
-        });
-          event.target.complete();
+        this.activeInnerIndexMap = new Map();
+        event.target.complete();
       }, 1500);
   }
 
   handleHomeTabClickedAgain() {
-    this.cdr.detectChanges();
-    this.outerSwiper.update()
-  }
+    var previousVideo = document.getElementById(this.videoId) as HTMLVideoElement;
+    if (previousVideo && typeof previousVideo.pause === 'function') {
+      previousVideo.pause();
+    }
 
-  onVideoLoad(event: Event) {
-    console.log(event)
-    const videoElement = event.target as HTMLVideoElement;
-    videoElement.play().catch(error => console.log('Video play error:', error));
+    this.videoId = "0-0";
+    this.activeOuterIndex = 0;
+    var newVideo = document.getElementById(this.videoId) as HTMLVideoElement;
+    if (newVideo && typeof newVideo.play === 'function') {
+      newVideo.play().catch(err => console.log('Error playing video:', err));
+      newVideo.muted = this.isMuted;
+    }
+
+    if (this.outerSwiperRef.nativeElement.swiper) {
+      this.outerSwiperRef.nativeElement.swiper.update(); // Ensure outerSwiper is updated
+    }
+    this.refreshEnabled = true;
+    this.cdr.detectChanges();
   }
 }
