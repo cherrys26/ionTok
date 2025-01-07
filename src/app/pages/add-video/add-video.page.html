@@ -1,37 +1,50 @@
 <app-header></app-header>
-<ion-content class="add-video-content">
-  <!-- Step 1: Select Video -->
-  <div *ngIf="!isVideoSelected" class="upload-container">
+
+<ion-content class="add-media-content">
+  <!-- Step 1: Select Media -->
+  <div *ngIf="!isMediaSelected" class="upload-container">
     <div class="file-input-container">
-      <input type="file" accept="video/*" (change)="onFileSelected($event)" #fileInput hidden />
+      <input type="file" accept="video/*,image/*" (change)="onFileSelected($event)" #fileInput hidden />
       <ion-icon name="cloud-upload-outline" class="upload-icon"></ion-icon>
-      <p class="upload-text">Select a Video</p>
+      <p class="upload-text">Select a challenge</p>
     </div>
     <ion-button (click)="fileInput.click()" expand="block" class="record-button">
-      Select Video
+      Select a challenge
     </ion-button>
   </div>
 
- <!-- Step 2: Review and Submit -->
-<div *ngIf="isVideoSelected" class="review-container">
-  <div class="video-container">
-    <video [src]="videoUrl" controls></video>
+  <!-- Step 2: Review and Submit -->
+  <div *ngIf="isMediaSelected" class="review-container">
+    <div class="media-container">
+      <ng-container *ngIf="mediaType === 'VIDEO'; else imagePreview">
+        <video [src]="mediaUrl" controls></video>
+      </ng-container>
+      <ng-template #imagePreview>
+        <img [src]="mediaUrl" alt="Selected image" />
+      </ng-template>
+    </div>
+    <div class="description">
+      <ion-item>
+        <ion-label position="floating" class="mb-10">Description</ion-label>
+        <ion-textarea [(ngModel)]="description" maxlength="150"></ion-textarea>
+      </ion-item>
+      <p class="character-count">{{ description.length }}/150 characters</p>
+    </div>
+    <!-- Action buttons -->
+    <div class="action-buttons" *ngIf="!submitting">
+      <ion-button expand="block" class="share-btn" fill="outline" color="medium" (click)="cancel()">Cancel</ion-button>
+      <ion-button
+        [disabled]="description.length > 150 || description.length === 0"
+        expand="block"
+        class="share-btn"
+        (click)="submit()"
+      >
+        Share
+      </ion-button>
+    </div>
+    <div class="action-buttons" *ngIf="submitting">
+      <ion-spinner class="spinner-energized"></ion-spinner>
+    </div>
   </div>
-  <div class="description">
-    <ion-item>
-      <ion-label position="floating" class="mb-10">Description</ion-label>
-      <ion-textarea [(ngModel)]="description" maxlength="150"></ion-textarea>
-    </ion-item>
-    <p class="character-count">{{ description.length }}/150 characters</p>
-  </div>
-  <!-- Action buttons -->
-  <div class="action-buttons" *ngIf="!submitting">
-    <ion-button expand="block" class="share-btn" fill="outline" color="medium" (click)="cancel()">Cancel</ion-button>
-    <ion-button [disabled]="description.length > 150 || description.length === 0" expand="block" class="share-btn" (click)="submit()">Share</ion-button>
-  </div>
-  <div class="action-buttons" *ngIf="submitting">
-    <ion-spinner ng-hide="showing" class="spinner-energized"></ion-spinner>
-  </div>
-</div>
-
 </ion-content>
+

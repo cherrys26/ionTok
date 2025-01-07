@@ -24,7 +24,7 @@ export class ChallengeService {
     var req = new FormData();
     req.append('description', description);
     req.append('challengeType', challengeType);
-    req.append('videoFile', videoFile); // Append the video file
+    req.append('mediaFile', videoFile); // Append the video file
 
     return this.http.post(`${this.apiUrl}/Challenge`, req).pipe(
       map((response: any) => {
@@ -34,11 +34,12 @@ export class ChallengeService {
   }
 
   
-  uploadChallengeResponse(description: string, challengeGuid: string, videoFile: File): Observable<any> {
+  uploadChallengeResponse(description: string, challengeGuid: string, videoFile: File, challengeType: string): Observable<any> {
     var formData = new FormData();
     formData.append('description', description);
     formData.append('challengeGuid', challengeGuid);
-    formData.append('videoFile', videoFile); // Append the video file
+    formData.append('mediaFile', videoFile); // Append the video file
+    formData.append('challengeType', challengeType);
 
     return this.http.post(`${this.apiUrl}/ChallengeResponse`, formData).pipe(
       map((response: any) => {

@@ -63,7 +63,8 @@ export class UserChallengePage implements OnInit, AfterViewChecked {
         this.cdr.detectChanges();
         // Play the first video
         const video = document.getElementById(this.videoId) as HTMLVideoElement;
-        video?.play();
+        if(video)
+          video?.play();
       },
       error: (error) => {
         console.error('Error loading challenges:', error);
@@ -160,6 +161,11 @@ export class UserChallengePage implements OnInit, AfterViewChecked {
 
           if (videoElement) {
             this.videoId = videoElement.id;
+          }
+          else{
+            var imgElement = activeSlide.querySelector('img');
+            if(imgElement)
+              this.videoId = imgElement.id;
           }
         }
       }

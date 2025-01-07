@@ -47,7 +47,8 @@ export class ViewChallengePage implements OnInit {
       this.initializeSwiper();
 
       const video = document.getElementById(this.videoId) as HTMLVideoElement;
-      video?.play();
+      if(video)
+        video?.play();
     });
   }
 
@@ -94,6 +95,11 @@ export class ViewChallengePage implements OnInit {
 
         if (videoElement) {
           this.videoId = videoElement.id;
+        }
+        else{
+          var imgElement = activeSlide.querySelector('img');
+          if(imgElement)
+            this.videoId = imgElement.id
         }
       }
 

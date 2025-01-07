@@ -15,11 +15,12 @@ import { HomeRefreshService } from 'src/app/services/homeRefresh/home-refresh.se
 })
 export class AddVideoPage implements OnInit {
   @ViewChild('fileInput', { static: false }) fileInput: ElementRef;
-  videoUrl: SafeUrl | null = null;
+  mediaUrl: SafeUrl | null = null; // Supports both video and picture
   description: string = '';
-  isVideoSelected: boolean = false;
+  isMediaSelected: boolean = false;
   isDescriptionAdded: boolean = false;
-  selectedVideoFile: File | null = null; // Store the selected video file
+  selectedMediaFile: File | null = null; // Store the selected media file
+  mediaType: 'VIDEO' | 'IMAGE' | null = null; // Media type to differentiate
   submitting: boolean = false;
 
   constructor(
@@ -36,9 +37,11 @@ export class AddVideoPage implements OnInit {
   ngOnInit() {
     this.tabsService.hideTabs();
   }
+  
   ngAfterViewInit() {
-    this.fileInput.nativeElement.click()
+    this.fileInput.nativeElement.click();
   }
+
   ionViewWillEnter() {
     this.tabsService.hideTabs();
   }
@@ -46,85 +49,58 @@ export class AddVideoPage implements OnInit {
     this.tabsService.showTabs(); // Show the tab bar again when leaving the page
   }
 
-  recordVideo() {
-    this.tabsService.hideTabs(); // Hide the tab bar when the page is initialized
+async onFileSelected(event: Event) {
+  this.tabsService.hideTabs();
 
-    const options: CaptureVideoOptions = {
-      limit: 1,
-      duration: 30,
-    };
+  const target = event.target as HTMLInputElement;
+  const file: File | null = target.files ? target.files[0] : null;
 
-    this.mediaCapture.captureVideo(options).then(
-      (mediaFiles: MediaFile[]) => {
-        const capturedFile = mediaFiles[0];
-        const fullPath = capturedFile.fullPath;
-
-        // Convert MediaFile to Blob
-        fetch(fullPath)
-          .then(res => res.blob())
-          .then(blob => {
-            this.selectedVideoFile = new File([blob], 'capturedVideo.mp4', { type: 'video/mp4' }); // Create a File object for the captured video
-            this.videoUrl = this.sanitizer.bypassSecurityTrustUrl(URL.createObjectURL(blob));
-            this.isVideoSelected = true;
-            console.log('Captured video file: ', this.videoUrl);
-          })
-          .catch(err => {
-            console.error('Error fetching video blob:', err);
-            this.tabsService.showTabs(); // Show the tab bar again when leaving the page
-          });
-      },
-      (err: CaptureError) => {
-        console.error(err);
-        this.tabsService.showTabs(); // Show the tab bar again when leaving the page
-      }
-    );
+  if (!file) {
+    this.showErrorAlert('No file selected. Please choose a file.');
+    return;
   }
 
-  async onFileSelected(event: Event) {
-    // Hide the tab bar when the page is initialized
-    this.tabsService.hideTabs();
-  
-    const target = event.target as HTMLInputElement;
-    const file: File | null = target.files ? target.files[0] : null;
-  
-    if (!file) {
-      this.showErrorAlert("No file selected. Please choose a video file.");
-      return;
-    }
-  
-    // Best practice: Check the file type to ensure it’s a video
-    if (!file.type.startsWith("video/")) {
-      this.showErrorAlert("Invalid file type. Please select a video file.");
-      this.resetFileInput();
-      return;
-    }
-  
-    // Create a video element to load the metadata (such as duration)
-    const videoElement = document.createElement("video");
-    videoElement.src = URL.createObjectURL(file);
-  
-    // Use a Promise to handle the loaded metadata asynchronously
+  // Determine file type
+  if (file.type.startsWith('video/')) {
+    this.mediaType = 'VIDEO';
+  } else if (file.type.startsWith('image/')) {
+    this.mediaType = 'IMAGE';
+  } else {
+    this.showErrorAlert('Invalid file type. Please select a video or image file.');
+    this.resetFileInput();
+    return;
+  }
+
+  const fileUrl = URL.createObjectURL(file);
+
+  if (this.mediaType === 'VIDEO') {
+    // Handle video validation
+    const videoElement = document.createElement('video');
+    videoElement.src = fileUrl;
+
     try {
-      await this.loadVideoMetadata(videoElement);
-  
-      // Check video duration
+      await this.loadMediaMetadata(videoElement);
+
       if (videoElement.duration > 30) {
-        this.showErrorAlert("The selected video is longer than 30 seconds. Please select a shorter video.");
+        this.showErrorAlert('The selected video is longer than 30 seconds. Please select a shorter video.');
         this.resetFileInput();
       } else {
-        // Safe URL assignment for the preview
-        this.videoUrl = this.sanitizer.bypassSecurityTrustUrl(videoElement.src);
-        this.isVideoSelected = true;
-        this.selectedVideoFile = file; // Store the selected video file
+        this.mediaUrl = this.sanitizer.bypassSecurityTrustUrl(fileUrl);
+        this.isMediaSelected = true;
+        this.selectedMediaFile = file;
       }
     } catch (error) {
-      this.showErrorAlert("Error loading video metadata. Please try another video file.");
-      console.error(error); // Log the error for debugging purposes
+      this.showErrorAlert('Error loading video metadata. Please try another file.');
     }
+  } else if (this.mediaType === 'IMAGE') {
+    // Handle image preview
+    this.mediaUrl = this.sanitizer.bypassSecurityTrustUrl(fileUrl);
+    this.isMediaSelected = true;
+    this.selectedMediaFile = file;
   }
-  
+}  
   // Helper function to load video metadata asynchronously
-  private loadVideoMetadata(videoElement: HTMLVideoElement): Promise<void> {
+  private loadMediaMetadata(videoElement: HTMLVideoElement): Promise<void> {
     return new Promise((resolve, reject) => {
       videoElement.onloadedmetadata = () => resolve();
       videoElement.onerror = () => reject(new Error("Failed to load video metadata."));
@@ -143,9 +119,10 @@ export class AddVideoPage implements OnInit {
 
   resetFileInput() {
     this.fileInput.nativeElement.value = '';
-    this.videoUrl = null;
-    this.isVideoSelected = false;
-    this.selectedVideoFile = null; // Reset selected video file
+    this.mediaUrl = null;
+    this.isMediaSelected = false;
+    this.selectedMediaFile = null;
+    this.mediaType = null;
   }
 
   proceedToReview() {
@@ -159,53 +136,60 @@ export class AddVideoPage implements OnInit {
   }
 
   async submit() {
-    if (this.selectedVideoFile) {
-        this.submitting = true;
-        const challengeType = 'VIDEO'; // Set your challenge type accordingly
-        console.log(this.selectedVideoFile)
-        this.challengeService.uploadChallenge(this.description, challengeType, this.selectedVideoFile).subscribe({
-          next: async (response) => {
-            const alert = await this.alertController.create({
-              header: 'Success',
-              message: 'Challenge Created!',
-              buttons: [{
-                text:'OK',
-                handler: () => {
-                  this.toHome();
-                }
-              }]
-            });
-        
-            await alert.present();          
-          },
-          error: async(error) => {
-            console.log(error)
-            console.log(error.error)
-
-            this.submitting = false;
-            const alert = await this.alertController.create({
-              header: 'Error',
-              message: `Error submitting challenge. ${error.error}`,
-              buttons: [{
-                text:'OK',
-                handler: () => {
-                  this.cancel();
-                }
-              }]
-            });
-        
-            await alert.present();
-          }
-        });
-
+    if (this.selectedMediaFile) {
+      this.submitting = true;
+  
+      try {
+        this.challengeService
+          .uploadChallenge(this.description, this.mediaType, this.selectedMediaFile)
+          .subscribe({
+            next: async () => {
+              const alert = await this.alertController.create({
+                header: 'Success',
+                message: 'Challenge Created!',
+                buttons: [
+                  {
+                    text: 'OK',
+                    handler: () => {
+                      this.toHome();
+                    },
+                  },
+                ],
+              });
+  
+              await alert.present();
+            },
+            error: async (error) => {
+              console.error(error);
+              this.submitting = false;
+  
+              const alert = await this.alertController.create({
+                header: 'Error',
+                message: `Error submitting challenge. ${error.error}`,
+                buttons: [
+                  {
+                    text: 'OK',
+                    handler: () => {
+                      this.cancel();
+                    },
+                  },
+                ],
+              });
+  
+              await alert.present();
+            },
+          });
+      } catch (error) {
+        this.showErrorAlert('Failed to submit the challenge. Please try again.');
+      }
     }
   }
-
+  
   cancel() {
-    this.selectedVideoFile = null;
-    this.videoUrl = null; // Reset the selected video
+    this.selectedMediaFile = null;
+    this.mediaUrl = null; // Reset the selected video
     this.description = ''; // Clear the description
-    this.isVideoSelected = false; // Reset the selection state
+    this.isMediaSelected = false; // Reset the selection state
     this.isDescriptionAdded = false; // Go back to the first step
   
     if (this.fileInput && this.fileInput.nativeElement) {
@@ -215,10 +199,10 @@ export class AddVideoPage implements OnInit {
   }
   
   toHome() {
-    this.selectedVideoFile = null;
-    this.videoUrl = null; // Reset the selected video
+    this.selectedMediaFile = null;
+    this.mediaUrl = null; // Reset the selected video
     this.description = ''; // Clear the description
-    this.isVideoSelected = false; // Reset the selection state
+    this.isMediaSelected = false; // Reset the selection state
     this.isDescriptionAdded = false; // Go back to the first step
   
     if (this.fileInput && this.fileInput.nativeElement) {

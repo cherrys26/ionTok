@@ -64,7 +64,8 @@ export class UserResponsePage implements OnInit {
           this.cdr.detectChanges();
           // Play the first video
           const video = document.getElementById(this.videoId) as HTMLVideoElement;
-          video?.play();
+          if(video)
+            video?.play();
         },
         error: (error) => {
           console.error('Error loading challenges:', error);
@@ -73,7 +74,8 @@ export class UserResponsePage implements OnInit {
     }
     else{
       const video = document.getElementById(this.videoId) as HTMLVideoElement;
-      video?.play();
+      if(video)
+        video?.play();
     }
   }
 
@@ -144,9 +146,13 @@ export class UserResponsePage implements OnInit {
         this.activeIndex = activeIndex;
 
         var videoElement = activeSlide.querySelector('video') as HTMLVideoElement;
-
         if (videoElement) {
           this.videoId = videoElement.id;
+        }
+        else{
+          var imgElement = activeSlide.querySelector('img');
+          if(imgElement)
+            this.videoId = imgElement.id
         }
       }
 

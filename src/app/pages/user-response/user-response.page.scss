@@ -113,3 +113,12 @@ ion-title {
 .mute-indicator.visible {
   opacity: 1; // Fully visible
 }
+
+.swiper-v img{
+  max-height: 100%;
+  max-width: 100%;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}

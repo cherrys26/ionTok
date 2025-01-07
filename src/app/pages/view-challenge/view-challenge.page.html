@@ -10,7 +10,24 @@
             <ion-icon [name]="isMuted ? 'volume-mute' : 'volume-high'"></ion-icon>
           </div>  
           <div class="video-wrapper">
-            <video loop playsinline [src]="challenge.videoUrl" [muted]="true" [style.height]="videoHeight" id="challenge-0" #mainChallenge (click)="toggleMute(mainChallenge)"></video>
+            <video 
+              *ngIf="challenge.challengeType === 1"
+              loop 
+              playsinline 
+              [src]="challenge.videoUrl" 
+              [muted]="true" 
+              [style.height]="videoHeight" 
+              id="challenge-0" 
+              #mainChallenge 
+              (click)="toggleMute(mainChallenge)">
+            </video>
+            <img 
+              *ngIf="challenge.challengeType === 2"
+              [src]="challenge.videoUrl"
+              [alt]="'challenge Image'"
+              [style.height]="videoHeight"
+              class="challenge-image inner-image-{{i}}" 
+              id="challenge-0"/>
             <app-user-challenge-feed [video]="challenge" [challengeType]="'CHALLENGE'"></app-user-challenge-feed>
             <app-footer [video]="challenge" [title]="'Main Challenge'"></app-footer>
           </div>
@@ -20,7 +37,24 @@
             <ion-icon [name]="isMuted ? 'volume-mute' : 'volume-high'"></ion-icon>
           </div>  
           <div class="video-wrapper">
-            <video loop playsinline [src]="response.videoUrl" [muted]="true" [style.height]="videoHeight" id="challenge-{{i + 1}}" #challengeResponses (click)="toggleMute(challengeResponses)"></video>
+            <video 
+              *ngIf="response.challengeType === 1"
+              loop 
+              playsinline 
+              [src]="response.videoUrl" 
+              [muted]="true" 
+              [style.height]="videoHeight" 
+              id="challenge-{{i + 1}}" 
+              #challengeResponses 
+              (click)="toggleMute(challengeResponses)">
+            </video>
+            <img 
+              *ngIf="response.challengeType === 2"
+              [src]="response.videoUrl"
+              [alt]="'response Image'"
+              [style.height]="videoHeight"
+              class="response-image inner-image-{{i}}" 
+              id="challenge-{{i + 1}}"/>
             <app-user-challenge-feed [video]="response" [challengeType]="'CHALLENGE_RESPONSE'"></app-user-challenge-feed>
             <app-footer [video]="response" [title]="'Challenge Response'"></app-footer>
           </div>

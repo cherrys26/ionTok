@@ -13,13 +13,15 @@ import { ActivatedRoute, Router } from '@angular/router';
 })
 export class ChallengeAcceptedPage implements OnInit {
   @ViewChild('fileInput', { static: false }) fileInput: ElementRef;
-  videoUrl: SafeUrl | null = null;
+  mediaUrl: SafeUrl | null = null;
   description: string = '';
-  isVideoSelected: boolean = false;
+  isMediaSelected: boolean = false;
   isDescriptionAdded: boolean = false;
-  selectedVideoFile: File | null = null; // Store the selected video file
+  selectedMediaFile: File | null = null; // Store the selected media file
+  isVideo: boolean = false; // Determine if the selected media is a video
   challengeGuid: string;
   submitting: boolean = false;
+  mediaType: 'VIDEO' | 'IMAGE' | null = null; // Media type to differentiate
 
   constructor(
     private sanitizer: DomSanitizer,
@@ -43,28 +45,57 @@ export class ChallengeAcceptedPage implements OnInit {
     const target = event.target as HTMLInputElement;
     const file: File = target.files ? target.files[0] : null;
 
-    if (file) {
-      const videoElement = document.createElement('video');
-      videoElement.src = URL.createObjectURL(file);
-
-      const fileSizeMB = file.size / (1024 * 1024); // Convert file size from bytes to MB
-
-      if (fileSizeMB > 27) { // Check if file size exceeds 27MB
-        this.showErrorAlert('The selected video is too large. Please select a video less than 27MB.');
-      }
-      else {
-        videoElement.onloadedmetadata = () => {
-          if (videoElement.duration > 31) {
-            this.showErrorAlert("The selected video is longer than 30 seconds. Please select a shorter video.");
-            this.resetFileInput();
-          } else {
-            this.videoUrl = this.sanitizer.bypassSecurityTrustUrl(videoElement.src);
-            this.isVideoSelected = true;
-            this.selectedVideoFile = file; // Store the selected video file
-          }
-        };
-      }
+    if (!file) {
+      this.showErrorAlert('No file selected. Please choose a file.');
+      return;
     }
+  
+  // Determine file type
+  if (file.type.startsWith('video/')) {
+    this.mediaType = 'VIDEO';
+  } else if (file.type.startsWith('image/')) {
+    this.mediaType = 'IMAGE';
+  } else {
+    this.showErrorAlert('Invalid file type. Please select a video or image file.');
+    this.resetFileInput();
+    return;
+  }
+
+  const fileUrl = URL.createObjectURL(file);
+
+  if (this.mediaType === 'VIDEO') {
+    // Handle video validation
+    const videoElement = document.createElement('video');
+    videoElement.src = fileUrl;
+
+    try {
+      await this.loadMediaMetadata(videoElement);
+
+      if (videoElement.duration > 30) {
+        this.showErrorAlert('The selected video is longer than 30 seconds. Please select a shorter video.');
+        this.resetFileInput();
+      } else {
+        this.mediaUrl = this.sanitizer.bypassSecurityTrustUrl(fileUrl);
+        this.isMediaSelected = true;
+        this.selectedMediaFile = file;
+      }
+    } catch (error) {
+      this.showErrorAlert('Error loading video metadata. Please try another file.');
+    }
+  } else if (this.mediaType === 'IMAGE') {
+    // Handle image preview
+    this.mediaUrl = this.sanitizer.bypassSecurityTrustUrl(fileUrl);
+    this.isMediaSelected = true;
+    this.selectedMediaFile = file;
+  }
+  }
+
+  // Helper function to load video metadata asynchronously
+  private loadMediaMetadata(videoElement: HTMLVideoElement): Promise<void> {
+    return new Promise((resolve, reject) => {
+      videoElement.onloadedmetadata = () => resolve();
+      videoElement.onerror = () => reject(new Error("Failed to load video metadata."));
+    });
   }
 
   async showErrorAlert(message: string) {
@@ -80,9 +111,10 @@ export class ChallengeAcceptedPage implements OnInit {
 
   resetFileInput() {
     this.fileInput.nativeElement.value = '';
-    this.videoUrl = null;
-    this.isVideoSelected = false;
-    this.selectedVideoFile = null; // Reset selected video file
+    this.mediaUrl = null;
+    this.isMediaSelected = false;
+    this.selectedMediaFile = null;
+    this.mediaType = null;
   }
 
   proceedToReview() {
@@ -94,10 +126,10 @@ export class ChallengeAcceptedPage implements OnInit {
   }
 
   async submit() {
-    if (this.selectedVideoFile) {
+    if (this.selectedMediaFile) {
       this.submitting = true;
 
-        this.challengeService.uploadChallengeResponse(this.description, this.challengeGuid, this.selectedVideoFile).subscribe({
+        this.challengeService.uploadChallengeResponse(this.description, this.challengeGuid, this.selectedMediaFile, this.mediaType).subscribe({
           next: async (response) =>{
             const alert = await this.alertController.create({
               header: 'Success',
@@ -135,10 +167,10 @@ export class ChallengeAcceptedPage implements OnInit {
 
   cancel() {
     this.challengeGuid = null;
-    this.selectedVideoFile = null;
-    this.videoUrl = null; // Reset the selected video
-    this.description = null; // Clear the description
-    this.isVideoSelected = false; // Reset the selection state
+    this.selectedMediaFile = null;
+    this.mediaUrl = null; // Reset the selected video
+    this.description = ''; // Clear the description
+    this.isMediaSelected = false; // Reset the selection state
     this.isDescriptionAdded = false; // Go back to the first step
   
     if (this.fileInput && this.fileInput.nativeElement) {

@@ -21,7 +21,24 @@
             <ion-icon [name]="isMuted ? 'volume-mute' : 'volume-high'"></ion-icon>
           </div>
           <div class="video-wrapper">
-            <video loop playsinline [muted]="true" [src]="challenge.videoUrl" [style.height]="videoHeight" #outerVideo (click)="toggleMute(outerVideo)" id="{{i}}"></video>
+            <video 
+              *ngIf="challenge.challengeType === 1"
+              loop 
+              playsinline 
+              [muted]="true" 
+              [src]="challenge.videoUrl" 
+              [style.height]="videoHeight" 
+              #outerVideo 
+              (click)="toggleMute(outerVideo)" 
+              id="{{i}}">
+            </video>
+            <img 
+              *ngIf="challenge.challengeType === 2"
+              [src]="challenge.videoUrl"
+              [alt]="'challenge Image'"
+              [style.height]="videoHeight"
+              class="challenge-image" 
+              id="{{i}}"/>
             <app-user-challenge-feed [video]="challenge" [challengeType]="'CHALLENGE_RESPONSE'"></app-user-challenge-feed>
             <app-footer [video]="challenge" [title]="'Main Challenge'"></app-footer>
           </div>

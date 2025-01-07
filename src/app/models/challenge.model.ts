@@ -10,5 +10,6 @@ export interface Challenge {
     userPic: string;
     responses: Response[];
     responseCount: number;
+    challengeType: number;
   }
   

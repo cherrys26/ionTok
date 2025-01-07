@@ -103,7 +103,7 @@ export class ProfilePage implements OnInit {
           if (segment === 'challenges') this.challenges = response;
           if (segment === 'responses') this.responses = response;
           if (segment === 'likes') this.likes = response;
-
+          console.log(this.challenges)
           this.loadedData[segment] = true;
           this.segmentLoading = false; // Hide segment loading spinner
         },

@@ -18,16 +18,24 @@
           <div class="video-wrapper">
             <div class="ion-text-center challenge-title">Main Challenge</div>
             <video 
-              [muted]="true"
-              class="outer-video-{{i}}"
-              #videoElement
-              loop 
-              playsinline 
-              [src]="challenge.videoUrl" 
-              [style.height]="videoHeight" 
-              (click)="toggleMute(videoElement)"
-              id="{{i}}-0">
-            </video>
+            *ngIf="challenge.challengeType === 1"
+            [muted]="true"
+            class="outer-video-{{i}}"
+            #videoElement
+            loop 
+            playsinline 
+            [src]="challenge.videoUrl" 
+            [style.height]="videoHeight" 
+            (click)="toggleMute(videoElement)"
+            id="{{i}}-0">
+          </video>
+          <img 
+            *ngIf="challenge.challengeType === 2"
+            [src]="challenge.videoUrl"
+            [alt]="'Challenge Image'"
+            [style.height]="videoHeight"
+            class="challenge-image outer-image-{{i}}" 
+            id="{{i}}-0"/>
             <app-feed [video]="challenge" [challengeGuid]="challenge.guid" [challengeType]="'CHALLENGE'"></app-feed>
             <app-footer [video]="challenge" [title]="'Main Challenge'"></app-footer>
           </div>
@@ -40,7 +48,24 @@
   
           <div class="video-wrapper">
             <div class="ion-text-center challenge-title">Challenge Response</div>
-            <video loop playsinline [src]="response.videoUrl" [muted]="true" [style.height]="videoHeight" id="{{i}}-{{r + 1}}" #innerVideo (click)="toggleMute(innerVideo)"></video>
+            <video 
+              *ngIf="response.challengeType === 1"
+              loop 
+              playsinline 
+              [src]="response.videoUrl" 
+              [muted]="true" 
+              [style.height]="videoHeight" 
+              id="{{i}}-{{r + 1}}" 
+              #innerVideo 
+              (click)="toggleMute(innerVideo)">
+            </video>
+            <img 
+              *ngIf="response.challengeType === 2"
+              [src]="response.videoUrl"
+              [alt]="'response Image'"
+              [style.height]="videoHeight"
+              class="response-image inner-image-{{i}}" 
+              id="{{i}}-{{r + 1}}"/>
             <app-feed [video]="response" [challengeGuid]="challenge.guid" [challengeType]="'CHALLENGE_RESPONSE'"></app-feed>
             <app-footer [video]="response" [title]="'Challenge Response'"></app-footer>
           </div>

@@ -44,7 +44,6 @@ export class HomePage implements OnInit {
   ionViewWillEnter() {
     // Play the video when entering the page
     var video = document.getElementById(this.videoId) as HTMLVideoElement;
-    console.log(this.videoId, video)
 
     if (video) {
       video.play();
@@ -86,12 +85,13 @@ export class HomePage implements OnInit {
         this.challenges = response;
         this.isLoading = false; // Hide spinner when videos are loaded
         this.cdr.detectChanges(); // Ensure changes are reflected in the DOM
-
+        console.log(this.challenges)
         requestAnimationFrame(() => {
           this.initializeSwipers(); // Re-initialize Swipers after videos are loaded
         });
         var video = document.getElementById(this.videoId) as HTMLVideoElement
-        video.play() 
+        if(video)
+          video.play() 
       },
       error: (error) => {
         console.error('Error loading challenges:', error);
@@ -142,6 +142,7 @@ export class HomePage implements OnInit {
   slideChanged(e) {
     var previousVideo = document.getElementById(this.videoId) as HTMLVideoElement;
     if (previousVideo && typeof previousVideo.pause === 'function') {
+      console.log(previousVideo)
       previousVideo.pause();
     }
 
@@ -157,9 +158,12 @@ export class HomePage implements OnInit {
     }
     else {
       var videoElement = activeSlide.querySelector('video') as HTMLVideoElement;
-
-      if (videoElement) {
+      if(videoElement)
         this.videoId = videoElement.id;
+      else{
+        var imgElement = activeSlide.querySelector('img');
+        if(imgElement)
+          this.videoId = imgElement.id
       }
     }
 
@@ -169,6 +173,9 @@ export class HomePage implements OnInit {
       newVideo.play().catch(err => console.log('Error playing video:', err));
       newVideo.muted = this.isMuted;
     }
+
+    console.log(swiper)
+    console.log(swiper.activeIndex)
 
     // Handle refresher enable/disable
     if((swiper.isVertical() && swiper.activeIndex == 0) || (swiper.isHorizontal() && swiper.slides[0].classList.contains("slide-index-0")))
