@@ -4,18 +4,24 @@
   <div *ngIf="isLoading" class="loading-container">
     <ion-spinner name="crescent"></ion-spinner>
   </div>
-      <swiper-container #outerSwiper class="swiper-h" direction="horizontal">
+      <swiper-container #outerSwiper class="swiper-h" direction="horizontal" (swiperslidechange)="slideChanged($event)" >
         <swiper-slide>
+          <div class="mute-indicator" [class.visible]="showMuteIcon">
+            <ion-icon [name]="isMuted ? 'volume-mute' : 'volume-high'"></ion-icon>
+          </div>  
           <div class="video-wrapper">
-            <video autoplay loop playsinline [src]="challenge.videoUrl" [muted]="true" [style.height]="videoHeight"></video>
-            <app-user-challenge-feed [video]="challenge" [challengeGuid]="challenge.guid" [userLikes]="userLikes" [challengeType]="'CHALLENGE'"></app-user-challenge-feed>
+            <video loop playsinline [src]="challenge.videoUrl" [muted]="true" [style.height]="videoHeight" id="challenge-0" #mainChallenge (click)="toggleMute(mainChallenge)"></video>
+            <app-user-challenge-feed [video]="challenge" [challengeType]="'CHALLENGE'"></app-user-challenge-feed>
             <app-footer [video]="challenge" [title]="'Main Challenge'"></app-footer>
           </div>
         </swiper-slide>
-        <swiper-slide *ngFor="let response of challenge.responses">
+        <swiper-slide *ngFor="let response of challenge.responses; let i = index">
+          <div class="mute-indicator" [class.visible]="showMuteIcon">
+            <ion-icon [name]="isMuted ? 'volume-mute' : 'volume-high'"></ion-icon>
+          </div>  
           <div class="video-wrapper">
-            <video autoplay loop playsinline [src]="response.videoUrl" [muted]="true" [style.height]="videoHeight"></video>
-            <app-user-challenge-feed [video]="response" [challengeGuid]="challenge.guid" [userLikes]="userLikes" [challengeType]="'CHALLENGE_RESPONSE'"></app-user-challenge-feed>
+            <video loop playsinline [src]="response.videoUrl" [muted]="true" [style.height]="videoHeight" id="challenge-{{i + 1}}" #challengeResponses (click)="toggleMute(challengeResponses)"></video>
+            <app-user-challenge-feed [video]="response" [challengeType]="'CHALLENGE_RESPONSE'"></app-user-challenge-feed>
             <app-footer [video]="response" [title]="'Challenge Response'"></app-footer>
           </div>
         </swiper-slide>

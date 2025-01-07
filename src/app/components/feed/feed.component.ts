@@ -37,6 +37,7 @@ export class FeedComponent implements OnInit {
   }
 
   ngOnInit() {
+    console.log(this.video)
   }
 
   goToProfile(userName: string) {

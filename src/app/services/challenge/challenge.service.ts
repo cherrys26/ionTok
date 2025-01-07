@@ -47,19 +47,20 @@ export class ChallengeService {
     );
   }
 
-  getUserChallenges(userName: string): Observable<any> {
+  getUserChallenges(userName: string): Observable<Challenge[]> {
     return this.http.get<Challenge[]>(
       `${this.apiUrl}/challenge/username/${userName}`
     );
   }
 
-  getChallenge(id: number): Observable<any> {
-    return this.http.get<Challenge[]>(
+  getChallenge(id: number): Observable<Challenge> {
+    return this.http.get<Challenge>(
       `${this.apiUrl}/challenge/Id/${id}`
     );
   }
 
   getUserChallengeResponses(userName: string): Observable<any> {
+    console.log("reson")
     return this.http.get<Response[]>(
       `${this.apiUrl}/challengeResponse/UserName/${userName}`
     );

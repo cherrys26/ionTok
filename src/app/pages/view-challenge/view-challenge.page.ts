@@ -4,12 +4,10 @@ import {
   ElementRef, 
   OnInit, 
   ViewChild, 
-  OnDestroy 
 } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { Challenge } from 'src/app/models/challenge.model';
 import { ChallengeService } from 'src/app/services/challenge/challenge.service';
-import { LikeService } from 'src/app/services/likes/like.service';
 import { Swiper } from 'swiper';
 
 @Component({
@@ -17,10 +15,14 @@ import { Swiper } from 'swiper';
   templateUrl: './view-challenge.page.html',
   styleUrls: ['./view-challenge.page.scss'],
 })
-export class ViewChallengePage implements OnInit, OnDestroy {
+export class ViewChallengePage implements OnInit {
   challenge: Challenge = {} as Challenge;
   challengeId: number = 0;
-  userLikes: string[] = [];
+    
+    isMuted: boolean = true;
+    showMuteIcon: boolean = false;
+    videoId: string = 'challenge-0';
+      
   @ViewChild('outerSwiper', { static: false }) outerSwiperRef!: ElementRef;
   outerSwiper!: Swiper | null;
 
@@ -28,39 +30,24 @@ export class ViewChallengePage implements OnInit, OnDestroy {
     private challengeService: ChallengeService,
     private route: ActivatedRoute,
     private cdr: ChangeDetectorRef,
-    private likeService: LikeService
   ) { }
 
   ngOnInit() {
-    this.likeService.getLikes().subscribe(likes => {
-      this.userLikes = likes;
-    });
-  }
-
-  ionViewWillEnter() {
     this.route.paramMap.subscribe(params => {
       this.challengeId = +params.get("id");
       this.getChallenge();
-    });
-  }
-
-  ionViewDidEnter() {
-    // Initialize Swiper after the view is fully rendered
-    this.initializeSwiper();
-  }
-
-  ionViewWillLeave() {
-    // Cleanup to prevent memory leaks when leaving the view
-    if (this.outerSwiper) {
-      this.outerSwiper.destroy(true, true);
-      this.outerSwiper = null;
-    }
+    });  
   }
 
   getChallenge() {
     this.challengeService.getChallenge(this.challengeId).subscribe(challenge => {
       this.challenge = challenge;
+      console.log(challenge)
       this.cdr.detectChanges(); // Ensure view updates before Swiper initialization
+      this.initializeSwiper();
+
+      const video = document.getElementById(this.videoId) as HTMLVideoElement;
+      video?.play();
     });
   }
 
@@ -71,16 +58,50 @@ export class ViewChallengePage implements OnInit, OnDestroy {
           direction: 'horizontal',
           slidesPerView: 1,
           spaceBetween: 10,
+          on: {
+            slideChange: (event) => {
+              this.slideChanged(event);
+            },
+          },
         });
       }
     });
   }
+  
+  toggleMute(videoElement: HTMLVideoElement) {
+    this.isMuted = !this.isMuted;
+    videoElement.muted = this.isMuted;
 
-  ngOnDestroy() {
-    // Ensure Swiper is destroyed when component is destroyed
-    if (this.outerSwiper) {
-      this.outerSwiper.destroy(true, true);
-      this.outerSwiper = null;
-    }
+    this.showMuteIcon = true;
+    setTimeout(() => {
+      this.showMuteIcon = false;
+    }, 1000);
+  }
+
+  slideChanged(event: any) {
+      var previousVideo = document.getElementById(this.videoId) as HTMLVideoElement;
+
+      if (previousVideo && typeof previousVideo.pause === 'function') {
+        previousVideo.pause();
+      }
+
+      if(event.detail) {
+        var swiper = event.detail[0];
+        var activeIndex = swiper.activeIndex; // Get the active slide index
+        var activeSlide = swiper.slides[activeIndex]; // Get the active slide element
+
+        var videoElement = activeSlide.querySelector('video') as HTMLVideoElement;
+
+        if (videoElement) {
+          this.videoId = videoElement.id;
+        }
+      }
+
+      var newVideo = document.getElementById(this.videoId) as HTMLVideoElement;
+
+      if (newVideo && typeof newVideo.play === 'function') {
+        newVideo.play().catch(err => console.log('Error playing video:', err));
+        newVideo.muted = this.isMuted;
+      }
   }
 }

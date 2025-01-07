@@ -1,4 +1,4 @@
-import { ChangeDetectorRef, Component, ElementRef, OnInit, QueryList, ViewChild, ViewChildren } from '@angular/core';
+import { AfterViewChecked, AfterViewInit, ChangeDetectorRef, Component, ElementRef, OnInit, QueryList, ViewChild, ViewChildren } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { Swiper } from 'swiper';
 import { Challenge } from 'src/app/models/challenge.model';
@@ -9,16 +9,12 @@ import { ChallengeService } from 'src/app/services/challenge/challenge.service';
   templateUrl: './user-challenge.page.html',
   styleUrls: ['./user-challenge.page.scss'],
 })
-export class UserChallengePage implements OnInit {
-  challenges: Challenge[] = [];
-  selectedChallengeIndex: number = 0;
-  userName: string = '';
-  userLikes: string[] = [];
-  isMuted: boolean = true;
-  showMuteIcon: boolean = false;
-  videoId: string = 'challenge-0-0';
-  activeOuterIndex: number = 0; // Currently active outer swiper index
-  activeInnerIndexMap: Map<string, string> = new Map(); // Maps outer slide index to the active inner swiper index
+export class UserChallengePage implements OnInit, AfterViewChecked {
+    constructor(
+    private route: ActivatedRoute,
+    private challengeService: ChallengeService,
+    private cdr: ChangeDetectorRef
+  ) {}
 
   @ViewChild('outerSwiper', { static: false }) outerSwiperRef!: ElementRef;
   outerSwiper: Swiper | null = null;
@@ -26,83 +22,76 @@ export class UserChallengePage implements OnInit {
   @ViewChildren('innerSwiper') innerSwiperRefs!: QueryList<ElementRef>;
   innerSwipers: Swiper[] = [];
 
-  constructor(
-    private route: ActivatedRoute,
-    private challengeService: ChallengeService,
-    private cdr: ChangeDetectorRef,
-  ) {}
+  isMuted: boolean = true;
+  showMuteIcon: boolean = false;
+  videoId: string = '0-0';
+  activeOuterIndex: number = 0; // Currently active outer swiper index
+  activeInnerIndexMap: Map<number, string> = new Map(); // Maps outer slide index to the active inner swiper index
+
+  challenges: Challenge[] = [];
+  selectedChallengeIndex: number;
+  username: string = '';
+  challengesLoaded = false;
+  swiperInitialized = false;
+  
+  initialSlide = true;
 
   ngOnInit() {
-    this.route.paramMap.subscribe(params => {
-      this.selectedChallengeIndex = +params.get('index') || 0; // Get the index from route parameters
-      this.userName = params.get('userName') || '';
-    });
-    this.loadChallenges();
-  }
-
-  loadChallenges() {
-    this.challengeService.getUserChallenges(this.userName).subscribe(challenges => {
-      this.challenges = challenges;
-      this.cdr.detectChanges();
-      requestAnimationFrame(() => {
-        this.initializeSwipers(); // Re-initialize Swipers after videos are loaded
-      });
-      // Play the first video
-      const video = document.getElementById(this.videoId) as HTMLVideoElement;
-      video?.play();
+    // Load data when component is initialized (before view is rendered)
+    this.route.paramMap.subscribe((params) => {
+      this.selectedChallengeIndex = +params.get('index') || 0;
+      this.activeOuterIndex = +params.get('index') || 0;
+      this.username = params.get('userName') || '';
+      this.videoId = `${this.selectedChallengeIndex}-0`
+      this.loadChallenges();
     });
   }
 
-  ionViewWillEnter() {
-    const video = document.getElementById(this.videoId) as HTMLVideoElement;
-    video?.play();
+  ngAfterViewChecked() {
+    // Ensure Swiper is initialized after DOM changes
+    if (this.challenges.length > 0 && !this.swiperInitialized && this.outerSwiperRef) {
+      this.outerSwiper = this.outerSwiperRef.nativeElement.swiper;
+      this.initializeSwiper();
+    }
   }
 
-  ionViewDidLeave() {
-    const video = document.getElementById(this.videoId) as HTMLVideoElement;
-    video?.pause();
+  async loadChallenges() {
+    this.challengeService.getUserChallenges(this.username).subscribe({
+      next: (challenges) => {
+        this.challenges = challenges;
+        // Trigger change detection to update the view
+        this.cdr.detectChanges();
+        // Play the first video
+        const video = document.getElementById(this.videoId) as HTMLVideoElement;
+        video?.play();
+      },
+      error: (error) => {
+        console.error('Error loading challenges:', error);
+      }
+    });
   }
 
-  ngOnDestroy() {
-    const video = document.getElementById(this.videoId) as HTMLVideoElement;
-    video?.pause();
-    // Destroy Swipers on component destroy
-    if (this.outerSwiper) this.outerSwiper.destroy(true, true);
-    this.innerSwipers.forEach((swiper) => swiper.destroy(true, true));
-  }
-
-  toggleMute(videoElement: HTMLVideoElement) {
-    this.isMuted = !this.isMuted;
-    videoElement.muted = this.isMuted;
-
-    this.showMuteIcon = true;
-    setTimeout(() => {
-      this.showMuteIcon = false;
-    }, 1000);
-  }
-
-  initializeSwipers() {
-    // Destroy any existing outer swiper
-    if (this.outerSwiper) {
-      this.outerSwiper.destroy(true, true);
+  initializeSwiper() {
+    if (!this.outerSwiperRef) {
+      console.error('Swiper container not found');
+      return;
     }
 
-    // Initialize outer Swiper with dynamic initialSlide
-    if (this.outerSwiperRef && this.outerSwiperRef.nativeElement) {
-      this.outerSwiper = new Swiper(this.outerSwiperRef.nativeElement, {
-        direction: 'vertical',
-        slidesPerView: 1,
-        spaceBetween: 10,
-        initialSlide: this.selectedChallengeIndex, // Start at the selected challenge index
-        on: {
-          slideChange: (event) => {
-            this.slideChanged(event);
-          },
+    this.swiperInitialized = true;
+    this.outerSwiper = new Swiper(this.outerSwiperRef.nativeElement, {
+      direction: 'vertical',
+      slidesPerView: 1,
+      spaceBetween: 20,
+      on: {
+        init: () => {
+          this.slideTo(this.selectedChallengeIndex);
         },
-      });
-    }
-
-    // Destroy existing inner Swipers
+        slideChange: (event) => {
+          this.slideChanged(event);
+        },
+      },
+    });
+        // Destroy existing inner Swipers
     this.innerSwipers.forEach((swiper) => swiper.destroy(true, true));
     this.innerSwipers = [];
 
@@ -124,49 +113,75 @@ export class UserChallengePage implements OnInit {
         this.innerSwipers.push(innerSwiper);
       }
     });
+
+  }
+
+  slideTo(index: number) {
+    if (this.outerSwiper) {
+      this.outerSwiper.slideTo(index);
+      this.initialSlide = false;
+    } else {
+      console.error('Swiper instance is not available for sliding');
+    }
+  }
+
+  toggleMute(videoElement: HTMLVideoElement) {
+    this.isMuted = !this.isMuted;
+    videoElement.muted = this.isMuted;
+
+    this.showMuteIcon = true;
+    setTimeout(() => {
+      this.showMuteIcon = false;
+    }, 1000);
   }
 
   slideChanged(event: any) {
-    // Pause the previous video
-    const previousVideo = document.getElementById(this.videoId) as HTMLVideoElement;
-    previousVideo?.pause();
+    if(!this.initialSlide){
+      var previousVideo = document.getElementById(this.videoId) as HTMLVideoElement;
+      if (previousVideo && typeof previousVideo.pause === 'function') {
+        previousVideo.pause();
+      }
 
+      if(event.detail) {
+        var swiper = event.detail[0];
+        var activeIndex = swiper.activeIndex; // Get the active slide index
+        var activeSlide = swiper.slides[activeIndex]; // Get the active slide element
 
-    if(event.detail) {
-      const swiper = event.detail[0];
-      const activeIndex = swiper.activeIndex; // Get the active slide index
-      const activeSlide = swiper.slides[activeIndex]; // Get the active slide element
+        if(swiper.isVertical())
+          this.activeOuterIndex = activeIndex
 
-      this.activeOuterIndex = activeIndex; // Update outer swiper index
+        console.log(this.activeInnerIndexMap, activeIndex)
 
-      // Update videoId if a video element exists in the active slide
-      if (this.activeInnerIndexMap.has(activeIndex.toString())) {
-        this.videoId = this.activeInnerIndexMap.get(activeIndex.toString())!;
-      } else {
-        const videoElement = activeSlide.querySelector('video') as HTMLVideoElement;
-        if (videoElement) {
-          this.videoId = videoElement.id;
+        if(this.activeInnerIndexMap.get(activeIndex)) {
+          this.videoId = this.activeInnerIndexMap.get(activeIndex);
+        }
+        else {
+          var videoElement = activeSlide.querySelector('video') as HTMLVideoElement;
+
+          if (videoElement) {
+            this.videoId = videoElement.id;
+          }
         }
       }
-    }
-    else {
-      this.activeOuterIndex = this.selectedChallengeIndex;
+      else {
+        this.activeOuterIndex = this.selectedChallengeIndex;
+  
+        this.videoId = `${this.activeOuterIndex}-0`
+      }
 
-      this.videoId = `challenge-${this.activeOuterIndex}-0`
-    }
+      var newVideo = document.getElementById(this.videoId) as HTMLVideoElement;
 
-    // Play the new video
-    const newVideo = document.getElementById(this.videoId) as HTMLVideoElement;
-    newVideo?.play().catch((err) => console.log('Error playing video:', err));
-    newVideo.muted = this.isMuted;
+      if (newVideo && typeof newVideo.play === 'function') {
+        newVideo.play().catch(err => console.log('Error playing video:', err));
+        newVideo.muted = this.isMuted;
+      }
+    }
   }
 
-  innerslideChanged(event: any) {
-    const swiper = event.detail[0];
+  innerslideChanged(event) {
+    var swiper = event.detail[0];
+  
     // Update the map with the active inner index for the current outer slide
-    this.activeInnerIndexMap.set(
-      `challenge-${this.activeOuterIndex}`,
-      `challenge-${this.activeOuterIndex}-${swiper.activeIndex}`
-    );
+    this.activeInnerIndexMap.set(this.activeOuterIndex, `${this.activeOuterIndex}-${swiper.activeIndex}`);
   }
 }

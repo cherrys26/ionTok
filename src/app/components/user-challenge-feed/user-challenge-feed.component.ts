@@ -39,6 +39,8 @@ export class UserChallengeFeedComponent  implements OnInit {
   }
 
   likeChallenge(guid: string) {
+    console.log(guid)
+
     this.likeService.postLike(guid, this.challengeType).subscribe(l => {
       this.video.isLiked = !this.video.isLiked
       if(this.video.isLiked)

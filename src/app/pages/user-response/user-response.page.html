@@ -6,7 +6,7 @@
       </ion-button>
     </ion-buttons>
     <ion-buttons slot="end">
-      <ion-button (click)="GoToChallenge(challengeResponse.challengeId)" fill="primary" >
+      <ion-button (click)="GoToChallenge()" fill="primary" >
         Main Challenge
       </ion-button>
     </ion-buttons>
@@ -15,8 +15,16 @@
 
 
 <ion-content>
-  <div class="video-wrapper">
-    <video autoplay loop playsinline [src]="challengeResponse.videoUrl"></video>
-    <app-footer [video]="challengeResponse"></app-footer>
-  </div>
+  <swiper-container #outerSwiper class="swiper-v" [direction]="'vertical'" (swiperslidechange)="slideChanged($event)">
+    <swiper-slide *ngFor="let challenge of challengeResponses; let i = index">
+          <div class="mute-indicator" [class.visible]="showMuteIcon">
+            <ion-icon [name]="isMuted ? 'volume-mute' : 'volume-high'"></ion-icon>
+          </div>
+          <div class="video-wrapper">
+            <video loop playsinline [muted]="true" [src]="challenge.videoUrl" [style.height]="videoHeight" #outerVideo (click)="toggleMute(outerVideo)" id="{{i}}"></video>
+            <app-user-challenge-feed [video]="challenge" [challengeType]="'CHALLENGE_RESPONSE'"></app-user-challenge-feed>
+            <app-footer [video]="challenge" [title]="'Main Challenge'"></app-footer>
+          </div>
+        </swiper-slide>
+  </swiper-container>
 </ion-content>
