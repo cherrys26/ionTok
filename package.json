@@ -21,6 +21,7 @@
     "@angular/router": "^17.3.10",
     "@auth0/angular-jwt": "^5.2.0",
     "@awesome-cordova-plugins/in-app-browser": "^6.9.0",
+    "@capacitor-community/admob": "^6.1.0",
     "@capacitor/android": "^6.1.0",
     "@capacitor/app": "^6.0.0",
     "@capacitor/camera": "^6.0.1",

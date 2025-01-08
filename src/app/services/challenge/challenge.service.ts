@@ -14,9 +14,15 @@ export class ChallengeService {
   
   constructor(private http: HttpClient) {}
 
-  getAllChallenges(): Observable<Challenge[]> {
+  getAllChallenges(page: number): Observable<Challenge[]> {
     return this.http.get<Challenge[]>(
-        `${this.apiUrl}/challenge`
+        `${this.apiUrl}/challenge?page=${page}`
+    );
+  }
+
+  getChallengesCount(): Observable<number> {
+    return this.http.get<number>(
+        `${this.apiUrl}/challenge/Count`
     );
   }
 

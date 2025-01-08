@@ -11,11 +11,14 @@ import { TabsPage } from 'src/app/tabs/tabs.page';
 })
 export class HomePage implements OnInit {
   challenges: Challenge[] = [];
+  challengeCount: number = 0;
   isLoading: boolean = true; // Track loading state
   activeIndex: number = 0;
   refreshEnabled: boolean = true;
   isMuted:boolean = true;
   showMuteIcon:boolean = false;
+  currentPage = 1;
+  isLoadingMore = false;
 
   constructor(
     private challengeService: ChallengeService,
@@ -35,7 +38,8 @@ export class HomePage implements OnInit {
   innerSwipers: Swiper[] = [];
 
   ngOnInit() {
-    this.loadVideos();
+    this.challengesCount();
+    this.loadVideos(this.currentPage);
     this.tabsPage.homeTabClickedAgain.subscribe(() => {
       this.handleHomeTabClickedAgain();
     });
@@ -61,7 +65,7 @@ export class HomePage implements OnInit {
   ngOnDestroy() {
     // Ensure the video is paused when the component is destroyed
     var video = document.getElementById(this.videoId) as HTMLVideoElement;
-    console.log("destroy")
+
     if (video) {
       video.pause();
     }
@@ -79,13 +83,24 @@ export class HomePage implements OnInit {
 
   }
 
-  loadVideos() {
-    this.challengeService.getAllChallenges().subscribe({
+  challengesCount() {
+    this.challengeService.getChallengesCount().subscribe({
       next: (response) => {
-        this.challenges = response;
+        this.challengeCount = response;
+      },
+      error: (error) => {
+        console.error('Error loading count');
+      }
+    })
+  }
+
+  loadVideos(page: number) {
+    this.challengeService.getAllChallenges(page).subscribe({
+      next: (response) => {
+        this.challenges.push(...response); // Append new challenges
         this.isLoading = false; // Hide spinner when videos are loaded
         this.cdr.detectChanges(); // Ensure changes are reflected in the DOM
-        console.log(this.challenges)
+
         requestAnimationFrame(() => {
           this.initializeSwipers(); // Re-initialize Swipers after videos are loaded
         });
@@ -142,16 +157,12 @@ export class HomePage implements OnInit {
   slideChanged(e) {
     var previousVideo = document.getElementById(this.videoId) as HTMLVideoElement;
     if (previousVideo && typeof previousVideo.pause === 'function') {
-      console.log(previousVideo)
       previousVideo.pause();
     }
 
     var swiper = e.detail[0];
     var activeIndex = swiper.activeIndex; // Get the active slide index
     var activeSlide = swiper.slides[activeIndex]; // Get the active slide element
-
-    if(swiper.isVertical())
-      this.activeOuterIndex = activeIndex
 
     if(this.activeInnerIndexMap.get(activeIndex)) {
       this.videoId = this.activeInnerIndexMap.get(activeIndex);
@@ -170,18 +181,25 @@ export class HomePage implements OnInit {
     var newVideo = document.getElementById(this.videoId) as HTMLVideoElement;
 
     if (newVideo && typeof newVideo.play === 'function') {
-      newVideo.play().catch(err => console.log('Error playing video:', err));
+      newVideo.play().catch(err => console.error('Error playing video:', err));
       newVideo.muted = this.isMuted;
     }
-
-    console.log(swiper)
-    console.log(swiper.activeIndex)
 
     // Handle refresher enable/disable
     if((swiper.isVertical() && swiper.activeIndex == 0) || (swiper.isHorizontal() && swiper.slides[0].classList.contains("slide-index-0")))
       this.refreshEnabled = true;
     else
       this.refreshEnabled = false;   
+
+      var direction = activeIndex > this.activeOuterIndex ? 'down' : 'up';
+
+      if(swiper.isVertical())
+        this.activeOuterIndex = activeIndex
+
+      if (swiper.isVertical() && direction === 'down' && this.challengeCount > this.challenges.length && activeIndex === this.challenges.length - 3 && !this.isLoadingMore) {
+        this.currentPage++;
+        this.loadVideos(this.currentPage);
+      }
   }
 
   innerslideChanged(event) {
@@ -194,7 +212,10 @@ export class HomePage implements OnInit {
 
   refresh(event) {
       setTimeout(() => {
-        this.loadVideos();
+        this.currentPage = 1;
+        this.challengesCount()
+        this.challenges = [];
+        this.loadVideos(this.currentPage);
         this.activeInnerIndexMap = new Map();
         event.target.complete();
       }, 1500);
@@ -210,7 +231,7 @@ export class HomePage implements OnInit {
     this.activeOuterIndex = 0;
     var newVideo = document.getElementById(this.videoId) as HTMLVideoElement;
     if (newVideo && typeof newVideo.play === 'function') {
-      newVideo.play().catch(err => console.log('Error playing video:', err));
+      newVideo.play().catch(err => console.error('Error playing video:', err));
       newVideo.muted = this.isMuted;
     }
 
