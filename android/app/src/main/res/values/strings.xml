@@ -4,4 +4,5 @@
     <string name="title_activity_main">challengeMe</string>
     <string name="package_name">com.challengeMe.app</string>
     <string name="custom_url_scheme">com.challengeMe.app</string>
+    <string name="admob_app_id">ca-app-pub-3018649726233944~6137568947</string>
 </resources>
