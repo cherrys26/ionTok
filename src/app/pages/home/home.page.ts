@@ -3,7 +3,7 @@ import { Swiper } from 'swiper';
 import { Challenge } from 'src/app/models/challenge.model';
 import { ChallengeService } from '../../services/challenge/challenge.service';
 import { TabsPage } from 'src/app/tabs/tabs.page';
-
+import { AdmobAds, BannerPosition, BannerSize } from 'capacitor-admob-ads';
 @Component({
   selector: 'app-home',
   templateUrl: './home.page.html',
@@ -26,6 +26,8 @@ export class HomePage implements OnInit {
     private tabsPage: TabsPage,
   ) {}
 
+  nativeAds: Array<any> = [];
+
   videoId: string = '0-0';
 
   activeOuterIndex: number = 0; // Currently active outer swiper index
@@ -44,6 +46,22 @@ export class HomePage implements OnInit {
       this.handleHomeTabClickedAgain();
     });
   } 
+
+  loadNativeAds(){
+    AdmobAds.loadNativeAd({
+      adId: 'ca-app-pub-3018649726233944/7419431844',
+      isTesting: true,
+      adsCount: 1,
+    }).then(res => {
+      this.nativeAds = res.ads
+    }).catch((err)=> {
+      console.error(err)
+    })
+  }
+
+  openAd(id){
+    AdmobAds.triggerNativeAd({id: id});
+  }
 
   ionViewWillEnter() {
     // Play the video when entering the page

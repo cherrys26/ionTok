@@ -9,7 +9,11 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
 
-        <meta-data android:name="com.google.android.gms.ads.APPLICATION_ID" android:value="@string/admob_app_id"/>
+        <meta-data 
+            android:name="com.google.android.gms.ads.APPLICATION_ID" 
+            android:value="ca-app-pub-3018649726233944~6137568947"
+            />
+            <!-- android:value="@string/admob_app_id" -->
 
         <activity
             android:configChanges="orientation|keyboardHidden|keyboard|screenSize|locale|smallestScreenSize|screenLayout|uiMode"
